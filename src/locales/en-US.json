@@ -1,0 +1,72 @@
+{
+  "nav": {
+    "logo": "indica aí",
+    "search": {
+      "where": "Where",
+      "whereSubtext": "Search destinations",
+      "who": "Who",
+      "whoSubtext": "Add friends",
+      "searchButton": "Search",
+      "placeholder": "Search places, cities, or friends..."
+    },
+    "addPlace": "Add a place",
+    "becomeHost": "Become a host",
+    "feed": "Feed",
+    "explore": "Explore",
+    "add": "Add",
+    "profile": "Profile"
+  },
+  "home": {
+    "title": "Places your friends love",
+    "subtitle": "Discover and explore recommendations from your network",
+    "sections": {
+      "friendsSuggestions": "Suggestions from your friends",
+      "friendsSuggestionsSubtitle": "Places your friends love",
+      "nearbyPlaces": "Near your location",
+      "nearbyPlacesSubtitle": "Places close to you"
+    }
+  },
+  "card": {
+    "bookmark": "Bookmark this place",
+    "addedBy": "Added by"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Failed to load. Please try again.",
+    "timeAgo": {
+      "justNow": "Just now",
+      "minutesAgo": "{count} min ago",
+      "hoursAgo": "{count}h ago",
+      "daysAgo": "{count}d ago",
+      "weeksAgo": "{count}w ago"
+    }
+  },
+  "priceRange": {
+    "$": "Budget",
+    "$$": "Moderate",
+    "$$$": "Expensive",
+    "$$$$": "Very Expensive"
+  },
+  "categories": {
+    "restaurant": "Restaurant",
+    "cafe": "Cafe",
+    "bar": "Bar",
+    "hotel": "Hotel",
+    "experience": "Experience",
+    "breakfast": "Breakfast",
+    "lunch": "Lunch",
+    "dinner": "Dinner",
+    "coffee": "Coffee",
+    "japanese": "Japanese",
+    "italian": "Italian",
+    "brazilian": "Brazilian",
+    "mexican": "Mexican",
+    "french": "French"
+  },
+  "feed": {
+    "empty": {
+      "title": "No recommendations yet",
+      "subtitle": "Be the first to add a place you love!"
+    }
+  }
+}

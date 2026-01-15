@@ -1,0 +1,467 @@
+{
+  "meta": {
+    "name": "Friends Places - Context Navigation Index",
+    "version": "0.1.0",
+    "purpose": "Master index for navigating all context documentation files",
+    "last_updated": "2026-01-12"
+  },
+  "navigation": {
+    "description": "This file serves as the entry point for all project context. Use breadcrumbs to navigate to specific sections.",
+    "structure": "frontend → [strategy|tech|ux|setup-plan]"
+  },
+  "files": {
+    "frontend": {
+      "strategy": {
+        "file": "context/front.strategy.json",
+        "breadcrumb": "frontend → strategy",
+        "purpose": "Product strategy, objectives, scope, and success criteria",
+        "when_to_use": [
+          "Understanding project goals and MVP scope",
+          "Clarifying what's in/out of scope",
+          "Understanding core value proposition",
+          "Defining success criteria for features"
+        ],
+        "key_sections": {
+          "objective": "Main project goal",
+          "core_value_prop": "What makes this product unique",
+          "primary_use_cases": "Key user workflows",
+          "scope_frontend": "What's in/out of MVP scope",
+          "success_criteria": "UX and technical success metrics"
+        },
+        "relates_to": [
+          "front.ux.json → Implements UX patterns for strategic goals",
+          "front.tech.json → Technical implementation of strategy"
+        ]
+      },
+      "tech": {
+        "file": "context/front.tech.json",
+        "breadcrumb": "frontend → tech",
+        "purpose": "Technical architecture, stack, domain models, and integration contracts",
+        "when_to_use": [
+          "Choosing or configuring tech stack",
+          "Defining TypeScript types/interfaces",
+          "Setting up API integration",
+          "Understanding folder structure",
+          "Configuring location behaviors (GPS/IP/manual)"
+        ],
+        "key_sections": {
+          "stack": {
+            "path": "frontend → tech → stack",
+            "description": "Framework, language, libraries, tooling choices",
+            "critical_fields": [
+              "framework: Next.js (App Router) OR Vite + React",
+              "language: TypeScript",
+              "ui_library: React",
+              "styling: Tailwind CSS",
+              "state_management: React Query + local state",
+              "forms: React Hook Form"
+            ]
+          },
+          "architecture": {
+            "path": "frontend → tech → architecture",
+            "description": "Folder structure and architectural principles",
+            "structure": {
+              "feature_folders": "features/feed/, features/add/, features/profile/",
+              "api_layer": "lib/api/",
+              "models": "lib/models/",
+              "hooks": "lib/hooks/"
+            },
+            "principles": [
+              "Feature-first folders",
+              "All HTTP calls in lib/api",
+              "Domain types from lib/models",
+              "React Query for data fetching"
+            ]
+          },
+          "integration": {
+            "path": "frontend → tech → integration",
+            "description": "Backend API contracts and behaviors",
+            "api_base_url": "NEXT_PUBLIC_API_BASE_URL env var",
+            "location_behaviors": {
+              "path": "frontend → tech → integration → location_behaviors",
+              "gps": "Geolocation API with permission handling",
+              "ip_fallback": "Backend IP geolocation endpoint",
+              "manual_city": "CitySelector component fallback"
+            }
+          },
+          "domain_models_frontend": {
+            "path": "frontend → tech → domain_models_frontend",
+            "description": "All TypeScript types/interfaces (CRITICAL for implementation)",
+            "types": {
+              "User": "frontend → tech → domain_models → User",
+              "Place": "frontend → tech → domain_models → Place",
+              "Experience": "frontend → tech → domain_models → Experience",
+              "ExperienceFeedItem": "frontend → tech → domain_models → ExperienceFeedItem",
+              "Bookmark": "frontend → tech → domain_models → Bookmark"
+            },
+            "view_models": {
+              "ExperienceCardProps": "Props for experience cards",
+              "QuickAddFormState": "State management for Quick Add flow"
+            },
+            "note": "These types MUST match backend contracts exactly"
+          },
+          "ui_components": {
+            "path": "frontend → tech → ui_components",
+            "description": "Component inventory organized by feature",
+            "global": [
+              "BottomNav",
+              "TopBar",
+              "Avatar",
+              "Chip",
+              "Button",
+              "Input",
+              "TextArea",
+              "IconButton"
+            ],
+            "features": {
+              "feed": ["ExperienceCard", "ExperienceList", "FeedEmptyState"],
+              "quick_add": [
+                "QuickAddLayout",
+                "PlaceSearchInput",
+                "PlaceSuggestionList",
+                "CustomPlaceForm",
+                "PriceRangeSelector",
+                "CategorySelector",
+                "AdditionalFieldsPanel",
+                "SaveExperienceButton"
+              ],
+              "profile": [
+                "UserHeader",
+                "ProfileTabs",
+                "ProfileExperienceList",
+                "ProfileBookmarksPlaceholder"
+              ],
+              "experience_detail": [
+                "ExperienceDetailLayout",
+                "ImageGallery",
+                "MapLinkButton",
+                "BookmarkButton"
+              ]
+            }
+          },
+          "non_functional": {
+            "path": "frontend → tech → non_functional",
+            "description": "Performance, accessibility, responsiveness requirements",
+            "performance": "Suspense, memoization, avoid re-renders",
+            "accessibility": "Focus states, 44px touch targets, AA contrast",
+            "responsiveness": "320-414px mobile, ~768px tablet, 1024+ desktop"
+          }
+        },
+        "relates_to": [
+          "front.ux.json → UX patterns for components",
+          "front.strategy.json → Technical implementation of strategy",
+          "front.setup-plan.json → Step-by-step implementation guide"
+        ]
+      },
+      "ux": {
+        "file": "context/front.ux.json",
+        "breadcrumb": "frontend → ux",
+        "purpose": "UX patterns, screen specs, navigation, design tokens, and copy system",
+        "when_to_use": [
+          "Designing UI components",
+          "Understanding navigation model",
+          "Implementing screen layouts",
+          "Applying design tokens (colors, typography, spacing)",
+          "Writing user-facing copy",
+          "Ensuring accessibility standards"
+        ],
+        "key_sections": {
+          "navigation_model": {
+            "path": "frontend → ux → navigation_model",
+            "description": "Bottom nav tabs and primary actions",
+            "tabs": ["feed", "add", "profile", "explore_placeholder"],
+            "pattern": "Bottom navigation on mobile, optional left nav on desktop"
+          },
+          "core_screens": {
+            "path": "frontend → ux → core_screens",
+            "description": "List of all screens in app",
+            "screens": [
+              "Feed",
+              "Quick Add Flow",
+              "Experience Detail",
+              "Profile",
+              "Bookmarks/Lists (P1 placeholder)",
+              "Explore/Search (P1 placeholder)"
+            ]
+          },
+          "screen_specs": {
+            "path": "frontend → ux → screen_specs",
+            "description": "Detailed specifications for each screen",
+            "feed": {
+              "path": "frontend → ux → screen_specs → feed",
+              "purpose": "Show experiences from followed users",
+              "components": ["header", "experience_card_list", "empty_state"],
+              "experience_card": {
+                "elements": [
+                  "user_avatar",
+                  "user_name",
+                  "time_ago",
+                  "place_name",
+                  "price_range",
+                  "categories",
+                  "city_short",
+                  "instagram_handle_optional",
+                  "thumbnail_image_optional"
+                ],
+                "constraints": {
+                  "image_optional": true,
+                  "one_line_place_name": "ellipsis overflow",
+                  "category_chips_scrollable": true
+                }
+              },
+              "empty_state_copy": "Follow friends to discover places they love."
+            },
+            "quick_add_flow": {
+              "path": "frontend → ux → screen_specs → quick_add_flow",
+              "purpose": "Save a place in ~15 seconds",
+              "steps": [
+                "Location Context & Search",
+                "Select Place & Auto-fill",
+                "Optional Enrich",
+                "Save & Broadcast"
+              ],
+              "required_fields": ["place", "price_range", "categories"],
+              "optional_fields": [
+                "instagram_handle",
+                "brief_description",
+                "phone_number",
+                "images",
+                "visit_date"
+              ],
+              "location_behaviors": {
+                "gps_allowed": "Use browser GPS",
+                "gps_denied": "Fallback to IP-based city",
+                "both_fail": "Manual CitySelector"
+              },
+              "places_api_failure": {
+                "fallback_mode": "Custom Place Entry",
+                "fields": ["place_name", "city", "optional_address"],
+                "restrictions": ["manual_google_maps_url_not_allowed"]
+              }
+            },
+            "experience_detail": {
+              "path": "frontend → ux → screen_specs → experience_detail",
+              "purpose": "View experience with rich info",
+              "components": [
+                "place_name",
+                "user_info",
+                "price_range",
+                "categories",
+                "instagram_handle_optional",
+                "brief_description_optional",
+                "images_gallery_optional",
+                "city_country",
+                "google_maps_link_auto",
+                "bookmark_button"
+              ]
+            },
+            "profile": {
+              "path": "frontend → ux → screen_specs → profile",
+              "purpose": "View user's experiences and bookmarks",
+              "components": [
+                "header_user",
+                "edit_profile_entrypoint",
+                "tab_experiences",
+                "tab_bookmarks_lists"
+              ],
+              "empty_state_copy": "Save places to build your profile."
+            }
+          },
+          "components_inventory": {
+            "path": "frontend → ux → components_inventory",
+            "description": "Same as tech.ui_components, but from UX perspective",
+            "note": "Cross-reference with front.tech.json → ui_components"
+          },
+          "design_tokens": {
+            "path": "frontend → ux → design_tokens",
+            "description": "Colors, typography, spacing, radius for Tailwind config",
+            "color": {
+              "primary": "#111111",
+              "background": "#FFFFFF",
+              "surface": "#F6F7F9",
+              "chip_bg": "#EDEEF1",
+              "text_primary": "#111111",
+              "text_secondary": "#555555",
+              "divider": "#E4E6EA",
+              "accent": "#007AFF"
+            },
+            "typography": {
+              "font_family": "Inter, system-ui, sans-serif",
+              "scale": {
+                "title_l": "1.4rem",
+                "title_m": "1.2rem",
+                "body": "1rem",
+                "small": "0.85rem"
+              }
+            },
+            "radius": {
+              "chip": "12px",
+              "surface": "14px"
+            },
+            "spacing": {
+              "xs": "4px",
+              "sm": "8px",
+              "md": "16px",
+              "lg": "24px"
+            },
+            "usage": "Apply these tokens in tailwind.config.ts theme.extend"
+          },
+          "interaction_rules": {
+            "path": "frontend → ux → interaction_rules",
+            "description": "User interaction patterns and constraints",
+            "image_upload": "0–N images via native upload",
+            "maps_link": "Auto-only, never manual",
+            "gps_permission": "Request on-demand with explanatory copy"
+          },
+          "copy_system": {
+            "path": "frontend → ux → copy_system",
+            "description": "Tone and example copy for UI",
+            "tone": ["Lightweight", "Social", "Trust-based"],
+            "examples": {
+              "add_place_cta": "Save a place",
+              "feed_empty": "Follow friends to discover places they love.",
+              "optional_hint": "Optional"
+            }
+          },
+          "a11y_logic": {
+            "path": "frontend → ux → a11y_logic",
+            "description": "Accessibility requirements",
+            "focus_order": "Top→Bottom",
+            "min_touch_target": "44px",
+            "color_contrast": "AA (WCAG)"
+          }
+        },
+        "relates_to": [
+          "front.tech.json → Technical implementation of UX patterns",
+          "front.strategy.json → UX supports strategic objectives"
+        ]
+      },
+      "setup_plan": {
+        "file": "context/front.setup-plan.json",
+        "breadcrumb": "frontend → setup-plan",
+        "purpose": "Step-by-step implementation guide with all phases",
+        "when_to_use": [
+          "Starting project setup",
+          "Planning implementation phases",
+          "Understanding build order",
+          "Reference for immediate next steps"
+        ],
+        "key_sections": {
+          "project_overview": "High-level project summary",
+          "phases": {
+            "phase_1_initial_setup": "Project init, dependencies, env vars",
+            "phase_2_folder_structure": "Create feature-first architecture",
+            "phase_3_design_tokens": "Configure Tailwind with design tokens",
+            "phase_4_domain_models": "Define TypeScript types",
+            "phase_5_api_layer": "API client, endpoints, React Query",
+            "phase_6_global_components": "Build shared UI components",
+            "phase_7_core_screens": "Build features in priority order",
+            "phase_8_routing": "Setup Next.js routing",
+            "phase_9_location_handling": "GPS → IP → Manual fallback",
+            "phase_10_error_loading_states": "Loading, error, empty states",
+            "phase_11_responsive_layout": "Mobile-first responsive design",
+            "phase_12_testing_qa": "Optional testing setup"
+          },
+          "immediate_next_steps": "Quick start checklist",
+          "critical_principles": "Must-follow architecture, UX, a11y rules"
+        },
+        "relates_to": [
+          "front.tech.json → References tech stack and models",
+          "front.ux.json → References design tokens and components",
+          "front.strategy.json → Implements strategic objectives"
+        ]
+      }
+    }
+  },
+  "quick_reference": {
+    "when_building": {
+      "new_component": [
+        "Check frontend → ux → components_inventory for UX requirements",
+        "Check frontend → tech → ui_components for props/API",
+        "Check frontend → ux → design_tokens for styling",
+        "Check frontend → ux → a11y_logic for accessibility"
+      ],
+      "new_feature": [
+        "Check frontend → strategy → scope_frontend to verify in MVP scope",
+        "Check frontend → ux → screen_specs for UX requirements",
+        "Check frontend → tech → architecture for folder placement",
+        "Check frontend → setup-plan → core_screens for build order"
+      ],
+      "api_integration": [
+        "Check frontend → tech → integration → api_base_url",
+        "Check frontend → tech → domain_models for types",
+        "Check frontend → setup-plan → api_layer for implementation"
+      ],
+      "styling": [
+        "Check frontend → ux → design_tokens for colors/spacing/typography",
+        "Apply in Tailwind config (see frontend → setup-plan → design_tokens)"
+      ],
+      "location_features": [
+        "Check frontend → tech → integration → location_behaviors",
+        "Check frontend → ux → screen_specs → quick_add_flow → location_behaviors",
+        "Check frontend → setup-plan → location_handling"
+      ]
+    }
+  },
+  "search_patterns": {
+    "find_type_definition": "frontend → tech → domain_models_frontend → types → [TypeName]",
+    "find_component_spec": "frontend → ux → components_inventory OR frontend → tech → ui_components",
+    "find_screen_layout": "frontend → ux → screen_specs → [screen_name]",
+    "find_design_token": "frontend → ux → design_tokens → [color|typography|spacing|radius]",
+    "find_api_contract": "frontend → tech → integration",
+    "find_build_order": "frontend → setup-plan → phases → phase_7_core_screens → build_order",
+    "check_mvp_scope": "frontend → strategy → scope_frontend → [in_scope|out_of_scope_mvp]"
+  },
+  "critical_cross_references": {
+    "domain_models": {
+      "defined_in": "frontend → tech → domain_models_frontend",
+      "used_in": [
+        "frontend → setup-plan → phase_4_domain_models",
+        "All API endpoints in phase_5_api_layer",
+        "All feature components"
+      ]
+    },
+    "design_tokens": {
+      "defined_in": "frontend → ux → design_tokens",
+      "applied_in": "frontend → setup-plan → phase_3_design_tokens (Tailwind config)",
+      "used_by": "All UI components"
+    },
+    "location_logic": {
+      "ux_flow": "frontend → ux → screen_specs → quick_add_flow → location_behaviors",
+      "tech_contract": "frontend → tech → integration → location_behaviors",
+      "implementation": "frontend → setup-plan → phase_9_location_handling"
+    },
+    "component_inventory": {
+      "ux_view": "frontend → ux → components_inventory",
+      "tech_view": "frontend → tech → ui_components",
+      "implementation": "frontend → setup-plan → phase_6_global_components + phase_7_core_screens"
+    }
+  },
+  "workflow_guide": {
+    "starting_project": {
+      "order": [
+        "1. Read frontend → strategy to understand goals",
+        "2. Read frontend → tech → stack to confirm tech choices",
+        "3. Follow frontend → setup-plan → immediate_next_steps",
+        "4. Reference frontend → ux → design_tokens during Tailwind setup"
+      ]
+    },
+    "implementing_feature": {
+      "order": [
+        "1. Check frontend → strategy → scope_frontend (is it in MVP?)",
+        "2. Read frontend → ux → screen_specs → [feature] for UX requirements",
+        "3. Read frontend → tech → domain_models for types",
+        "4. Read frontend → tech → ui_components for component list",
+        "5. Follow frontend → setup-plan → phase_7_core_screens → [feature]"
+      ]
+    },
+    "styling_component": {
+      "order": [
+        "1. Read frontend → ux → design_tokens",
+        "2. Apply Tailwind classes using token names",
+        "3. Check frontend → ux → a11y_logic for accessibility",
+        "4. Verify against frontend → ux → screen_specs for layout"
+      ]
+    }
+  }
+}

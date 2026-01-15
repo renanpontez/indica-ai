@@ -1,0 +1,47 @@
+{
+  "meta": {
+    "project_name": "Friends Places – Social Recommendations MVP",
+    "project_type": "frontend",
+    "phase": "strategy",
+    "version": "0.1.0"
+  },
+  "objective": "Deliver a mobile-first web app (SPA-like) where users can quickly save, view, and browse friends' recommended places, aligned with the Experience PROJECT_CONTEXT.",
+  "core_value_prop": "Make it extremely easy to save a place you liked and let your friends discover it through a simple, trust-based social graph.",
+  "primary_use_cases": [
+    "User visits or remembers a place and wants to save it in a few seconds via Quick Add Flow.",
+    "User opens the app to see a feed of places saved by friends.",
+    "User views their own profile and saved places (experiences + bookmarks).",
+    "User taps into a specific experience to see more details and open maps."
+  ],
+  "scope_frontend": {
+    "in_scope": [
+      "Responsive web UI, mobile-first.",
+      "Bottom navigation with core tabs: Feed, Add, Profile + Explore placeholder.",
+      "Quick Add Flow: location context, place search, optional enrichment, save.",
+      "Experience detail view.",
+      "Profile with experiences and bookmarks tab (bookmarks can be placeholder).",
+      "Basic error/loading/empty states.",
+      "Integration with backend API for feed, add, profile, bookmarks."
+    ],
+    "out_of_scope_mvp": [
+      "Native mobile apps.",
+      "Offline-first complex PWA (basic PWA-friendly structure allowed).",
+      "Likes, comments, DMs, complex social/explore algorithms.",
+      "Complex theming system beyond provided design_tokens."
+    ]
+  },
+  "success_criteria": {
+    "ux": [
+      "User can add a place (Quick Add Flow) in ~15 seconds or less under normal network conditions.",
+      "Navigation between tabs is obvious and requires minimal taps.",
+      "Experience cards are readable and scannable on small screens.",
+      "Empty states clearly guide the user to next actions (e.g., follow friends, add a place)."
+    ],
+    "technical": [
+      "Frontend uses typed API clients and shared domain models with backend.",
+      "State management is simple and predictable (React Query or equivalent).",
+      "Basic accessibility is respected (focus management, touch targets, contrast).",
+      "Layout works well on common mobile breakpoints and desktop within a reasonable max width."
+    ]
+  }
+}

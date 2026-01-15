@@ -1,0 +1,72 @@
+{
+  "nav": {
+    "logo": "indica aí",
+    "search": {
+      "where": "Onde",
+      "whereSubtext": "Buscar destinos",
+      "who": "Quem",
+      "whoSubtext": "Adicionar amigos",
+      "searchButton": "Buscar",
+      "placeholder": "Buscar lugares, cidades ou amigos..."
+    },
+    "addPlace": "Adicionar lugar",
+    "becomeHost": "Anunciar espaço",
+    "feed": "Feed",
+    "explore": "Explorar",
+    "add": "Adicionar",
+    "profile": "Perfil"
+  },
+  "home": {
+    "title": "Lugares que seus amigos amam",
+    "subtitle": "Descubra e explore recomendações da sua rede",
+    "sections": {
+      "friendsSuggestions": "Sugestões dos seus amigos",
+      "friendsSuggestionsSubtitle": "Lugares que seus amigos amam",
+      "nearbyPlaces": "Próximo a sua localização",
+      "nearbyPlacesSubtitle": "Lugares perto de você"
+    }
+  },
+  "card": {
+    "bookmark": "Salvar este lugar",
+    "addedBy": "Adicionado por"
+  },
+  "common": {
+    "loading": "Carregando...",
+    "error": "Erro ao carregar. Por favor, tente novamente.",
+    "timeAgo": {
+      "justNow": "Agora mesmo",
+      "minutesAgo": "{count} min atrás",
+      "hoursAgo": "{count}h atrás",
+      "daysAgo": "{count}d atrás",
+      "weeksAgo": "{count}sem atrás"
+    }
+  },
+  "priceRange": {
+    "$": "Barato",
+    "$$": "Moderado",
+    "$$$": "Caro",
+    "$$$$": "Muito caro"
+  },
+  "categories": {
+    "restaurant": "Restaurante",
+    "cafe": "Café",
+    "bar": "Bar",
+    "hotel": "Hotel",
+    "experience": "Experiência",
+    "breakfast": "Café da Manhã",
+    "lunch": "Almoço",
+    "dinner": "Jantar",
+    "coffee": "Café",
+    "japanese": "Japonês",
+    "italian": "Italiano",
+    "brazilian": "Brasileiro",
+    "mexican": "Mexicano",
+    "french": "Francês"
+  },
+  "feed": {
+    "empty": {
+      "title": "Nenhuma recomendação ainda",
+      "subtitle": "Seja o primeiro a adicionar um lugar que você ama!"
+    }
+  }
+}

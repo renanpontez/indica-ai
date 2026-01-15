@@ -1,0 +1,189 @@
+{
+  "meta": {
+    "project_name": "Friends Places – Social Recommendations MVP",
+    "project_type": "frontend",
+    "phase": "tech",
+    "version": "0.1.0"
+  },
+  "stack": {
+    "runtime": "Node.js (for tooling/dev server)",
+    "framework": "Next.js (App Router) OR Vite + React (choose one per project)",
+    "language": "TypeScript",
+    "ui_library": "React",
+    "styling": "Tailwind CSS (preferred) or CSS Modules",
+    "state_management": "React Query / TanStack Query for server state; local component state for UI",
+    "forms": "React Hook Form or lightweight controlled components",
+    "bundling": "Next.js built-in or Vite",
+    "testing": "Vitest / Jest + React Testing Library (optional for MVP)"
+  },
+  "architecture": {
+    "structure": {
+      "suggested_folders": [
+        "app/ or src/pages/ (routes)",
+        "components/ (shared UI)",
+        "features/feed/",
+        "features/add/",
+        "features/profile/",
+        "features/experience-detail/",
+        "lib/api/",
+        "lib/models/",
+        "lib/hooks/",
+        "styles/ (if needed)"
+      ]
+    },
+    "principles": [
+      "Feature-first folders (feed, add, profile) instead of huge global components folder.",
+      "Keep all HTTP calls in lib/api; components receive data via hooks.",
+      "Use domain types from lib/models mirroring backend tech_json.",
+      "Avoid unnecessary global state; use React Query for data fetching/caching."
+    ]
+  },
+  "integration": {
+    "api_base_url": "Configured via env var (e.g. NEXT_PUBLIC_API_BASE_URL).",
+    "http_client": "fetch or minimal wrapper; no heavy client required.",
+    "contracts": [
+      "Use TypeScript types for ExperienceFeedItem, ExperienceDetail, etc., shared with backend or re-declared consistently.",
+      "Handle loading, error, and empty states explicitly.",
+      "Never send google_maps_url from frontend; backend owns this field."
+    ],
+    "location_behaviors": {
+      "gps": "Use Geolocation API only when starting Quick Add; handle permission denied gracefully.",
+      "ip_fallback": "Call backend endpoint that uses IP geolocation, if available.",
+      "manual_city": "Show CitySelector component when neither GPS nor IP works."
+    }
+  },
+  "domain_models_frontend": {
+    "types": {
+      "User": {
+        "id": "string",
+        "display_name": "string",
+        "username": "string",
+        "avatar_url": "string | null"
+      },
+      "Place": {
+        "id": "string",
+        "google_place_id": "string | null",
+        "name": "string",
+        "city": "string",
+        "country": "string",
+        "address": "string | null",
+        "lat": "number | null",
+        "lng": "number | null",
+        "instagram_handle": "string | null",
+        "google_maps_url": "string | null",
+        "custom": "boolean"
+      },
+      "Experience": {
+        "id": "string",
+        "user_id": "string",
+        "place_id": "string",
+        "price_range": "'$' | '$$' | '$$$' | '$$$$'",
+        "categories": "string[]",
+        "brief_description": "string | null",
+        "phone_number": "string | null",
+        "images": "string[] | null",
+        "visit_date": "string | null",
+        "created_at": "string"
+      },
+      "ExperienceFeedItem": {
+        "id": "string",
+        "experience_id": "string",
+        "user": {
+          "id": "string",
+          "display_name": "string",
+          "avatar_url": "string | null"
+        },
+        "place": {
+          "id": "string",
+          "name": "string",
+          "city_short": "string",
+          "country": "string",
+          "thumbnail_image_url": "string | null"
+        },
+        "price_range": "'$' | '$$' | '$$$' | '$$$$'",
+        "categories": "string[]",
+        "time_ago": "string"
+      },
+      "Bookmark": {
+        "id": "string",
+        "user_id": "string",
+        "experience_id": "string",
+        "created_at": "string"
+      }
+    },
+    "view_models": {
+      "ExperienceCardProps": {
+        "experience": "ExperienceFeedItem",
+        "onClick": "() => void",
+        "onBookmarkToggle?": "() => void"
+      },
+      "QuickAddFormState": {
+        "step": "'location_search' | 'select_place' | 'enrich' | 'review'",
+        "place": "Place | null",
+        "price_range": "'$' | '$$' | '$$$' | '$$$$' | null",
+        "categories": "string[]",
+        "instagram_handle": "string",
+        "brief_description": "string",
+        "phone_number": "string",
+        "images": "File[] | string[]",
+        "visit_date": "string | null"
+      }
+    }
+  },
+  "ui_components": {
+    "global": [
+      "BottomNav",
+      "TopBar",
+      "Avatar",
+      "Chip",
+      "Button",
+      "Input",
+      "TextArea",
+      "IconButton"
+    ],
+    "features": {
+      "feed": [
+        "ExperienceCard",
+        "ExperienceList",
+        "FeedEmptyState"
+      ],
+      "quick_add": [
+        "QuickAddLayout",
+        "PlaceSearchInput",
+        "PlaceSuggestionList",
+        "CustomPlaceForm",
+        "PriceRangeSelector",
+        "CategorySelector",
+        "AdditionalFieldsPanel",
+        "SaveExperienceButton"
+      ],
+      "profile": [
+        "UserHeader",
+        "ProfileTabs",
+        "ProfileExperienceList",
+        "ProfileBookmarksPlaceholder"
+      ],
+      "experience_detail": [
+        "ExperienceDetailLayout",
+        "ImageGallery",
+        "MapLinkButton",
+        "BookmarkButton"
+      ]
+    }
+  },
+  "non_functional": {
+    "performance": [
+      "Use React Suspense or skeletons for loading states (optional).",
+      "Avoid unnecessary re-renders; memoize heavy lists/cards where needed."
+    ],
+    "accessibility": [
+      "All interactive elements must have visible focus states.",
+      "Bottom navigation buttons must have aria-labels and role='tab' where appropriate.",
+      "Ensure color contrast meets AA using provided design_tokens."
+    ],
+    "responsiveness": [
+      "Target common breakpoints: 320–414px (mobile), ~768px (tablet), 1024+ (desktop).",
+      "Max-width container on desktop to avoid overly wide lines (e.g., 960–1200px)."
+    ]
+  }
+}

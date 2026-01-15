@@ -1,0 +1,560 @@
+{
+  "meta": {
+    "project_name": "Friends Places – Social Recommendations MVP",
+    "phase": "setup",
+    "created": "2026-01-12",
+    "purpose": "Step-by-step setup plan for frontend application"
+  },
+  "project_overview": {
+    "type": "Mobile-first responsive web app (SPA)",
+    "framework": "Next.js with App Router OR Vite + React",
+    "language": "TypeScript",
+    "styling": "Tailwind CSS",
+    "state_management": "React Query (TanStack Query) + local component state",
+    "target": "Quick social recommendations app - save places in ~15 seconds"
+  },
+  "phase_1_initial_setup": {
+    "order": 1,
+    "title": "Project Initialization & Dependencies",
+    "steps": [
+      {
+        "id": "1.1",
+        "task": "Choose framework",
+        "action": "Decide between Next.js (App Router) or Vite + React",
+        "recommendation": "Next.js for better DX and built-in optimizations"
+      },
+      {
+        "id": "1.2",
+        "task": "Initialize project",
+        "action": "Run: npx create-next-app@latest or npm create vite@latest",
+        "flags": "--typescript --tailwind --app --src-dir"
+      },
+      {
+        "id": "1.3",
+        "task": "Install core dependencies",
+        "packages": [
+          "@tanstack/react-query",
+          "react-hook-form",
+          "clsx",
+          "tailwind-merge"
+        ]
+      },
+      {
+        "id": "1.4",
+        "task": "Install dev dependencies",
+        "packages": [
+          "@types/node",
+          "@types/react",
+          "@types/react-dom",
+          "vitest (optional for testing)"
+        ]
+      },
+      {
+        "id": "1.5",
+        "task": "Configure environment variables",
+        "action": "Create .env.local with NEXT_PUBLIC_API_BASE_URL"
+      }
+    ]
+  },
+  "phase_2_folder_structure": {
+    "order": 2,
+    "title": "Create Feature-First Folder Structure",
+    "structure": {
+      "app_or_src": {
+        "app/": "Routes (if Next.js App Router)",
+        "pages/": "Routes (if Vite + React Router)",
+        "components/": "Shared/global UI components",
+        "features/": {
+          "feed/": "Feed screen components, hooks, types",
+          "add/": "Quick Add flow components, hooks, types",
+          "profile/": "Profile screen components, hooks, types",
+          "experience-detail/": "Experience detail view"
+        },
+        "lib/": {
+          "api/": "HTTP client, API calls, endpoints",
+          "models/": "TypeScript domain types/interfaces",
+          "hooks/": "Shared custom hooks",
+          "utils/": "Helper functions"
+        },
+        "styles/": "Global styles if needed (Tailwind handles most)",
+        "public/": "Static assets"
+      }
+    },
+    "steps": [
+      {
+        "id": "2.1",
+        "task": "Create feature folders",
+        "folders": [
+          "src/features/feed",
+          "src/features/add",
+          "src/features/profile",
+          "src/features/experience-detail"
+        ]
+      },
+      {
+        "id": "2.2",
+        "task": "Create lib structure",
+        "folders": [
+          "src/lib/api",
+          "src/lib/models",
+          "src/lib/hooks",
+          "src/lib/utils"
+        ]
+      },
+      {
+        "id": "2.3",
+        "task": "Create shared components folder",
+        "folders": ["src/components"]
+      }
+    ]
+  },
+  "phase_3_design_tokens": {
+    "order": 3,
+    "title": "Configure Design System & Tailwind",
+    "steps": [
+      {
+        "id": "3.1",
+        "task": "Update tailwind.config.js with design tokens",
+        "tokens": {
+          "colors": {
+            "primary": "#111111",
+            "background": "#FFFFFF",
+            "surface": "#F6F7F9",
+            "chip-bg": "#EDEEF1",
+            "text-primary": "#111111",
+            "text-secondary": "#555555",
+            "divider": "#E4E6EA",
+            "accent": "#007AFF"
+          },
+          "fontFamily": {
+            "sans": ["Inter", "system-ui", "sans-serif"]
+          },
+          "fontSize": {
+            "title-l": "1.4rem",
+            "title-m": "1.2rem",
+            "body": "1rem",
+            "small": "0.85rem"
+          },
+          "borderRadius": {
+            "chip": "12px",
+            "surface": "14px"
+          },
+          "spacing": {
+            "xs": "4px",
+            "sm": "8px",
+            "md": "16px",
+            "lg": "24px"
+          }
+        }
+      },
+      {
+        "id": "3.2",
+        "task": "Add Inter font",
+        "action": "Import from Google Fonts or use next/font"
+      }
+    ]
+  },
+  "phase_4_domain_models": {
+    "order": 4,
+    "title": "Define TypeScript Domain Models",
+    "steps": [
+      {
+        "id": "4.1",
+        "task": "Create src/lib/models/index.ts",
+        "models_to_define": [
+          "User",
+          "Place",
+          "Experience",
+          "ExperienceFeedItem",
+          "Bookmark",
+          "QuickAddFormState",
+          "ExperienceCardProps"
+        ]
+      },
+      {
+        "id": "4.2",
+        "task": "Ensure types mirror backend contracts",
+        "note": "Reference front.tech.json domain_models_frontend section"
+      }
+    ],
+    "critical_types": {
+      "User": {
+        "id": "string",
+        "display_name": "string",
+        "username": "string",
+        "avatar_url": "string | null"
+      },
+      "Place": {
+        "id": "string",
+        "google_place_id": "string | null",
+        "name": "string",
+        "city": "string",
+        "country": "string",
+        "address": "string | null",
+        "lat": "number | null",
+        "lng": "number | null",
+        "instagram_handle": "string | null",
+        "google_maps_url": "string | null",
+        "custom": "boolean"
+      },
+      "ExperienceFeedItem": "Feed item with user, place, price_range, categories, time_ago"
+    }
+  },
+  "phase_5_api_layer": {
+    "order": 5,
+    "title": "Setup API Client & React Query",
+    "steps": [
+      {
+        "id": "5.1",
+        "task": "Create src/lib/api/client.ts",
+        "action": "Setup fetch wrapper with base URL from env"
+      },
+      {
+        "id": "5.2",
+        "task": "Create src/lib/api/endpoints.ts",
+        "endpoints": [
+          "GET /feed - getFeed()",
+          "POST /experiences - createExperience()",
+          "GET /experiences/:id - getExperience()",
+          "GET /profile/:userId - getUserProfile()",
+          "POST /bookmarks - createBookmark()",
+          "DELETE /bookmarks/:id - deleteBookmark()",
+          "GET /places/search - searchPlaces()",
+          "POST /places/ip-location - getIpLocation()"
+        ]
+      },
+      {
+        "id": "5.3",
+        "task": "Setup React Query Provider",
+        "action": "Create QueryClient in app layout/root with proper config"
+      },
+      {
+        "id": "5.4",
+        "task": "Create custom hooks for data fetching",
+        "hooks": [
+          "useFeed() in features/feed",
+          "useExperience(id) in features/experience-detail",
+          "useProfile(userId) in features/profile",
+          "useCreateExperience() mutation",
+          "useToggleBookmark() mutation"
+        ]
+      }
+    ]
+  },
+  "phase_6_global_components": {
+    "order": 6,
+    "title": "Build Global/Shared Components",
+    "components": [
+      {
+        "name": "BottomNav",
+        "file": "src/components/BottomNav.tsx",
+        "props": "tabs: feed, add, profile, explore_placeholder",
+        "accessibility": "aria-labels, role='navigation', 44px touch targets"
+      },
+      {
+        "name": "TopBar",
+        "file": "src/components/TopBar.tsx",
+        "props": "title, optional back button"
+      },
+      {
+        "name": "Avatar",
+        "file": "src/components/Avatar.tsx",
+        "props": "src, alt, size"
+      },
+      {
+        "name": "Chip",
+        "file": "src/components/Chip.tsx",
+        "props": "label, variant (category, price)",
+        "styling": "bg-chip-bg, rounded-chip (12px)"
+      },
+      {
+        "name": "Button",
+        "file": "src/components/Button.tsx",
+        "props": "variant, size, disabled, loading"
+      },
+      {
+        "name": "Input",
+        "file": "src/components/Input.tsx",
+        "props": "type, placeholder, value, onChange, error"
+      },
+      {
+        "name": "TextArea",
+        "file": "src/components/TextArea.tsx"
+      },
+      {
+        "name": "IconButton",
+        "file": "src/components/IconButton.tsx"
+      }
+    ],
+    "steps": [
+      {
+        "id": "6.1",
+        "task": "Build BottomNav component first",
+        "priority": "CRITICAL - core navigation"
+      },
+      {
+        "id": "6.2",
+        "task": "Build basic UI primitives",
+        "components": ["Avatar", "Chip", "Button", "Input"]
+      },
+      {
+        "id": "6.3",
+        "task": "Ensure accessibility",
+        "requirements": [
+          "Visible focus states",
+          "Min 44px touch targets",
+          "AA color contrast",
+          "aria-labels where needed"
+        ]
+      }
+    ]
+  },
+  "phase_7_core_screens": {
+    "order": 7,
+    "title": "Build Core Screens in Order",
+    "build_order": [
+      {
+        "priority": 1,
+        "screen": "Feed",
+        "path": "features/feed",
+        "components": [
+          "ExperienceCard",
+          "ExperienceList",
+          "FeedEmptyState"
+        ],
+        "data": "useFeed() hook with React Query",
+        "requirements": [
+          "Show user avatar, name, time_ago",
+          "Show place name, city, price_range, categories",
+          "Optional thumbnail image",
+          "Tap to navigate to experience detail",
+          "Empty state: 'Follow friends to discover places they love.'"
+        ]
+      },
+      {
+        "priority": 2,
+        "screen": "Experience Detail",
+        "path": "features/experience-detail",
+        "components": [
+          "ExperienceDetailLayout",
+          "ImageGallery",
+          "MapLinkButton",
+          "BookmarkButton"
+        ],
+        "data": "useExperience(id) hook",
+        "requirements": [
+          "Display all experience fields",
+          "Auto-generated Google Maps link",
+          "Bookmark toggle",
+          "Image gallery if images exist"
+        ]
+      },
+      {
+        "priority": 3,
+        "screen": "Quick Add Flow",
+        "path": "features/add",
+        "components": [
+          "QuickAddLayout",
+          "PlaceSearchInput",
+          "PlaceSuggestionList",
+          "CustomPlaceForm",
+          "PriceRangeSelector",
+          "CategorySelector",
+          "AdditionalFieldsPanel",
+          "SaveExperienceButton"
+        ],
+        "flow": [
+          "Step 1: Get location context (GPS → IP fallback → Manual city)",
+          "Step 2: Search place via API or enter custom",
+          "Step 3: Required fields (price_range, categories)",
+          "Step 4: Optional enrichment (instagram, description, images, phone, visit_date)",
+          "Step 5: Save and broadcast"
+        ],
+        "target": "Complete flow in ~15 seconds",
+        "requirements": [
+          "Request GPS permission on-demand with explanatory copy",
+          "Handle GPS denied → IP fallback → Manual city selector",
+          "Places API failure → Custom place entry",
+          "Never allow manual google_maps_url entry",
+          "Form validation with React Hook Form"
+        ]
+      },
+      {
+        "priority": 4,
+        "screen": "Profile",
+        "path": "features/profile",
+        "components": [
+          "UserHeader",
+          "ProfileTabs",
+          "ProfileExperienceList",
+          "ProfileBookmarksPlaceholder"
+        ],
+        "data": "useProfile(userId) hook",
+        "requirements": [
+          "Display user info with edit entrypoint",
+          "Tab 1: User's experiences list",
+          "Tab 2: Bookmarks (placeholder for P1)",
+          "Empty state: 'Save places to build your profile.'"
+        ]
+      }
+    ]
+  },
+  "phase_8_routing": {
+    "order": 8,
+    "title": "Setup Routing & Navigation",
+    "steps": [
+      {
+        "id": "8.1",
+        "task": "Define routes",
+        "routes": {
+          "/": "Feed (default)",
+          "/add": "Quick Add Flow",
+          "/profile": "Current user profile",
+          "/profile/:userId": "Other user profile",
+          "/experience/:id": "Experience detail",
+          "/explore": "Placeholder"
+        }
+      },
+      {
+        "id": "8.2",
+        "task": "Connect BottomNav to routing",
+        "action": "Use Next.js Link or React Router NavLink"
+      }
+    ]
+  },
+  "phase_9_location_handling": {
+    "order": 9,
+    "title": "Implement Location Context Logic",
+    "steps": [
+      {
+        "id": "9.1",
+        "task": "Create useLocationContext hook",
+        "flow": [
+          "1. Try Geolocation API (navigator.geolocation)",
+          "2. If denied/failed → Call backend IP geolocation endpoint",
+          "3. If both fail → Show CitySelector component"
+        ]
+      },
+      {
+        "id": "9.2",
+        "task": "Build CitySelector component",
+        "action": "Simple dropdown or searchable city list"
+      },
+      {
+        "id": "9.3",
+        "task": "Request GPS permission with explanatory copy",
+        "copy": "We use your location to help you find nearby places faster."
+      }
+    ]
+  },
+  "phase_10_error_loading_states": {
+    "order": 10,
+    "title": "Implement Error & Loading States",
+    "steps": [
+      {
+        "id": "10.1",
+        "task": "Create LoadingSpinner component"
+      },
+      {
+        "id": "10.2",
+        "task": "Create ErrorMessage component"
+      },
+      {
+        "id": "10.3",
+        "task": "Add loading/error states to all data-fetching components",
+        "components": [
+          "Feed → Loading skeleton or spinner",
+          "Experience Detail → Loading state",
+          "Profile → Loading state"
+        ]
+      },
+      {
+        "id": "10.4",
+        "task": "Handle empty states explicitly",
+        "states": [
+          "Feed empty → 'Follow friends to discover places they love.'",
+          "Profile empty → 'Save places to build your profile.'",
+          "No search results → 'No places found. Try a different search.'"
+        ]
+      }
+    ]
+  },
+  "phase_11_responsive_layout": {
+    "order": 11,
+    "title": "Ensure Responsive Design",
+    "steps": [
+      {
+        "id": "11.1",
+        "task": "Test on mobile breakpoints",
+        "targets": ["320-414px (mobile)", "~768px (tablet)", "1024+ (desktop)"]
+      },
+      {
+        "id": "11.2",
+        "task": "Add max-width container on desktop",
+        "value": "960-1200px to avoid overly wide lines"
+      },
+      {
+        "id": "11.3",
+        "task": "Test BottomNav on different screen sizes"
+      }
+    ]
+  },
+  "phase_12_testing_qa": {
+    "order": 12,
+    "title": "Testing & Quality Assurance (Optional for MVP)",
+    "steps": [
+      {
+        "id": "12.1",
+        "task": "Setup Vitest + React Testing Library",
+        "optional": true
+      },
+      {
+        "id": "12.2",
+        "task": "Write basic component tests",
+        "components": ["ExperienceCard", "BottomNav", "Button", "Chip"]
+      },
+      {
+        "id": "12.3",
+        "task": "Test Quick Add flow end-to-end",
+        "manual": true
+      }
+    ]
+  },
+  "immediate_next_steps": {
+    "step_1": "Choose framework: Next.js (recommended) or Vite + React",
+    "step_2": "Initialize project with TypeScript and Tailwind CSS",
+    "step_3": "Install dependencies: @tanstack/react-query, react-hook-form",
+    "step_4": "Create folder structure (features/, lib/, components/)",
+    "step_5": "Configure Tailwind with design tokens",
+    "step_6": "Define TypeScript models in lib/models/",
+    "step_7": "Setup API client and React Query provider",
+    "step_8": "Build BottomNav component",
+    "step_9": "Build Feed screen with ExperienceCard",
+    "step_10": "Continue with other core screens"
+  },
+  "critical_principles": {
+    "performance": [
+      "Use React Query for server state caching",
+      "Memoize heavy lists/cards where needed",
+      "Use React Suspense or skeleton loading states"
+    ],
+    "architecture": [
+      "Feature-first folders, not component-type folders",
+      "Keep HTTP calls in lib/api, components use hooks",
+      "Avoid unnecessary global state",
+      "Mirror backend types for consistency"
+    ],
+    "ux": [
+      "Quick Add must be ~15 seconds",
+      "Handle GPS/IP/manual location gracefully",
+      "Never allow manual google_maps_url",
+      "Explicit empty/error/loading states"
+    ],
+    "accessibility": [
+      "44px minimum touch targets",
+      "Visible focus states",
+      "AA color contrast",
+      "aria-labels on navigation"
+    ]
+  }
+}

@@ -1,0 +1,221 @@
+{
+  "meta": {
+    "project_name": "Friends Places – Social Recommendations MVP",
+    "project_type": "frontend",
+    "phase": "experience",
+    "version": "0.1.0"
+  },
+  "ux_reference": {
+    "language": "en-US",
+    "mobile_first": true,
+    "platform": "Responsive Web App (SPA), PWA-considerate"
+  },
+  "navigation_model": {
+    "tabs": [
+      "feed",
+      "add",
+      "profile",
+      "explore_placeholder"
+    ],
+    "tab_labels": {
+      "feed": "Feed",
+      "add": "Add",
+      "profile": "Profile",
+      "explore_placeholder": "Explore"
+    },
+    "nav_pattern": "Bottom navigation on mobile; left nav optional on desktop",
+    "primary_actions": {
+      "add_experience": "Floating Action or Central Tab",
+      "open_place": "Tap on Experience Card"
+    }
+  },
+  "core_screens": [
+    "Feed",
+    "Quick Add Flow",
+    "Experience Detail",
+    "Profile",
+    "Bookmarks/Lists Entry (P1 placeholder)",
+    "Explore/Search Entry (P1 placeholder)"
+  ],
+  "screen_specs": {
+    "feed": {
+      "purpose": "Show experiences from followed users in reverse chronological order.",
+      "components": [
+        "header",
+        "experience_card_list",
+        "empty_state"
+      ],
+      "experience_card": {
+        "elements": [
+          "user_avatar",
+          "user_name",
+          "time_ago",
+          "place_name",
+          "price_range",
+          "categories",
+          "city_short",
+          "instagram_handle_optional",
+          "thumbnail_image_optional"
+        ],
+        "constraints": {
+          "image_optional": true,
+          "one_line_place_name": true,
+          "category_chips_scrollable": true
+        }
+      },
+      "empty_state_copy": "Follow friends to discover places they love."
+    },
+    "quick_add_flow": {
+      "purpose": "Fastest possible save → under ~15 seconds target.",
+      "steps": [
+        "Location Context & Search",
+        "Select Place & Auto-fill",
+        "Optional Enrich",
+        "Save & Broadcast"
+      ],
+      "required_fields": [
+        "place",
+        "price_range",
+        "categories"
+      ],
+      "optional_fields": [
+        "instagram_handle",
+        "brief_description",
+        "phone_number",
+        "images",
+        "visit_date"
+      ],
+      "location_behaviors": {
+        "gps_allowed": "Use browser GPS for nearest search context.",
+        "gps_denied": "Fallback to IP-based city via backend, if available.",
+        "both_fail": "Ask user to select city manually via CitySelector."
+      },
+      "places_api_failure": {
+        "fallback_mode": "Custom Place Entry",
+        "fields": [
+          "place_name",
+          "city",
+          "optional_address"
+        ],
+        "restrictions": [
+          "manual_google_maps_url_not_allowed"
+        ]
+      }
+    },
+    "experience_detail": {
+      "purpose": "View an experience with more rich info.",
+      "components": [
+        "place_name",
+        "user_info",
+        "price_range",
+        "categories",
+        "instagram_handle_optional",
+        "brief_description_optional",
+        "images_gallery_optional",
+        "city_country",
+        "google_maps_link_auto",
+        "bookmark_button"
+      ]
+    },
+    "profile": {
+      "purpose": "View user’s own experiences and bookmarks.",
+      "components": [
+        "header_user",
+        "edit_profile_entrypoint",
+        "tab_experiences",
+        "tab_bookmarks_lists"
+      ],
+      "empty_state_copy": "Save places to build your profile."
+    },
+    "bookmarks_lists": {
+      "status": "P1 placeholder",
+      "note": "Basic entry exists to avoid redesign later."
+    },
+    "explore_search": {
+      "status": "P1 placeholder",
+      "note": "Provides search beyond friend graph for future versions."
+    }
+  },
+  "components_inventory": {
+    "global": [
+      "BottomNav",
+      "TopBar",
+      "Avatar",
+      "Chip",
+      "CitySelector",
+      "ImageUploader",
+      "PriceRangeSelector",
+      "CategorySelector"
+    ],
+    "feed": [
+      "ExperienceCard",
+      "ExperienceList",
+      "FeedEmptyState"
+    ],
+    "quick_add": [
+      "PlaceSearchInput",
+      "PlaceSuggestionList",
+      "CustomPlaceForm",
+      "AdditionalFieldsPanel",
+      "SaveExperienceButton"
+    ],
+    "profile": [
+      "UserHeader",
+      "ProfileTabs",
+      "BookmarkTabPlaceholder"
+    ]
+  },
+  "design_tokens": {
+    "color": {
+      "primary": "#111111",
+      "background": "#FFFFFF",
+      "surface": "#F6F7F9",
+      "chip_bg": "#EDEEF1",
+      "text_primary": "#111111",
+      "text_secondary": "#555555",
+      "divider": "#E4E6EA",
+      "accent": "#007AFF"
+    },
+    "typography": {
+      "font_family": "Inter, system-ui, sans-serif",
+      "scale": {
+        "title_l": "1.4rem",
+        "title_m": "1.2rem",
+        "body": "1rem",
+        "small": "0.85rem"
+      }
+    },
+    "radius": {
+      "chip": "12px",
+      "surface": "14px"
+    },
+    "spacing": {
+      "xs": "4px",
+      "sm": "8px",
+      "md": "16px",
+      "lg": "24px"
+    }
+  },
+  "interaction_rules": {
+    "image_upload": "0–N images via native upload; optional.",
+    "maps_link": "Auto-only, never manual.",
+    "gps_permission": "Request on-demand when user enters Quick Add; show short explanatory copy."
+  },
+  "copy_system": {
+    "tone": [
+      "Lightweight",
+      "Social",
+      "Trust-based"
+    ],
+    "examples": {
+      "add_place_cta": "Save a place",
+      "feed_empty": "Follow friends to discover places they love.",
+      "optional_hint": "Optional"
+    }
+  },
+  "a11y_logic": {
+    "focus_order": "Top→Bottom",
+    "min_touch_target": "44px",
+    "color_contrast": "AA"
+  }
+}
