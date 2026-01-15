@@ -6,7 +6,14 @@ import { getToken } from 'next-auth/jwt';
 const intlMiddleware = createMiddleware(routing);
 
 // Public routes that don't require authentication
-const publicRoutes = ['/auth/signin', '/auth/signup', '/auth/error'];
+const publicRoutes = [
+  '/',
+  '/auth/signin',
+  '/auth/signup',
+  '/auth/error',
+  '/explore',
+  '/experience',
+];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -24,8 +31,13 @@ export async function middleware(request: NextRequest) {
   // Extract locale from pathname (e.g., /pt-BR/auth/signin -> /auth/signin)
   const pathnameWithoutLocale = pathname.replace(/^\/[a-z]{2}-[A-Z]{2}/, '');
 
-  // Check if this is a public auth route (before checking authentication)
-  const isPublicRoute = publicRoutes.some((route) => pathnameWithoutLocale.startsWith(route));
+  // Check if this is a public route (before checking authentication)
+  const isPublicRoute = publicRoutes.some((route) => {
+    if (route === '/') {
+      return pathnameWithoutLocale === '' || pathnameWithoutLocale === '/';
+    }
+    return pathnameWithoutLocale.startsWith(route);
+  });
 
   if (isPublicRoute) {
     // Public route - allow access and let intl middleware handle locale
