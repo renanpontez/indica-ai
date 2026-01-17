@@ -49,6 +49,25 @@ const config: Config = {
         md: '16px',
         lg: '24px',
       },
+      animation: {
+        'float': 'float 4s ease-in-out infinite',
+        'float-slow': 'float-slow 5s ease-in-out infinite',
+        'float-delayed': 'float-delayed 4.5s ease-in-out infinite 0.5s',
+      },
+      keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        'float-slow': {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-8px)' },
+        },
+        'float-delayed': {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-12px)' },
+        },
+      },
     },
   },
   plugins: [],

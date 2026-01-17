@@ -54,6 +54,7 @@
     },
     "addPlace": "New recommendation",
     "signUp": "Sign up",
+    "signOut": "Sign out",
     "becomeHost": "Become a host",
     "feed": "Feed",
     "explore": "Explore",
@@ -111,6 +112,18 @@
     "empty": {
       "title": "No recommendations yet",
       "subtitle": "Be the first to add a place you love!"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Welcome back",
+      "subtitle": "Sign in to share your experiences with friends",
+      "noAccount": "Don't have an account?",
+      "createAccount": "Create account"
+    },
+    "signUp": {
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in"
     }
   }
 }

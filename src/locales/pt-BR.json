@@ -54,6 +54,7 @@
     },
     "addPlace": "Nova indicação",
     "signUp": "Criar conta grátis",
+    "signOut": "Sair",
     "becomeHost": "Anunciar espaço",
     "feed": "Feed",
     "explore": "Explorar",
@@ -111,6 +112,18 @@
     "empty": {
       "title": "Nenhuma recomendação ainda",
       "subtitle": "Seja o primeiro a adicionar um lugar que você ama!"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Bem-vindo de volta",
+      "subtitle": "Entre para compartilhar suas experiências com seus amigos",
+      "noAccount": "Não tem uma conta?",
+      "createAccount": "Criar conta"
+    },
+    "signUp": {
+      "hasAccount": "Já possui uma conta?",
+      "signIn": "Entrar"
     }
   }
 }

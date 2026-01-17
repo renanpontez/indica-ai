@@ -1,19 +1,41 @@
 'use client';
 
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils/cn';
 import { useTranslations, useLocale } from 'next-intl';
 import { useAuth } from '@/lib/hooks/useAuth';
+import { createClient } from '@/lib/supabase/client';
 import Image from 'next/image';
 import { Avatar } from './Avatar';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 export function DesktopNav() {
   const pathname = usePathname();
   const router = useRouter();
   const t = useTranslations();
   const locale = useLocale();
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleSignOut = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push(`/${locale}`);
+  };
 
   const isActive = (href: string) => {
     if (href === '/app') {
@@ -64,7 +86,7 @@ export function DesktopNav() {
 
           {/* Right Side Actions */}
           <div className="flex items-center gap-3 flex-shrink-0">
-            {isAuthenticated && user ? (
+            {isLoading || isAuthenticated ? (
               <>
                 <Link
                   href={`/${locale}/app/add`}
@@ -72,12 +94,31 @@ export function DesktopNav() {
                 >
                   {t('nav.addPlace')}
                 </Link>
-                <button
-                  onClick={() => router.push(`/${locale}/app/profile/me`)}
-                  className="flex items-center"
-                >
-                  <Avatar src={user.avatar_url} alt={user.display_name} size="sm" />
-                </button>
+                <div className="relative" ref={dropdownRef}>
+                  <button
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    className="flex items-center"
+                  >
+                    <Avatar src={user?.avatar_url ?? null} alt={user?.display_name ?? ''} size="sm" />
+                  </button>
+                  {isDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-divider py-1 z-50">
+                      <Link
+                        href={`/${locale}/app/profile/me`}
+                        className="block px-4 py-2 text-sm text-dark-grey hover:bg-surface transition-colors"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        {t('nav.profile')}
+                      </Link>
+                      <button
+                        onClick={handleSignOut}
+                        className="w-full text-left px-4 py-2 text-sm text-dark-grey hover:bg-surface transition-colors"
+                      >
+                        {t('nav.signOut')}
+                      </button>
+                    </div>
+                  )}
+                </div>
               </>
             ) : (
               <Link
@@ -87,6 +128,7 @@ export function DesktopNav() {
                 {t('nav.signUp')}
               </Link>
             )}
+            <LanguageSwitcher />
           </div>
         </div>
 

@@ -19,8 +19,11 @@ export function formatPriceRange(range: string): string {
 }
 
 export function getInitials(name: string): string {
+  if (!name || !name.trim()) return '';
   return name
+    .trim()
     .split(' ')
+    .filter((n) => n.length > 0)
     .map((n) => n[0])
     .join('')
     .toUpperCase()

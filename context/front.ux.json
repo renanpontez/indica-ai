@@ -215,8 +215,8 @@
     },
     "profile": {
       "purpose": "View user's own experiences and bookmarks.",
-      "path_own": "/[locale]/profile",
-      "path_other": "/[locale]/profile/[userId]",
+      "path_own": "/[locale]/app/profile",
+      "path_other": "/[locale]/app/profile/[userId]",
       "access_own": "Protected",
       "access_other": "Public",
       "components": [

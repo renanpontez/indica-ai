@@ -1,14 +1,14 @@
-'use client';
-
-import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { useLocale } from 'next-intl';
 import { Button } from '@/components/Button';
 
-export default function AuthErrorPage() {
-  const searchParams = useSearchParams();
-  const locale = useLocale();
-  const error = searchParams.get('error');
+interface AuthErrorPageProps {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ error?: string }>;
+}
+
+export default async function AuthErrorPage({ params, searchParams }: AuthErrorPageProps) {
+  const { locale } = await params;
+  const { error } = await searchParams;
 
   const errorMessages: Record<string, string> = {
     OAuthCallbackError: 'There was a problem signing in with your account. Please try again.',
