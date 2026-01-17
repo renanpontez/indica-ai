@@ -43,8 +43,8 @@
       "@supabase/ssr": "Server-side rendering utilities for Next.js"
     },
     "environment_variables": {
-      "NEXT_PUBLIC_SUPABASE_URL": "Supabase project URL",
-      "NEXT_PUBLIC_SUPABASE_ANON_KEY": "Supabase anonymous/public key",
+      "SUPABASE_URL": "Supabase project URL",
+      "SUPABASE_KEY": "Supabase anonymous/public key",
       "SUPABASE_SERVICE_ROLE_KEY": "Server-side only, for admin operations"
     },
     "client_utilities": {
@@ -82,8 +82,8 @@
     ]
   },
   "integration": {
-    "supabase_url": "Configured via env var NEXT_PUBLIC_SUPABASE_URL",
-    "supabase_anon_key": "Configured via env var NEXT_PUBLIC_SUPABASE_ANON_KEY",
+    "supabase_url": "Configured via env var SUPABASE_URL",
+    "supabase_anon_key": "Configured via env var SUPABASE_KEY",
     "contracts": [
       "Use TypeScript types that match Supabase database schema exactly.",
       "Handle loading, error, and empty states explicitly.",
