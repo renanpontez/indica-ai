@@ -20,7 +20,7 @@ export function MoreFromUser({ userName, experiences }: MoreFromUserProps) {
         {experiences.map((exp) => (
           <Link
             key={exp.id}
-            href={`/experience/${exp.experience_id}`}
+            href={`/app/experience/${exp.experience_id}`}
             className="flex items-center gap-4 p-3 rounded-xl hover:bg-surface transition-colors group"
           >
             {/* Thumbnail */}

@@ -90,7 +90,7 @@ export function ExperienceList({ experiences }: ExperienceListProps) {
             <ExperienceCard
               key={experience.id}
               experience={experience}
-              onClick={() => router.push(`/${locale}/experience/${experience.experience_id}`)}
+              onClick={() => router.push(`/${locale}/app/experience/${experience.experience_id}`)}
               onBookmarkToggle={() => {
                 console.log('Toggle bookmark for', experience.id);
               }}
@@ -112,7 +112,7 @@ export function ExperienceList({ experiences }: ExperienceListProps) {
               <ExperienceCard
                 key={experience.id}
                 experience={experience}
-                onClick={() => router.push(`/${locale}/experience/${experience.experience_id}`)}
+                onClick={() => router.push(`/${locale}/app/experience/${experience.experience_id}`)}
                 onBookmarkToggle={() => {
                   console.log('Toggle bookmark for', experience.id);
                 }}

@@ -194,7 +194,7 @@
     },
     "experience_detail": {
       "purpose": "View an experience with more rich info.",
-      "path": "/[locale]/experience/[id]",
+      "path": "/[locale]/app/experience/[id]",
       "access": "Public",
       "components": [
         "place_name",

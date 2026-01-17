@@ -6,14 +6,13 @@ import Link from 'next/link';
 import { useTranslations, useLocale } from 'next-intl';
 
 import { useAuth } from '@/lib/hooks/useAuth';
-import SignInForm from './SignInForm';
+import SignInForm from './SignUpForm';
 
 export default function SignUpPage() {
   const t = useTranslations('landing');
   const router = useRouter();
   const locale = useLocale();
   const { isAuthenticated, isLoading: authLoading } = useAuth();
-
 
   // Redirect authenticated users to /app
   useEffect(() => {
