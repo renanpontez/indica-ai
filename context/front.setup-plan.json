@@ -61,8 +61,8 @@
         "task": "Configure environment variables",
         "action": "Create .env.local with Supabase credentials",
         "variables": {
-          "SUPABASE_URL": "Your Supabase project URL",
-          "SUPABASE_KEY": "Your Supabase anon/public key",
+          "NEXT_PUBLIC_SUPABASE_URL": "Your Supabase project URL",
+          "NEXT_PUBLIC_SUPABASE_ANON_KEY": "Your Supabase anon/public key",
           "SUPABASE_SERVICE_ROLE_KEY": "Server-side only, for admin operations"
         }
       }

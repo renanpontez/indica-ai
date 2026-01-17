@@ -89,8 +89,8 @@
           "integration": {
             "path": "frontend → tech → integration",
             "description": "Supabase and API contracts",
-            "supabase_url": "SUPABASE_URL env var",
-            "supabase_anon_key": "SUPABASE_KEY env var",
+            "NEXT_PUBLIC_SUPABASE_URL": "NEXT_PUBLIC_SUPABASE_URL env var",
+            "NEXT_PUBLIC_SUPABASE_ANON_KEY": "NEXT_PUBLIC_SUPABASE_ANON_KEY env var",
             "location_behaviors": {
               "path": "frontend → tech → integration → location_behaviors",
               "gps": "Geolocation API with permission handling",
