@@ -1,9 +1,10 @@
 {
   "meta": {
-    "name": "Friends Places - Context Navigation Index",
-    "version": "0.1.0",
+    "name": "indica aí - Context Navigation Index",
+    "version": "0.2.0",
     "purpose": "Master index for navigating all context documentation files",
-    "last_updated": "2026-01-12"
+    "last_updated": "2026-01-17",
+    "architecture": "Next.js + Supabase (Auth, Database, Storage)"
   },
   "navigation": {
     "description": "This file serves as the entry point for all project context. Use breadcrumbs to navigate to specific sections.",
@@ -36,12 +37,13 @@
       "tech": {
         "file": "context/front.tech.json",
         "breadcrumb": "frontend → tech",
-        "purpose": "Technical architecture, stack, domain models, and integration contracts",
+        "purpose": "Technical architecture, stack, domain models, Supabase integration, and API contracts",
         "when_to_use": [
           "Choosing or configuring tech stack",
           "Defining TypeScript types/interfaces",
-          "Setting up API integration",
+          "Setting up Supabase integration (Auth, Database, Storage)",
           "Understanding folder structure",
+          "Configuring authentication flows",
           "Configuring location behaviors (GPS/IP/manual)"
         ],
         "key_sections": {
@@ -49,38 +51,50 @@
             "path": "frontend → tech → stack",
             "description": "Framework, language, libraries, tooling choices",
             "critical_fields": [
-              "framework: Next.js (App Router) OR Vite + React",
+              "framework: Next.js (App Router)",
               "language: TypeScript",
               "ui_library: React",
               "styling: Tailwind CSS",
               "state_management: React Query + local state",
-              "forms: React Hook Form"
+              "forms: React Hook Form",
+              "backend: Supabase (Auth, Database, Storage)"
             ]
+          },
+          "supabase": {
+            "path": "frontend → tech → supabase",
+            "description": "Supabase configuration and integration",
+            "auth": "Google OAuth, Email/Password via Supabase Auth",
+            "database": "PostgreSQL with Row Level Security (RLS)",
+            "storage": "Image uploads for experiences",
+            "client": "@supabase/supabase-js + @supabase/ssr"
           },
           "architecture": {
             "path": "frontend → tech → architecture",
             "description": "Folder structure and architectural principles",
             "structure": {
-              "feature_folders": "features/feed/, features/add/, features/profile/",
-              "api_layer": "lib/api/",
+              "feature_folders": "features/feed/, features/add/, features/profile/, features/auth/",
+              "api_layer": "lib/api/ (thin layer to Supabase)",
+              "supabase": "lib/supabase/ (client, server, middleware utilities)",
               "models": "lib/models/",
               "hooks": "lib/hooks/"
             },
             "principles": [
               "Feature-first folders",
-              "All HTTP calls in lib/api",
+              "Supabase client for all data operations",
               "Domain types from lib/models",
-              "React Query for data fetching"
+              "React Query for data fetching/caching",
+              "RLS policies for data security"
             ]
           },
           "integration": {
             "path": "frontend → tech → integration",
-            "description": "Backend API contracts and behaviors",
-            "api_base_url": "NEXT_PUBLIC_API_BASE_URL env var",
+            "description": "Supabase and API contracts",
+            "supabase_url": "NEXT_PUBLIC_SUPABASE_URL env var",
+            "supabase_anon_key": "NEXT_PUBLIC_SUPABASE_ANON_KEY env var",
             "location_behaviors": {
               "path": "frontend → tech → integration → location_behaviors",
               "gps": "Geolocation API with permission handling",
-              "ip_fallback": "Backend IP geolocation endpoint",
+              "ip_fallback": "IP geolocation service",
               "manual_city": "CitySelector component fallback"
             }
           },
@@ -89,6 +103,7 @@
             "description": "All TypeScript types/interfaces (CRITICAL for implementation)",
             "types": {
               "User": "frontend → tech → domain_models → User",
+              "AuthUser": "frontend → tech → domain_models → AuthUser (Supabase Auth)",
               "Place": "frontend → tech → domain_models → Place",
               "Experience": "frontend → tech → domain_models → Experience",
               "ExperienceFeedItem": "frontend → tech → domain_models → ExperienceFeedItem",
@@ -98,12 +113,13 @@
               "ExperienceCardProps": "Props for experience cards",
               "QuickAddFormState": "State management for Quick Add flow"
             },
-            "note": "These types MUST match backend contracts exactly"
+            "note": "These types MUST match Supabase database schema"
           },
           "ui_components": {
             "path": "frontend → tech → ui_components",
             "description": "Component inventory organized by feature",
             "global": [
+              "DesktopNav",
               "BottomNav",
               "TopBar",
               "Avatar",
@@ -114,6 +130,7 @@
               "IconButton"
             ],
             "features": {
+              "auth": ["SignInForm", "SignUpForm", "AuthGuard"],
               "feed": ["ExperienceCard", "ExperienceList", "FeedEmptyState"],
               "quick_add": [
                 "QuickAddLayout",
@@ -170,12 +187,14 @@
             "path": "frontend → ux → navigation_model",
             "description": "Bottom nav tabs and primary actions",
             "tabs": ["feed", "add", "profile", "explore_placeholder"],
-            "pattern": "Bottom navigation on mobile, optional left nav on desktop"
+            "pattern": "Bottom navigation on mobile, DesktopNav with search bar on desktop"
           },
           "core_screens": {
             "path": "frontend → ux → core_screens",
             "description": "List of all screens in app",
             "screens": [
+              "Sign In",
+              "Sign Up",
               "Feed",
               "Quick Add Flow",
               "Experience Detail",
@@ -187,6 +206,11 @@
           "screen_specs": {
             "path": "frontend → ux → screen_specs",
             "description": "Detailed specifications for each screen",
+            "auth": {
+              "path": "frontend → ux → screen_specs → auth",
+              "screens": ["sign_in", "sign_up"],
+              "providers": ["Google OAuth", "Email/Password"]
+            },
             "feed": {
               "path": "frontend → ux → screen_specs → feed",
               "purpose": "Show experiences from followed users",
@@ -320,7 +344,10 @@
             "examples": {
               "add_place_cta": "Save a place",
               "feed_empty": "Follow friends to discover places they love.",
-              "optional_hint": "Optional"
+              "optional_hint": "Optional",
+              "sign_in_cta": "Sign in",
+              "sign_up_cta": "Create account",
+              "sign_out": "Sign out"
             }
           },
           "a11y_logic": {
@@ -339,9 +366,10 @@
       "setup_plan": {
         "file": "context/front.setup-plan.json",
         "breadcrumb": "frontend → setup-plan",
-        "purpose": "Step-by-step implementation guide with all phases",
+        "purpose": "Step-by-step implementation guide with all phases including Supabase setup",
         "when_to_use": [
           "Starting project setup",
+          "Setting up Supabase project and database",
           "Planning implementation phases",
           "Understanding build order",
           "Reference for immediate next steps"
@@ -349,21 +377,23 @@
         "key_sections": {
           "project_overview": "High-level project summary",
           "phases": {
-            "phase_1_initial_setup": "Project init, dependencies, env vars",
+            "phase_1_initial_setup": "Project init, dependencies, env vars (includes Supabase)",
             "phase_2_folder_structure": "Create feature-first architecture",
             "phase_3_design_tokens": "Configure Tailwind with design tokens",
             "phase_4_domain_models": "Define TypeScript types",
-            "phase_5_api_layer": "API client, endpoints, React Query",
-            "phase_6_global_components": "Build shared UI components",
-            "phase_7_core_screens": "Build features in priority order",
-            "phase_8_routing": "Setup Next.js routing",
-            "phase_9_location_handling": "GPS → IP → Manual fallback",
-            "phase_10_error_loading_states": "Loading, error, empty states",
-            "phase_11_responsive_layout": "Mobile-first responsive design",
-            "phase_12_testing_qa": "Optional testing setup"
+            "phase_5_supabase_setup": "Create Supabase project, database schema, RLS policies",
+            "phase_6_auth": "Configure Supabase Auth (Google OAuth, Email/Password)",
+            "phase_7_api_layer": "Supabase client, React Query hooks",
+            "phase_8_global_components": "Build shared UI components",
+            "phase_9_core_screens": "Build features in priority order",
+            "phase_10_routing": "Setup Next.js routing with auth protection",
+            "phase_11_location_handling": "GPS → IP → Manual fallback",
+            "phase_12_error_loading_states": "Loading, error, empty states",
+            "phase_13_responsive_layout": "Mobile-first responsive design",
+            "phase_14_testing_qa": "Optional testing setup"
           },
           "immediate_next_steps": "Quick start checklist",
-          "critical_principles": "Must-follow architecture, UX, a11y rules"
+          "critical_principles": "Must-follow architecture, UX, a11y, security rules"
         },
         "relates_to": [
           "front.tech.json → References tech stack and models",
@@ -387,10 +417,21 @@
         "Check frontend → tech → architecture for folder placement",
         "Check frontend → setup-plan → core_screens for build order"
       ],
+      "supabase_integration": [
+        "Check frontend → tech → supabase for configuration",
+        "Check frontend → setup-plan → phase_5_supabase_setup for database schema",
+        "Check frontend → tech → domain_models for TypeScript types",
+        "Ensure RLS policies match access patterns"
+      ],
+      "authentication": [
+        "Check frontend → tech → supabase → auth for providers",
+        "Check frontend → setup-plan → phase_6_auth for implementation",
+        "Check frontend → ux → screen_specs → auth for UI specs"
+      ],
       "api_integration": [
-        "Check frontend → tech → integration → api_base_url",
+        "Check frontend → tech → integration for Supabase config",
         "Check frontend → tech → domain_models for types",
-        "Check frontend → setup-plan → api_layer for implementation"
+        "Check frontend → setup-plan → phase_7_api_layer for implementation"
       ],
       "styling": [
         "Check frontend → ux → design_tokens for colors/spacing/typography",
@@ -408,18 +449,27 @@
     "find_component_spec": "frontend → ux → components_inventory OR frontend → tech → ui_components",
     "find_screen_layout": "frontend → ux → screen_specs → [screen_name]",
     "find_design_token": "frontend → ux → design_tokens → [color|typography|spacing|radius]",
-    "find_api_contract": "frontend → tech → integration",
-    "find_build_order": "frontend → setup-plan → phases → phase_7_core_screens → build_order",
+    "find_supabase_config": "frontend → tech → supabase",
+    "find_database_schema": "frontend → setup-plan → phase_5_supabase_setup → database_schema",
+    "find_auth_setup": "frontend → setup-plan → phase_6_auth",
+    "find_build_order": "frontend → setup-plan → phases → phase_9_core_screens → build_order",
     "check_mvp_scope": "frontend → strategy → scope_frontend → [in_scope|out_of_scope_mvp]"
   },
   "critical_cross_references": {
     "domain_models": {
       "defined_in": "frontend → tech → domain_models_frontend",
+      "database_schema": "frontend → setup-plan → phase_5_supabase_setup → database_schema",
       "used_in": [
-        "frontend → setup-plan → phase_4_domain_models",
-        "All API endpoints in phase_5_api_layer",
-        "All feature components"
+        "All Supabase queries",
+        "All feature components",
+        "API hooks"
       ]
+    },
+    "supabase": {
+      "config": "frontend → tech → supabase",
+      "setup": "frontend → setup-plan → phase_5_supabase_setup",
+      "auth": "frontend → setup-plan → phase_6_auth",
+      "used_by": ["All data fetching", "Authentication", "File uploads"]
     },
     "design_tokens": {
       "defined_in": "frontend → ux → design_tokens",
@@ -429,12 +479,12 @@
     "location_logic": {
       "ux_flow": "frontend → ux → screen_specs → quick_add_flow → location_behaviors",
       "tech_contract": "frontend → tech → integration → location_behaviors",
-      "implementation": "frontend → setup-plan → phase_9_location_handling"
+      "implementation": "frontend → setup-plan → phase_11_location_handling"
     },
     "component_inventory": {
       "ux_view": "frontend → ux → components_inventory",
       "tech_view": "frontend → tech → ui_components",
-      "implementation": "frontend → setup-plan → phase_6_global_components + phase_7_core_screens"
+      "implementation": "frontend → setup-plan → phase_8_global_components + phase_9_core_screens"
     }
   },
   "workflow_guide": {
@@ -442,8 +492,9 @@
       "order": [
         "1. Read frontend → strategy to understand goals",
         "2. Read frontend → tech → stack to confirm tech choices",
-        "3. Follow frontend → setup-plan → immediate_next_steps",
-        "4. Reference frontend → ux → design_tokens during Tailwind setup"
+        "3. Create Supabase project (see frontend → setup-plan → phase_5_supabase_setup)",
+        "4. Follow frontend → setup-plan → immediate_next_steps",
+        "5. Reference frontend → ux → design_tokens during Tailwind setup"
       ]
     },
     "implementing_feature": {
@@ -451,8 +502,9 @@
         "1. Check frontend → strategy → scope_frontend (is it in MVP?)",
         "2. Read frontend → ux → screen_specs → [feature] for UX requirements",
         "3. Read frontend → tech → domain_models for types",
-        "4. Read frontend → tech → ui_components for component list",
-        "5. Follow frontend → setup-plan → phase_7_core_screens → [feature]"
+        "4. Check Supabase tables and RLS policies if needed",
+        "5. Read frontend → tech → ui_components for component list",
+        "6. Follow frontend → setup-plan → phase_9_core_screens → [feature]"
       ]
     },
     "styling_component": {
@@ -461,6 +513,14 @@
         "2. Apply Tailwind classes using token names",
         "3. Check frontend → ux → a11y_logic for accessibility",
         "4. Verify against frontend → ux → screen_specs for layout"
+      ]
+    },
+    "adding_auth_protected_feature": {
+      "order": [
+        "1. Check frontend → setup-plan → phase_6_auth for auth patterns",
+        "2. Use AuthGuard component or middleware protection",
+        "3. Access user via useAuth hook",
+        "4. Ensure RLS policies allow user access to data"
       ]
     }
   }

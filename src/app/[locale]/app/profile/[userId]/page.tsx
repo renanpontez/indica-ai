@@ -67,14 +67,14 @@ export default function ProfilePage({
                 className="h-20 w-20"
               />
               <div className="flex-1">
-                <h1 className="text-title-m font-bold text-text-primary">
+                <h1 className="text-title-m font-bold text-dark-grey">
                   {displayUser.display_name}
                 </h1>
-                <p className="text-small text-text-secondary">
+                <p className="text-small text-medium-grey">
                   @{displayUser.username}
                 </p>
                 {userId === 'me' && (
-                  <button className="text-small text-accent hover:underline mt-1">
+                  <button className="text-small text-primary hover:underline mt-1">
                     Edit Profile
                   </button>
                 )}
@@ -90,8 +90,8 @@ export default function ProfilePage({
                 className={cn(
                   'flex-1 min-h-[44px] py-2 text-body font-medium transition-colors border-b-2',
                   activeTab === 'experiences'
-                    ? 'border-accent text-accent'
-                    : 'border-transparent text-text-secondary hover:text-text-primary'
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-medium-grey hover:text-dark-grey'
                 )}
               >
                 Experiences
@@ -101,8 +101,8 @@ export default function ProfilePage({
                 className={cn(
                   'flex-1 min-h-[44px] py-2 text-body font-medium transition-colors border-b-2',
                   activeTab === 'bookmarks'
-                    ? 'border-accent text-accent'
-                    : 'border-transparent text-text-secondary hover:text-text-primary'
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-medium-grey hover:text-dark-grey'
                 )}
               >
                 Bookmarks
@@ -121,7 +121,7 @@ export default function ProfilePage({
                 ) : (
                   <div className="flex flex-col items-center justify-center min-h-[50vh] px-md text-center">
                     <svg
-                      className="h-12 w-12 text-text-secondary mb-md"
+                      className="h-12 w-12 text-medium-grey mb-md"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -138,10 +138,10 @@ export default function ProfilePage({
                         d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                       />
                     </svg>
-                    <h2 className="text-title-m font-bold text-text-primary mb-sm">
+                    <h2 className="text-title-m font-bold text-dark-grey mb-sm">
                       No places yet
                     </h2>
-                    <p className="text-body text-text-secondary max-w-sm">
+                    <p className="text-body text-medium-grey max-w-sm">
                       Save places to build your profile.
                     </p>
                   </div>
@@ -152,7 +152,7 @@ export default function ProfilePage({
             {activeTab === 'bookmarks' && (
               <div className="flex flex-col items-center justify-center min-h-[50vh] px-md text-center">
                 <svg
-                  className="h-12 w-12 text-text-secondary mb-md"
+                  className="h-12 w-12 text-medium-grey mb-md"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -164,10 +164,10 @@ export default function ProfilePage({
                     d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
                   />
                 </svg>
-                <h2 className="text-title-m font-bold text-text-primary mb-sm">
+                <h2 className="text-title-m font-bold text-dark-grey mb-sm">
                   No bookmarks yet
                 </h2>
-                <p className="text-body text-text-secondary max-w-sm">
+                <p className="text-body text-medium-grey max-w-sm">
                   Bookmark places to find them here.
                 </p>
               </div>

@@ -1,4 +1,47 @@
 {
+  "landing": {
+    "nav": {
+      "explore": "Explorar",
+      "login": "Entrar",
+      "signUp": "Criar conta grátis"
+    },
+    "hero": {
+      "title": "Descubra as experiências que seus amigos amam",
+      "subtitle": "A melhor forma de encontrar restaurantes, cafés, bares e hotéis é através de quem você confia",
+      "searchPlaceholder": "Buscar lugares...",
+      "searchButton": "Buscar"
+    },
+    "categories": {
+      "restaurants": "Restaurantes",
+      "cafes": "Cafés",
+      "bars": "Bares",
+      "hotels": "Hotéis"
+    },
+    "about": {
+      "title": "Explore lugares que seus amigos amam",
+      "description": "O indica aí conecta você às melhores recomendações da sua rede de amigos. Descubra restaurantes escondidos, cafés aconchegantes e experiências únicas através de quem você confia.",
+      "cta": "Explorar agora",
+      "feature1": "Cultura & História",
+      "feature2": "Eventos",
+      "feature3": "Atrações",
+      "feature4": "Compras"
+    },
+    "featured": {
+      "title": "Cidades em destaque",
+      "exploreAll": "Ver todas"
+    },
+    "cta": {
+      "title": "Comece a compartilhar suas descobertas",
+      "description": "Junte-se a milhares de pessoas que estão descobrindo lugares incríveis através de amigos. Crie sua conta e comece a compartilhar suas experiências favoritas.",
+      "button": "Criar conta grátis"
+    },
+    "footer": {
+      "terms": "Termos",
+      "privacy": "Privacidade",
+      "contact": "Contato",
+      "rights": "Todos os direitos reservados."
+    }
+  },
   "nav": {
     "logo": "indica aí",
     "search": {
@@ -9,7 +52,8 @@
       "searchButton": "Buscar",
       "placeholder": "Buscar lugares, cidades ou amigos..."
     },
-    "addPlace": "Adicionar lugar",
+    "addPlace": "Nova indicação",
+    "signUp": "Criar conta grátis",
     "becomeHost": "Anunciar espaço",
     "feed": "Feed",
     "explore": "Explorar",

@@ -5,7 +5,7 @@ export default function ExplorePage() {
     <div>
       <TopBar title="Explore" />
       <div className="p-md">
-        <p className="text-text-secondary">Explore feature coming in P1...</p>
+        <p className="text-medium-grey">Explore feature coming in P1...</p>
       </div>
     </div>
   );

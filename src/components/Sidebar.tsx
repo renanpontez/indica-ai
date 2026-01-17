@@ -61,13 +61,13 @@ export function Sidebar() {
               size="md"
             />
             <div>
-              <p className="text-sm font-semibold text-text-primary">
+              <p className="text-sm font-semibold text-dark-grey">
                 martinzrenan
               </p>
-              <p className="text-xs text-text-secondary">Renan Martins</p>
+              <p className="text-xs text-medium-grey">Renan Martins</p>
             </div>
           </div>
-          <button className="text-xs font-semibold text-accent hover:text-text-primary">
+          <button className="text-xs font-semibold text-primary hover:text-dark-grey">
             Switch
           </button>
         </div>
@@ -75,10 +75,10 @@ export function Sidebar() {
         {/* Suggestions */}
         <div className="pt-4">
           <div className="flex items-center justify-between mb-3">
-            <p className="text-sm font-semibold text-text-secondary">
+            <p className="text-sm font-semibold text-medium-grey">
               Suggested for you
             </p>
-            <button className="text-xs font-semibold text-text-primary hover:text-text-secondary">
+            <button className="text-xs font-semibold text-dark-grey hover:text-medium-grey">
               See All
             </button>
           </div>
@@ -93,15 +93,15 @@ export function Sidebar() {
                     size="sm"
                   />
                   <div>
-                    <p className="text-sm font-semibold text-text-primary">
+                    <p className="text-sm font-semibold text-dark-grey">
                       {suggestion.userName}
                     </p>
-                    <p className="text-xs text-text-secondary">
+                    <p className="text-xs text-medium-grey">
                       Followed by {suggestion.followedBy}
                     </p>
                   </div>
                 </div>
-                <button className="text-xs font-semibold text-accent hover:text-text-primary">
+                <button className="text-xs font-semibold text-primary hover:text-dark-grey">
                   Follow
                 </button>
               </div>
@@ -111,7 +111,7 @@ export function Sidebar() {
 
         {/* Footer */}
         <div className="pt-8">
-          <div className="text-xs text-text-secondary space-y-2">
+          <div className="text-xs text-medium-grey space-y-2">
             <div className="flex flex-wrap gap-x-2 gap-y-1">
               <a href="#" className="hover:underline">About</a>
               <span>·</span>
@@ -127,7 +127,7 @@ export function Sidebar() {
               <span>·</span>
               <a href="#" className="hover:underline">Terms</a>
             </div>
-            <p className="text-text-secondary">
+            <p className="text-medium-grey">
               © 2026 FRIENDS PLACES FROM META
             </p>
           </div>

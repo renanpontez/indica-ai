@@ -1,47 +1,90 @@
 {
   "meta": {
-    "project_name": "Friends Places – Social Recommendations MVP",
+    "project_name": "indica aí – Social Recommendations MVP",
     "project_type": "frontend",
     "phase": "strategy",
-    "version": "0.1.0"
+    "version": "0.2.0",
+    "last_updated": "2026-01-17"
   },
-  "objective": "Deliver a mobile-first web app (SPA-like) where users can quickly save, view, and browse friends' recommended places, aligned with the Experience PROJECT_CONTEXT.",
+  "objective": "Deliver a mobile-first web app where users can quickly save, view, and browse friends' recommended places, using Next.js with Supabase as the complete backend infrastructure.",
   "core_value_prop": "Make it extremely easy to save a place you liked and let your friends discover it through a simple, trust-based social graph.",
+  "architecture": {
+    "description": "Full-stack Next.js application with Supabase backend",
+    "frontend": "Next.js App Router with React, TypeScript, Tailwind CSS",
+    "backend": "Supabase (Auth, PostgreSQL Database, Storage)",
+    "data_access": "React Query hooks calling Supabase client directly",
+    "security": "Row Level Security (RLS) policies at database level"
+  },
   "primary_use_cases": [
+    "User signs up or signs in via Google OAuth or email/password.",
     "User visits or remembers a place and wants to save it in a few seconds via Quick Add Flow.",
     "User opens the app to see a feed of places saved by friends.",
     "User views their own profile and saved places (experiences + bookmarks).",
-    "User taps into a specific experience to see more details and open maps."
+    "User taps into a specific experience to see more details and open maps.",
+    "User bookmarks experiences from friends to save for later."
   ],
   "scope_frontend": {
     "in_scope": [
       "Responsive web UI, mobile-first.",
-      "Bottom navigation with core tabs: Feed, Add, Profile + Explore placeholder.",
-      "Quick Add Flow: location context, place search, optional enrichment, save.",
-      "Experience detail view.",
-      "Profile with experiences and bookmarks tab (bookmarks can be placeholder).",
+      "Authentication (Supabase Auth with Google OAuth and email/password).",
+      "Bottom navigation (mobile) and Desktop navigation with core tabs: Feed, Add, Profile + Explore.",
+      "Quick Add Flow: location context, place search, optional enrichment, save to Supabase.",
+      "Experience detail view with bookmark functionality.",
+      "Profile with experiences and bookmarks tabs.",
       "Basic error/loading/empty states.",
-      "Integration with backend API for feed, add, profile, bookmarks."
+      "Internationalization (i18n) with next-intl (pt-BR and en-US).",
+      "Image upload to Supabase Storage.",
+      "Direct integration with Supabase for all data operations."
     ],
     "out_of_scope_mvp": [
       "Native mobile apps.",
       "Offline-first complex PWA (basic PWA-friendly structure allowed).",
       "Likes, comments, DMs, complex social/explore algorithms.",
-      "Complex theming system beyond provided design_tokens."
+      "Complex theming system beyond provided design_tokens.",
+      "Email verification flow (can be enabled post-MVP).",
+      "Password reset flow (can be added post-MVP).",
+      "Supabase Realtime subscriptions (not needed for MVP)."
     ]
   },
   "success_criteria": {
     "ux": [
+      "User can sign up and sign in without friction.",
       "User can add a place (Quick Add Flow) in ~15 seconds or less under normal network conditions.",
       "Navigation between tabs is obvious and requires minimal taps.",
       "Experience cards are readable and scannable on small screens.",
       "Empty states clearly guide the user to next actions (e.g., follow friends, add a place)."
     ],
     "technical": [
-      "Frontend uses typed API clients and shared domain models with backend.",
-      "State management is simple and predictable (React Query or equivalent).",
+      "Frontend uses typed Supabase queries with TypeScript interfaces matching database schema.",
+      "State management is simple and predictable (React Query for server state).",
       "Basic accessibility is respected (focus management, touch targets, contrast).",
-      "Layout works well on common mobile breakpoints and desktop within a reasonable max width."
+      "Layout works well on common mobile breakpoints and desktop within 1760px max width.",
+      "RLS policies properly protect user data at the database level.",
+      "Auth session is securely managed via httpOnly cookies (@supabase/ssr)."
+    ],
+    "security": [
+      "SUPABASE_SERVICE_ROLE_KEY is never exposed to the client.",
+      "All database tables have RLS enabled with appropriate policies.",
+      "User input is validated on both client and server.",
+      "Protected routes redirect unauthenticated users to sign-in."
     ]
+  },
+  "key_decisions": {
+    "supabase_over_separate_backend": {
+      "rationale": "For MVP, Supabase provides auth, database, and storage in one platform, reducing complexity and development time. No need for a separate backend API.",
+      "tradeoffs": [
+        "Pros: Faster development, built-in auth, automatic API, RLS for security",
+        "Cons: Vendor lock-in, less flexibility for complex business logic",
+        "Mitigation: Business logic can be added via Supabase Edge Functions or API routes if needed"
+      ]
+    },
+    "nextauth_to_supabase_auth": {
+      "rationale": "Supabase Auth integrates seamlessly with Supabase Database, allowing automatic user profile creation via triggers and consistent session management.",
+      "migration_impact": [
+        "Replace NextAuth with @supabase/ssr for session handling",
+        "Update middleware for Supabase session refresh",
+        "Update auth components to use Supabase auth methods"
+      ]
+    }
   }
 }

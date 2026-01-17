@@ -43,7 +43,7 @@ export function ImageGallery({ images, placeName, priceRange }: ImageGalleryProp
 
           {/* Price Badge */}
           {priceRange && (
-            <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-sm px-4 py-1.5 rounded-full text-small font-medium text-text-primary shadow-sm">
+            <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-sm px-4 py-1.5 rounded-full text-small font-medium text-dark-grey shadow-sm">
               {priceRange}
             </div>
           )}
@@ -53,7 +53,7 @@ export function ImageGallery({ images, placeName, priceRange }: ImageGalleryProp
             <>
               <button
                 onClick={goToPrevious}
-                className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-text-primary rounded-full p-2 transition-colors shadow-sm"
+                className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-dark-grey rounded-full p-2 transition-colors shadow-sm"
                 aria-label="Previous image"
               >
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -63,7 +63,7 @@ export function ImageGallery({ images, placeName, priceRange }: ImageGalleryProp
 
               <button
                 onClick={goToNext}
-                className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-text-primary rounded-full p-2 transition-colors shadow-sm"
+                className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-dark-grey rounded-full p-2 transition-colors shadow-sm"
                 aria-label="Next image"
               >
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -84,7 +84,7 @@ export function ImageGallery({ images, placeName, priceRange }: ImageGalleryProp
                 className={cn(
                   'aspect-square rounded-lg overflow-hidden transition-all',
                   index === currentIndex
-                    ? 'ring-2 ring-accent ring-offset-2'
+                    ? 'ring-2 ring-primary ring-offset-2'
                     : 'opacity-70 hover:opacity-100'
                 )}
                 aria-label={`View image ${index + 1}`}
@@ -97,7 +97,7 @@ export function ImageGallery({ images, placeName, priceRange }: ImageGalleryProp
               </button>
             ))}
             {displayImages.length > 3 && (
-              <div className="aspect-square rounded-lg bg-surface flex items-center justify-center text-text-secondary text-small font-medium">
+              <div className="aspect-square rounded-lg bg-surface flex items-center justify-center text-medium-grey text-small font-medium">
                 +{displayImages.length - 3}
               </div>
             )}
@@ -115,7 +115,7 @@ export function ImageGallery({ images, placeName, priceRange }: ImageGalleryProp
               className={cn(
                 'h-2 rounded-full transition-all',
                 index === currentIndex
-                  ? 'bg-accent w-6'
+                  ? 'bg-primary w-6'
                   : 'bg-divider w-2 hover:bg-text-secondary'
               )}
               aria-label={`Go to image ${index + 1}`}

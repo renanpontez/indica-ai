@@ -1,45 +1,128 @@
 {
   "meta": {
-    "project_name": "Friends Places – Social Recommendations MVP",
+    "project_name": "indica aí – Social Recommendations MVP",
     "project_type": "frontend",
     "phase": "experience",
-    "version": "0.1.0"
+    "version": "0.2.0",
+    "last_updated": "2026-01-17"
   },
   "ux_reference": {
-    "language": "en-US",
+    "language": "pt-BR (default), en-US",
     "mobile_first": true,
-    "platform": "Responsive Web App (SPA), PWA-considerate"
+    "platform": "Responsive Web App, PWA-considerate",
+    "i18n": "next-intl with locale prefix in URLs"
   },
   "navigation_model": {
-    "tabs": [
-      "feed",
-      "add",
-      "profile",
-      "explore_placeholder"
-    ],
-    "tab_labels": {
-      "feed": "Feed",
-      "add": "Add",
-      "profile": "Profile",
-      "explore_placeholder": "Explore"
+    "mobile": {
+      "pattern": "Bottom navigation",
+      "tabs": ["feed", "add", "profile", "explore"],
+      "tab_labels": {
+        "feed": "Feed",
+        "add": "Add",
+        "profile": "Profile",
+        "explore": "Explore"
+      }
     },
-    "nav_pattern": "Bottom navigation on mobile; left nav optional on desktop",
+    "desktop": {
+      "pattern": "Top/Left navigation bar",
+      "elements": ["logo", "nav_links", "user_menu"],
+      "user_menu": {
+        "authenticated": ["profile_link", "sign_out"],
+        "unauthenticated": ["sign_in", "sign_up"]
+      }
+    },
     "primary_actions": {
-      "add_experience": "Floating Action or Central Tab",
-      "open_place": "Tap on Experience Card"
+      "add_experience": "Central Tab (mobile) or prominent button (desktop)",
+      "open_place": "Tap on Experience Card",
+      "sign_in": "NavBar user menu or dedicated page"
     }
   },
   "core_screens": [
+    "Sign In",
+    "Sign Up",
     "Feed",
     "Quick Add Flow",
     "Experience Detail",
     "Profile",
-    "Bookmarks/Lists Entry (P1 placeholder)",
-    "Explore/Search Entry (P1 placeholder)"
+    "Explore/Browse",
+    "Auth Error"
   ],
   "screen_specs": {
+    "auth_signin": {
+      "purpose": "Allow users to sign in to their account.",
+      "path": "/[locale]/auth/signin",
+      "components": [
+        "page_header",
+        "google_oauth_button",
+        "email_password_form",
+        "signup_link",
+        "error_display"
+      ],
+      "google_oauth_button": {
+        "label": "Continue with Google",
+        "action": "Initiate Supabase Google OAuth flow"
+      },
+      "email_password_form": {
+        "fields": ["email", "password"],
+        "submit_label": "Sign In",
+        "validation": {
+          "email": "Valid email format",
+          "password": "Required"
+        }
+      },
+      "copy": {
+        "header": "Sign In",
+        "subheader": "Welcome back! Sign in to continue.",
+        "signup_prompt": "Don't have an account? Sign up",
+        "error_invalid_credentials": "Invalid email or password."
+      }
+    },
+    "auth_signup": {
+      "purpose": "Allow new users to create an account.",
+      "path": "/[locale]/auth/signup",
+      "components": [
+        "page_header",
+        "google_oauth_button",
+        "signup_form",
+        "signin_link",
+        "error_display"
+      ],
+      "signup_form": {
+        "fields": ["display_name", "email", "password"],
+        "submit_label": "Create Account",
+        "validation": {
+          "display_name": "Required, min 2 characters",
+          "email": "Valid email format",
+          "password": "Required, min 6 characters"
+        },
+        "note": "Username is auto-generated from display_name; can be edited later"
+      },
+      "copy": {
+        "header": "Create Account",
+        "subheader": "Join to share and discover great places.",
+        "signin_prompt": "Already have an account? Sign in",
+        "error_email_taken": "An account with this email already exists."
+      }
+    },
+    "auth_error": {
+      "purpose": "Display authentication errors.",
+      "path": "/[locale]/auth/error",
+      "components": [
+        "error_message",
+        "try_again_button",
+        "signin_link"
+      ],
+      "copy": {
+        "header": "Authentication Error",
+        "default_message": "Something went wrong. Please try again.",
+        "try_again": "Try Again",
+        "back_to_signin": "Back to Sign In"
+      }
+    },
     "feed": {
       "purpose": "Show experiences from followed users in reverse chronological order.",
+      "path": "/[locale]",
+      "access": "Public (auth optional for full features)",
       "components": [
         "header",
         "experience_card_list",
@@ -67,6 +150,8 @@
     },
     "quick_add_flow": {
       "purpose": "Fastest possible save → under ~15 seconds target.",
+      "path": "/[locale]/add",
+      "access": "Protected (requires authentication)",
       "steps": [
         "Location Context & Search",
         "Select Place & Auto-fill",
@@ -87,7 +172,7 @@
       ],
       "location_behaviors": {
         "gps_allowed": "Use browser GPS for nearest search context.",
-        "gps_denied": "Fallback to IP-based city via backend, if available.",
+        "gps_denied": "Fallback to IP-based city via API route.",
         "both_fail": "Ask user to select city manually via CitySelector."
       },
       "places_api_failure": {
@@ -100,10 +185,17 @@
         "restrictions": [
           "manual_google_maps_url_not_allowed"
         ]
+      },
+      "image_upload": {
+        "destination": "Supabase Storage (experience-images bucket)",
+        "max_images": 5,
+        "max_size": "5MB per image"
       }
     },
     "experience_detail": {
       "purpose": "View an experience with more rich info.",
+      "path": "/[locale]/experience/[id]",
+      "access": "Public",
       "components": [
         "place_name",
         "user_info",
@@ -115,37 +207,66 @@
         "city_country",
         "google_maps_link_auto",
         "bookmark_button"
-      ]
+      ],
+      "bookmark_button": {
+        "authenticated": "Toggle bookmark on/off",
+        "unauthenticated": "Redirect to sign-in with callback"
+      }
     },
     "profile": {
-      "purpose": "View user’s own experiences and bookmarks.",
+      "purpose": "View user's own experiences and bookmarks.",
+      "path_own": "/[locale]/profile",
+      "path_other": "/[locale]/profile/[userId]",
+      "access_own": "Protected",
+      "access_other": "Public",
       "components": [
         "header_user",
         "edit_profile_entrypoint",
         "tab_experiences",
-        "tab_bookmarks_lists"
+        "tab_bookmarks"
       ],
+      "tabs": {
+        "experiences": "List of user's experiences",
+        "bookmarks": "List of bookmarked experiences (own profile only)"
+      },
       "empty_state_copy": "Save places to build your profile."
     },
-    "bookmarks_lists": {
-      "status": "P1 placeholder",
-      "note": "Basic entry exists to avoid redesign later."
-    },
-    "explore_search": {
-      "status": "P1 placeholder",
-      "note": "Provides search beyond friend graph for future versions."
+    "explore": {
+      "purpose": "Browse and discover experiences beyond friend graph.",
+      "path": "/[locale]/explore",
+      "access": "Public",
+      "status": "Basic implementation for MVP",
+      "components": [
+        "search_input",
+        "experience_list",
+        "filter_options"
+      ]
     }
   },
   "components_inventory": {
     "global": [
       "BottomNav",
+      "DesktopNav",
       "TopBar",
       "Avatar",
       "Chip",
+      "Button",
+      "Input",
+      "TextArea",
+      "IconButton",
       "CitySelector",
       "ImageUploader",
       "PriceRangeSelector",
-      "CategorySelector"
+      "CategorySelector",
+      "LoadingSpinner",
+      "ErrorMessage"
+    ],
+    "auth": [
+      "SignInForm",
+      "SignUpForm",
+      "SocialSignInButtons",
+      "UserMenu",
+      "AuthGuard"
     ],
     "feed": [
       "ExperienceCard",
@@ -153,16 +274,24 @@
       "FeedEmptyState"
     ],
     "quick_add": [
+      "QuickAddLayout",
       "PlaceSearchInput",
       "PlaceSuggestionList",
       "CustomPlaceForm",
       "AdditionalFieldsPanel",
       "SaveExperienceButton"
     ],
+    "experience_detail": [
+      "ExperienceDetailLayout",
+      "ImageGallery",
+      "MapLinkButton",
+      "BookmarkButton"
+    ],
     "profile": [
       "UserHeader",
       "ProfileTabs",
-      "BookmarkTabPlaceholder"
+      "ProfileExperienceList",
+      "ProfileBookmarksList"
     ]
   },
   "design_tokens": {
@@ -174,7 +303,20 @@
       "text_primary": "#111111",
       "text_secondary": "#555555",
       "divider": "#E4E6EA",
-      "accent": "#007AFF"
+      "accent": {
+        "100": "#FFEBE6",
+        "200": "#FFC9BA",
+        "300": "#FEA68E",
+        "400": "#FE7B5E",
+        "500": "#FD512E",
+        "600": "#FD4233",
+        "700": "#E5301F",
+        "800": "#B8210F",
+        "900": "#8A1507",
+        "DEFAULT": "#FD512E"
+      },
+      "error": "#DC2626",
+      "success": "#16A34A"
     },
     "typography": {
       "font_family": "Inter, system-ui, sans-serif",
@@ -187,19 +329,23 @@
     },
     "radius": {
       "chip": "12px",
-      "surface": "14px"
+      "surface": "14px",
+      "button": "8px",
+      "input": "8px"
     },
     "spacing": {
       "xs": "4px",
       "sm": "8px",
       "md": "16px",
-      "lg": "24px"
+      "lg": "24px",
+      "xl": "32px"
     }
   },
   "interaction_rules": {
-    "image_upload": "0–N images via native upload; optional.",
+    "image_upload": "0–5 images via native upload; stored in Supabase Storage.",
     "maps_link": "Auto-only, never manual.",
-    "gps_permission": "Request on-demand when user enters Quick Add; show short explanatory copy."
+    "gps_permission": "Request on-demand when user enters Quick Add; show short explanatory copy.",
+    "auth_redirect": "Protected routes redirect to sign-in with callbackUrl to return after auth."
   },
   "copy_system": {
     "tone": [
@@ -210,12 +356,28 @@
     "examples": {
       "add_place_cta": "Save a place",
       "feed_empty": "Follow friends to discover places they love.",
-      "optional_hint": "Optional"
+      "profile_empty": "Save places to build your profile.",
+      "optional_hint": "Optional",
+      "signin_cta": "Sign In",
+      "signup_cta": "Create Account",
+      "signout_cta": "Sign Out",
+      "continue_with_google": "Continue with Google"
+    },
+    "auth_copy": {
+      "signin_header": "Sign In",
+      "signin_subheader": "Welcome back! Sign in to continue.",
+      "signup_header": "Create Account",
+      "signup_subheader": "Join to share and discover great places.",
+      "error_invalid_credentials": "Invalid email or password.",
+      "error_email_taken": "An account with this email already exists.",
+      "error_generic": "Something went wrong. Please try again."
     }
   },
   "a11y_logic": {
-    "focus_order": "Top→Bottom",
+    "focus_order": "Top→Bottom, logical tab sequence",
     "min_touch_target": "44px",
-    "color_contrast": "AA"
+    "color_contrast": "AA (4.5:1 for normal text)",
+    "aria_labels": "All interactive elements must have accessible names",
+    "keyboard_navigation": "All features accessible via keyboard"
   }
 }

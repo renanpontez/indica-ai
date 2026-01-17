@@ -58,8 +58,8 @@ export function PlaceSearchInput({
       />
 
       {isSearching && (
-        <div className="absolute right-3 top-[38px] text-text-secondary">
-          <div className="animate-spin h-4 w-4 border-2 border-accent border-t-transparent rounded-full" />
+        <div className="absolute right-3 top-[38px] text-medium-grey">
+          <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full" />
         </div>
       )}
 
@@ -74,10 +74,10 @@ export function PlaceSearchInput({
               }}
               className="w-full text-left px-3 py-2 hover:bg-surface transition-colors"
             >
-              <p className="text-body font-medium text-text-primary">
+              <p className="text-body font-medium text-dark-grey">
                 {place.name}
               </p>
-              <p className="text-small text-text-secondary">
+              <p className="text-small text-medium-grey">
                 {place.city}, {place.country}
               </p>
             </button>
@@ -87,7 +87,7 @@ export function PlaceSearchInput({
 
       {showSuggestions && value.length >= 2 && suggestions.length === 0 && !isSearching && (
         <div className="absolute z-10 w-full mt-1 bg-background border border-divider rounded-surface shadow-lg p-3">
-          <p className="text-small text-text-secondary">
+          <p className="text-small text-medium-grey">
             No places found. You can create a custom entry below.
           </p>
         </div>

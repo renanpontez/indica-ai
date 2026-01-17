@@ -1,4 +1,47 @@
 {
+  "landing": {
+    "nav": {
+      "explore": "Explore",
+      "login": "Log in",
+      "signUp": "Sign up"
+    },
+    "hero": {
+      "title": "Discover amazing places through your friends",
+      "subtitle": "The best way to find restaurants, cafes, bars, and hotels is through people you trust",
+      "searchPlaceholder": "Search places...",
+      "searchButton": "Search"
+    },
+    "categories": {
+      "restaurants": "Restaurants",
+      "cafes": "Cafes",
+      "bars": "Bars",
+      "hotels": "Hotels"
+    },
+    "about": {
+      "title": "Explore places your friends love",
+      "description": "indica aí connects you to the best recommendations from your network of friends. Discover hidden restaurants, cozy cafes, and unique experiences through people you trust.",
+      "cta": "Explore now",
+      "feature1": "Culture & History",
+      "feature2": "Events",
+      "feature3": "Attractions",
+      "feature4": "Shopping"
+    },
+    "featured": {
+      "title": "Featured cities",
+      "exploreAll": "See all"
+    },
+    "cta": {
+      "title": "Start sharing your discoveries",
+      "description": "Join thousands of people discovering amazing places through friends. Create your account and start sharing your favorite experiences.",
+      "button": "Create free account"
+    },
+    "footer": {
+      "terms": "Terms",
+      "privacy": "Privacy",
+      "contact": "Contact",
+      "rights": "All rights reserved."
+    }
+  },
   "nav": {
     "logo": "indica aí",
     "search": {
@@ -9,7 +52,8 @@
       "searchButton": "Search",
       "placeholder": "Search places, cities, or friends..."
     },
-    "addPlace": "Add a place",
+    "addPlace": "New recommendation",
+    "signUp": "Sign up",
     "becomeHost": "Become a host",
     "feed": "Feed",
     "explore": "Explore",

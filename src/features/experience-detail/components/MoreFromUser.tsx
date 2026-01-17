@@ -13,7 +13,7 @@ export function MoreFromUser({ userName, experiences }: MoreFromUserProps) {
 
   return (
     <div>
-      <h2 className="text-lg font-semibold text-text-primary mb-4">
+      <h2 className="text-lg font-semibold text-dark-grey mb-4">
         More recommendations from {firstName}
       </h2>
       <div className="space-y-3">
@@ -32,7 +32,7 @@ export function MoreFromUser({ userName, experiences }: MoreFromUserProps) {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-text-secondary">
+                <div className="w-full h-full flex items-center justify-center text-medium-grey">
                   <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -43,17 +43,17 @@ export function MoreFromUser({ userName, experiences }: MoreFromUserProps) {
 
             {/* Info */}
             <div className="flex-1 min-w-0">
-              <p className="font-medium text-text-primary truncate">
+              <p className="font-medium text-dark-grey truncate">
                 {exp.place.name}
               </p>
-              <p className="text-small text-text-secondary">
+              <p className="text-small text-medium-grey">
                 {exp.place.city_short} · {exp.time_ago}
               </p>
             </div>
 
             {/* Arrow */}
             <svg
-              className="w-5 h-5 text-text-secondary group-hover:text-text-primary transition-colors flex-shrink-0"
+              className="w-5 h-5 text-medium-grey group-hover:text-dark-grey transition-colors flex-shrink-0"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"

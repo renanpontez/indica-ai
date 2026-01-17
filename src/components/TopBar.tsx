@@ -40,7 +40,7 @@ export function TopBar({ title, showBack = false, showUserMenu = true }: TopBarP
             />
           )}
           {title && (
-            <h1 className="text-2xl font-bold text-text-primary flex-1">
+            <h1 className="text-2xl font-bold text-dark-grey flex-1">
               {title}
             </h1>
           )}

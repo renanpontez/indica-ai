@@ -1,18 +1,32 @@
 'use client';
 
-import { useState } from 'react';
-import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { useLocale } from 'next-intl';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
+import { createClient } from '@/lib/supabase/client';
+import { useAuth } from '@/lib/hooks/useAuth';
 
 export default function SignInPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const locale = useLocale();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const callbackUrl = searchParams.get('callbackUrl') || `/${locale}/app`;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const supabase = createClient();
+
+  // Redirect authenticated users to /app
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      router.replace(`/${locale}/app`);
+    }
+  }, [authLoading, isAuthenticated, router, locale]);
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,21 +34,21 @@ export default function SignInPage() {
     setIsLoading(true);
 
     try {
-      const result = await signIn('credentials', {
+      const { error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
-        redirect: false,
       });
 
-      if (result?.error) {
+      if (signInError) {
         setError('Invalid email or password');
-      } else if (result?.ok) {
-        router.push('/');
-        router.refresh();
+        setIsLoading(false);
+        return;
       }
-    } catch (err) {
+
+      router.push(callbackUrl);
+      router.refresh();
+    } catch {
       setError('An error occurred. Please try again.');
-    } finally {
       setIsLoading(false);
     }
   };
@@ -42,23 +56,39 @@ export default function SignInPage() {
   const handleGoogleSignIn = async () => {
     setError('');
     setIsLoading(true);
+
     try {
-      await signIn('google', { callbackUrl: '/' });
-    } catch (err) {
+      const { error: signInError } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(callbackUrl)}`,
+        },
+      });
+
+      if (signInError) {
+        setError('Google sign in failed');
+        setIsLoading(false);
+      }
+    } catch {
       setError('Google sign in failed');
       setIsLoading(false);
     }
   };
 
+  // Show nothing while checking auth or redirecting
+  if (authLoading || isAuthenticated) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-[1.4rem] font-semibold text-text-primary mb-2">
-            Welcome back
+          <h1 className="text-[1.4rem] font-semibold text-dark-grey mb-2">
+            Bem-vindo de volta
           </h1>
-          <p className="text-text-secondary text-[0.85rem]">
-            Sign in to continue to Friends Places
+          <p className="text-medium-grey text-[0.85rem]">
+            Entre para compartilhar suas experiências com seus amigos
           </p>
         </div>
 
@@ -73,7 +103,7 @@ export default function SignInPage() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-text-primary text-[0.85rem] font-medium mb-2"
+                className="block text-dark-grey text-[0.85rem] font-medium mb-2"
               >
                 Email
               </label>
@@ -91,9 +121,9 @@ export default function SignInPage() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-text-primary text-[0.85rem] font-medium mb-2"
+                className="block text-dark-grey text-[0.85rem] font-medium mb-2"
               >
-                Password
+                Senha
               </label>
               <Input
                 id="password"
@@ -108,6 +138,7 @@ export default function SignInPage() {
 
             <Button
               type="submit"
+              variant="primary"
               className="w-full"
               disabled={isLoading}
             >
@@ -120,8 +151,8 @@ export default function SignInPage() {
               <div className="w-full border-t border-divider" />
             </div>
             <div className="relative flex justify-center text-[0.85rem]">
-              <span className="px-4 bg-surface text-text-secondary">
-                Or continue with
+              <span className="px-4 bg-surface text-medium-grey">
+                Ou continue com
               </span>
             </div>
           </div>
@@ -129,7 +160,7 @@ export default function SignInPage() {
           <button
             onClick={handleGoogleSignIn}
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-3 bg-white border border-divider rounded-lg px-4 py-3 text-text-primary font-medium hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-3 bg-white border border-divider rounded-lg px-4 py-3 text-dark-grey font-medium hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -153,13 +184,13 @@ export default function SignInPage() {
           </button>
         </div>
 
-        <p className="text-center text-[0.85rem] text-text-secondary">
-          Don't have an account?{' '}
+        <p className="text-center text-[0.85rem] text-medium-grey">
+          Não tem uma conta? {' '}
           <Link
-            href="/auth/signup"
-            className="text-accent font-medium hover:underline"
+            href={`/${locale}/auth/signup`}
+            className="text-primary font-medium hover:underline"
           >
-            Sign up
+            Criar conta
           </Link>
         </p>
       </div>

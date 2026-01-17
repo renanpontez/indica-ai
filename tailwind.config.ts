@@ -10,15 +10,25 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: '#111111',
+        primary: {
+          100: '#FFEBE6',
+          200: '#FFC9BA',
+          300: '#FEA68E',
+          400: '#FE7B5E',
+          500: '#FD512E', // Main color from logo
+          600: '#FD4233',
+          700: '#E5301F',
+          800: '#B8210F',
+          900: '#8A1507',
+          DEFAULT: '#FD512E',
+        },
         background: '#FFFFFF',
         surface: '#F6F7F9',
         'chip-bg': '#EDEEF1',
-        'text-primary': '#111111',
-        'text-secondary': '#555555',
+        'dark-grey': '#111111',
+        'medium-grey': '#555555',
         divider: '#E4E6EA',
-        accent: '#FD512E',
-        'accent-hover': '#FD4233',
+        white: '#FFF'
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
@@ -30,8 +40,8 @@ const config: Config = {
         small: '0.85rem',
       },
       borderRadius: {
-        chip: '12px',
-        surface: '14px',
+        chip: '8px',
+        surface: '10px',
       },
       spacing: {
         xs: '4px',

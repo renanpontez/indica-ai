@@ -26,10 +26,10 @@ export function ExperienceCard({
         <div className="flex items-center gap-3">
           <Avatar src={user.avatar_url} alt={user.display_name} size="sm" />
           <div>
-            <p className="text-sm font-semibold text-text-primary">
+            <p className="text-sm font-semibold text-dark-grey">
               {user.display_name}
             </p>
-            <p className="text-xs text-text-secondary">{time_ago}</p>
+            <p className="text-xs text-medium-grey">{time_ago}</p>
           </div>
         </div>
         {onBookmarkToggle && (
@@ -42,7 +42,7 @@ export function ExperienceCard({
             aria-label="Bookmark this place"
           >
             <svg
-              className="h-5 w-5 text-text-secondary"
+              className="h-5 w-5 text-medium-grey"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -69,26 +69,26 @@ export function ExperienceCard({
           />
           {/* Price Badge */}
           <div className="absolute bottom-2 left-2 bg-white/95 backdrop-blur-sm px-2 py-1 rounded-md shadow-sm">
-            <span className="text-xs font-semibold text-text-primary">{price_range}</span>
+            <span className="text-xs font-semibold text-dark-grey">{price_range}</span>
           </div>
         </div>
 
         {/* Place Info */}
         <div className="flex-1 min-w-0">
           {/* Place Name */}
-          <h3 className="text-base font-semibold text-text-primary mb-1 line-clamp-1 group-hover:underline">
+          <h3 className="text-base font-semibold text-dark-grey mb-1 line-clamp-1 group-hover:underline">
             {place.name}
           </h3>
 
           {/* Instagram Handle */}
           {place.instagram && (
-            <p className="text-sm text-text-secondary mb-1">
+            <p className="text-sm text-medium-grey mb-1">
               @{place.instagram}
             </p>
           )}
 
           {/* Location */}
-          <p className="text-sm text-text-secondary mb-2">
+          <p className="text-sm text-medium-grey mb-2">
             {place.city_short}, {place.country}
           </p>
 
@@ -97,7 +97,7 @@ export function ExperienceCard({
             {categories.slice(0, 3).map((category, index) => (
               <span
                 key={index}
-                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-accent border border-accent"
+                className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-primary border border-primary"
               >
                 {category}
               </span>
@@ -106,7 +106,7 @@ export function ExperienceCard({
 
           {/* Description */}
           {description && (
-            <p className="text-sm text-text-secondary line-clamp-2">
+            <p className="text-sm text-medium-grey line-clamp-2">
               {description}
             </p>
           )}

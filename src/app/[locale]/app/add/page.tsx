@@ -68,13 +68,13 @@ export default function AddPage() {
         {/* Location Context - Info Card */}
         {locationState.status === 'idle' && (
           <div className="bg-surface p-md rounded-surface">
-            <h3 className="text-title-m font-bold text-text-primary mb-sm">
+            <h3 className="text-title-m font-bold text-dark-grey mb-sm">
               Enable Location
             </h3>
-            <p className="text-body text-text-secondary mb-md">
+            <p className="text-body text-medium-grey mb-md">
               We use your location to help find nearby places faster.
             </p>
-            <Button onClick={requestGPS} className="w-full h-[52px] bg-accent text-white">
+            <Button onClick={requestGPS} className="w-full h-[52px] bg-primary text-white">
               Enable GPS
             </Button>
           </div>
@@ -82,13 +82,13 @@ export default function AddPage() {
 
         {locationState.status === 'requesting' && (
           <div className="bg-surface p-md rounded-surface">
-            <p className="text-small text-text-secondary">Getting your location...</p>
+            <p className="text-small text-medium-grey">Getting your location...</p>
           </div>
         )}
 
         {locationState.status === 'success' && (
           <div className="bg-surface p-md rounded-surface">
-            <p className="text-small text-accent font-medium">
+            <p className="text-small text-primary font-medium">
               ✓ Location enabled {locationState.city && `(${locationState.city})`}
             </p>
           </div>
@@ -96,7 +96,7 @@ export default function AddPage() {
 
         {/* Place Search */}
         <div>
-          <label className="block text-small text-text-primary mb-2">
+          <label className="block text-small text-dark-grey mb-2">
             Search for a place
           </label>
           <PlaceSearchInput
@@ -118,10 +118,10 @@ export default function AddPage() {
         {/* Selected Place Card */}
         {selectedPlace && (
           <div className="bg-surface p-3 rounded-surface">
-            <p className="text-title-m font-bold text-text-primary">
+            <p className="text-title-m font-bold text-dark-grey">
               {selectedPlace.name}
             </p>
-            <p className="text-small text-text-secondary">
+            <p className="text-small text-medium-grey">
               {selectedPlace.city}, {selectedPlace.country}
             </p>
           </div>
@@ -129,7 +129,7 @@ export default function AddPage() {
 
         {/* Required: Price Range */}
         <div>
-          <label className="block text-title-m font-medium text-text-primary mb-md">
+          <label className="block text-title-m font-medium text-dark-grey mb-md">
             Price Range <span className="text-red-500">*</span>
           </label>
           <PriceRangeSelector
@@ -144,7 +144,7 @@ export default function AddPage() {
 
         {/* Required: Categories */}
         <div>
-          <label className="block text-title-m font-medium text-text-primary mb-md">
+          <label className="block text-title-m font-medium text-dark-grey mb-md">
             Categories <span className="text-red-500">*</span>
           </label>
           <CategorySelector
@@ -164,7 +164,7 @@ export default function AddPage() {
         <div>
           <button
             onClick={() => setShowOptional(!showOptional)}
-            className="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors min-h-[44px]"
+            className="flex items-center gap-2 text-medium-grey hover:text-dark-grey transition-colors min-h-[44px]"
           >
             <span className="text-body">Optional Details</span>
             <svg
@@ -180,7 +180,7 @@ export default function AddPage() {
           {showOptional && (
             <div className="mt-md space-y-md">
               <div>
-                <label className="block text-small text-text-primary mb-2">
+                <label className="block text-small text-dark-grey mb-2">
                   Instagram Handle
                 </label>
                 <Input
@@ -192,7 +192,7 @@ export default function AddPage() {
               </div>
 
               <div>
-                <label className="block text-small text-text-primary mb-2">
+                <label className="block text-small text-dark-grey mb-2">
                   Brief Description
                 </label>
                 <TextArea
@@ -205,7 +205,7 @@ export default function AddPage() {
               </div>
 
               <div>
-                <label className="block text-small text-text-primary mb-2">
+                <label className="block text-small text-dark-grey mb-2">
                   Phone Number
                 </label>
                 <Input
@@ -225,7 +225,7 @@ export default function AddPage() {
           onClick={handleSubmit}
           loading={isPending}
           disabled={isPending || !selectedPlace || !priceRange || categories.length === 0}
-          className="w-full h-[52px] bg-primary text-white rounded-surface disabled:bg-surface disabled:text-text-secondary"
+          className="w-full h-[52px] bg-primary text-white rounded-surface disabled:bg-surface disabled:text-medium-grey"
         >
           Save Place
         </Button>

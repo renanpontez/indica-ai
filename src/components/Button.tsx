@@ -18,9 +18,9 @@ export function Button({
   ...props
 }: ButtonProps) {
   const variantClasses = {
-    primary: 'bg-primary text-white hover:bg-opacity-90',
-    secondary: 'bg-surface text-text-primary hover:bg-opacity-90',
-    outline: 'border-2 border-divider text-text-primary hover:bg-surface',
+    primary: 'bg-primary !text-white hover:bg-primary-600',
+    secondary: 'bg-surface text-dark-grey hover:bg-opacity-90',
+    outline: 'border-2 border-divider text-dark-grey hover:bg-surface',
   };
 
   const sizeClasses = {
@@ -34,7 +34,7 @@ export function Button({
       disabled={disabled || loading}
       className={cn(
         'inline-flex items-center justify-center rounded-surface font-medium transition-colors',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
         'disabled:opacity-50 disabled:cursor-not-allowed',
         variantClasses[variant],
         sizeClasses[size],

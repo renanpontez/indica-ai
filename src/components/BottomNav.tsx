@@ -37,7 +37,7 @@ const navItems: NavItem[] = [
   {
     id: 'add',
     label: 'Add',
-    href: '/add',
+    href: '/app/add',
     icon: (
       <svg
         className="h-6 w-6"
@@ -57,7 +57,7 @@ const navItems: NavItem[] = [
   {
     id: 'profile',
     label: 'Profile',
-    href: '/profile/me', // TODO: Replace with actual user ID
+    href: '/app/profile/me',
     icon: (
       <svg
         className="h-6 w-6"
@@ -124,10 +124,10 @@ export function BottomNav() {
                 className={cn(
                   'flex flex-col items-center justify-center py-2 px-3 min-h-[60px] min-w-[60px]',
                   'transition-colors',
-                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-accent',
+                  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary',
                   active
-                    ? 'text-accent'
-                    : 'text-text-secondary hover:text-text-primary'
+                    ? 'text-primary'
+                    : 'text-medium-grey hover:text-dark-grey'
                 )}
                 aria-label={item.label}
                 aria-current={active ? 'page' : undefined}

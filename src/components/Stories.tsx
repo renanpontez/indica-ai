@@ -59,7 +59,7 @@ export function Stories() {
                 />
               </div>
             </div>
-            <span className="text-xs text-text-primary truncate max-w-[64px]">
+            <span className="text-xs text-dark-grey truncate max-w-[64px]">
               {story.userName}
             </span>
           </button>

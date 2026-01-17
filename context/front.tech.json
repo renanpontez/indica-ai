@@ -1,67 +1,121 @@
 {
   "meta": {
-    "project_name": "Friends Places – Social Recommendations MVP",
+    "project_name": "indica aí – Social Recommendations MVP",
     "project_type": "frontend",
     "phase": "tech",
-    "version": "0.1.0"
+    "version": "0.2.0",
+    "last_updated": "2026-01-17"
   },
   "stack": {
     "runtime": "Node.js (for tooling/dev server)",
-    "framework": "Next.js (App Router) OR Vite + React (choose one per project)",
+    "framework": "Next.js (App Router)",
     "language": "TypeScript",
     "ui_library": "React",
-    "styling": "Tailwind CSS (preferred) or CSS Modules",
+    "styling": "Tailwind CSS",
     "state_management": "React Query / TanStack Query for server state; local component state for UI",
     "forms": "React Hook Form or lightweight controlled components",
-    "bundling": "Next.js built-in or Vite",
-    "testing": "Vitest / Jest + React Testing Library (optional for MVP)"
+    "bundling": "Next.js built-in (Turbopack)",
+    "testing": "Vitest / Jest + React Testing Library (optional for MVP)",
+    "backend": "Supabase (Auth, Database, Storage)",
+    "i18n": "next-intl"
+  },
+  "supabase": {
+    "description": "Supabase provides the complete backend infrastructure for the MVP",
+    "services": {
+      "auth": {
+        "description": "Authentication and user management",
+        "providers": ["Google OAuth", "Email/Password"],
+        "features": ["Session management", "JWT tokens", "User metadata"]
+      },
+      "database": {
+        "description": "PostgreSQL database with Row Level Security",
+        "tables": ["users", "places", "experiences", "bookmarks"],
+        "features": ["RLS policies", "Foreign key relationships", "Indexes"]
+      },
+      "storage": {
+        "description": "File storage for user uploads",
+        "buckets": ["experience-images", "avatars"],
+        "features": ["Public/private buckets", "Image transformations"]
+      }
+    },
+    "packages": {
+      "@supabase/supabase-js": "Core Supabase client",
+      "@supabase/ssr": "Server-side rendering utilities for Next.js"
+    },
+    "environment_variables": {
+      "NEXT_PUBLIC_SUPABASE_URL": "Supabase project URL",
+      "NEXT_PUBLIC_SUPABASE_ANON_KEY": "Supabase anonymous/public key",
+      "SUPABASE_SERVICE_ROLE_KEY": "Server-side only, for admin operations"
+    },
+    "client_utilities": {
+      "lib/supabase/client.ts": "Browser client (createBrowserClient)",
+      "lib/supabase/server.ts": "Server client for API routes (createServerClient)",
+      "lib/supabase/middleware.ts": "Middleware client for auth checks"
+    }
   },
   "architecture": {
     "structure": {
       "suggested_folders": [
-        "app/ or src/pages/ (routes)",
+        "app/[locale]/ (routes with i18n)",
+        "app/api/ (API routes)",
         "components/ (shared UI)",
+        "features/auth/",
         "features/feed/",
         "features/add/",
         "features/profile/",
         "features/experience-detail/",
-        "lib/api/",
+        "lib/supabase/ (Supabase clients)",
+        "lib/api/ (API utilities)",
         "lib/models/",
         "lib/hooks/",
-        "styles/ (if needed)"
+        "lib/utils/",
+        "locales/ (i18n messages)"
       ]
     },
     "principles": [
-      "Feature-first folders (feed, add, profile) instead of huge global components folder.",
-      "Keep all HTTP calls in lib/api; components receive data via hooks.",
-      "Use domain types from lib/models mirroring backend tech_json.",
-      "Avoid unnecessary global state; use React Query for data fetching/caching."
+      "Feature-first folders (feed, add, profile, auth) instead of huge global components folder.",
+      "Use Supabase client directly in React Query hooks or API routes.",
+      "Use domain types from lib/models mirroring Supabase database schema.",
+      "Avoid unnecessary global state; use React Query for data fetching/caching.",
+      "RLS policies enforce data access at the database level.",
+      "API routes are thin wrappers for complex operations or server-side logic."
     ]
   },
   "integration": {
-    "api_base_url": "Configured via env var (e.g. NEXT_PUBLIC_API_BASE_URL).",
-    "http_client": "fetch or minimal wrapper; no heavy client required.",
+    "supabase_url": "Configured via env var NEXT_PUBLIC_SUPABASE_URL",
+    "supabase_anon_key": "Configured via env var NEXT_PUBLIC_SUPABASE_ANON_KEY",
     "contracts": [
-      "Use TypeScript types for ExperienceFeedItem, ExperienceDetail, etc., shared with backend or re-declared consistently.",
+      "Use TypeScript types that match Supabase database schema exactly.",
       "Handle loading, error, and empty states explicitly.",
-      "Never send google_maps_url from frontend; backend owns this field."
+      "Never send google_maps_url from frontend; compute server-side or via database function.",
+      "All authenticated requests include Supabase session automatically."
     ],
     "location_behaviors": {
       "gps": "Use Geolocation API only when starting Quick Add; handle permission denied gracefully.",
-      "ip_fallback": "Call backend endpoint that uses IP geolocation, if available.",
+      "ip_fallback": "Use IP geolocation service (e.g., ipapi, ipinfo).",
       "manual_city": "Show CitySelector component when neither GPS nor IP works."
     }
   },
   "domain_models_frontend": {
     "types": {
       "User": {
-        "id": "string",
+        "id": "string (UUID)",
         "display_name": "string",
         "username": "string",
-        "avatar_url": "string | null"
+        "avatar_url": "string | null",
+        "created_at": "string"
+      },
+      "AuthUser": {
+        "id": "string (UUID, from Supabase auth.users)",
+        "email": "string",
+        "display_name": "string",
+        "username": "string",
+        "avatar_url": "string | null",
+        "provider": "'google' | 'email'",
+        "created_at": "string"
       },
       "Place": {
-        "id": "string",
+        "id": "string (UUID)",
         "google_place_id": "string | null",
         "name": "string",
         "city": "string",
@@ -71,12 +125,13 @@
         "lng": "number | null",
         "instagram_handle": "string | null",
         "google_maps_url": "string | null",
-        "custom": "boolean"
+        "custom": "boolean",
+        "created_at": "string"
       },
       "Experience": {
-        "id": "string",
-        "user_id": "string",
-        "place_id": "string",
+        "id": "string (UUID)",
+        "user_id": "string (UUID)",
+        "place_id": "string (UUID)",
         "price_range": "'$' | '$$' | '$$$' | '$$$$'",
         "categories": "string[]",
         "brief_description": "string | null",
@@ -98,16 +153,18 @@
           "name": "string",
           "city_short": "string",
           "country": "string",
-          "thumbnail_image_url": "string | null"
+          "thumbnail_image_url": "string | null",
+          "instagram": "string | null"
         },
         "price_range": "'$' | '$$' | '$$$' | '$$$$'",
         "categories": "string[]",
-        "time_ago": "string"
+        "time_ago": "string",
+        "description": "string | null"
       },
       "Bookmark": {
-        "id": "string",
-        "user_id": "string",
-        "experience_id": "string",
+        "id": "string (UUID)",
+        "user_id": "string (UUID)",
+        "experience_id": "string (UUID)",
         "created_at": "string"
       }
     },
@@ -130,8 +187,82 @@
       }
     }
   },
+  "database_schema": {
+    "description": "Supabase PostgreSQL tables (defined in Supabase dashboard or migrations)",
+    "tables": {
+      "users": {
+        "description": "User profiles, extends auth.users",
+        "columns": {
+          "id": "UUID PRIMARY KEY REFERENCES auth.users(id)",
+          "display_name": "TEXT NOT NULL",
+          "username": "TEXT UNIQUE NOT NULL",
+          "avatar_url": "TEXT",
+          "created_at": "TIMESTAMPTZ DEFAULT NOW()"
+        },
+        "rls_policies": [
+          "Users can read any profile",
+          "Users can only update their own profile"
+        ]
+      },
+      "places": {
+        "description": "Places/locations",
+        "columns": {
+          "id": "UUID PRIMARY KEY DEFAULT gen_random_uuid()",
+          "google_place_id": "TEXT",
+          "name": "TEXT NOT NULL",
+          "city": "TEXT NOT NULL",
+          "country": "TEXT NOT NULL",
+          "address": "TEXT",
+          "lat": "DECIMAL",
+          "lng": "DECIMAL",
+          "instagram_handle": "TEXT",
+          "google_maps_url": "TEXT",
+          "custom": "BOOLEAN DEFAULT false",
+          "created_at": "TIMESTAMPTZ DEFAULT NOW()"
+        },
+        "rls_policies": [
+          "Anyone can read places",
+          "Authenticated users can create places"
+        ]
+      },
+      "experiences": {
+        "description": "User experiences at places",
+        "columns": {
+          "id": "UUID PRIMARY KEY DEFAULT gen_random_uuid()",
+          "user_id": "UUID REFERENCES users(id) NOT NULL",
+          "place_id": "UUID REFERENCES places(id) NOT NULL",
+          "price_range": "TEXT CHECK (price_range IN ('$', '$$', '$$$', '$$$$'))",
+          "categories": "TEXT[]",
+          "brief_description": "TEXT",
+          "phone_number": "TEXT",
+          "images": "TEXT[]",
+          "visit_date": "DATE",
+          "created_at": "TIMESTAMPTZ DEFAULT NOW()"
+        },
+        "rls_policies": [
+          "Anyone can read experiences",
+          "Users can only create/update/delete their own experiences"
+        ]
+      },
+      "bookmarks": {
+        "description": "User bookmarks on experiences",
+        "columns": {
+          "id": "UUID PRIMARY KEY DEFAULT gen_random_uuid()",
+          "user_id": "UUID REFERENCES users(id) NOT NULL",
+          "experience_id": "UUID REFERENCES experiences(id) NOT NULL",
+          "created_at": "TIMESTAMPTZ DEFAULT NOW()"
+        },
+        "constraints": ["UNIQUE(user_id, experience_id)"],
+        "rls_policies": [
+          "Users can only see their own bookmarks",
+          "Users can only create/delete their own bookmarks"
+        ]
+      }
+    }
+  },
   "ui_components": {
     "global": [
+      "DesktopNav",
       "BottomNav",
       "TopBar",
       "Avatar",
@@ -139,12 +270,21 @@
       "Button",
       "Input",
       "TextArea",
-      "IconButton"
+      "IconButton",
+      "LoadingSpinner",
+      "ErrorMessage"
     ],
     "features": {
+      "auth": [
+        "SignInForm",
+        "SignUpForm",
+        "AuthGuard",
+        "UserMenu"
+      ],
       "feed": [
         "ExperienceCard",
         "ExperienceList",
+        "SectionHeader",
         "FeedEmptyState"
       ],
       "quick_add": [
@@ -167,23 +307,45 @@
         "ExperienceDetailLayout",
         "ImageGallery",
         "MapLinkButton",
-        "BookmarkButton"
+        "BookmarkButton",
+        "MoreFromUser"
       ]
     }
   },
+  "hooks": {
+    "auth": [
+      "useAuth() - Get current authenticated user",
+      "useSession() - Get Supabase session"
+    ],
+    "data": [
+      "useFeed() - Fetch feed experiences",
+      "useExperience(id) - Fetch single experience",
+      "useProfile(userId) - Fetch user profile",
+      "useCreateExperience() - Create new experience mutation",
+      "useToggleBookmark() - Toggle bookmark mutation"
+    ]
+  },
   "non_functional": {
     "performance": [
-      "Use React Suspense or skeletons for loading states (optional).",
-      "Avoid unnecessary re-renders; memoize heavy lists/cards where needed."
+      "Use React Suspense or skeletons for loading states.",
+      "Avoid unnecessary re-renders; memoize heavy lists/cards where needed.",
+      "Use Supabase realtime sparingly (only where needed)."
+    ],
+    "security": [
+      "Never expose SUPABASE_SERVICE_ROLE_KEY to the client.",
+      "Use RLS policies for all data access.",
+      "Validate user input on both client and server.",
+      "Use httpOnly cookies for session storage (via @supabase/ssr)."
     ],
     "accessibility": [
       "All interactive elements must have visible focus states.",
-      "Bottom navigation buttons must have aria-labels and role='tab' where appropriate.",
-      "Ensure color contrast meets AA using provided design_tokens."
+      "Navigation buttons must have aria-labels and role='navigation'.",
+      "Ensure color contrast meets AA using provided design_tokens.",
+      "Minimum 44px touch targets."
     ],
     "responsiveness": [
       "Target common breakpoints: 320–414px (mobile), ~768px (tablet), 1024+ (desktop).",
-      "Max-width container on desktop to avoid overly wide lines (e.g., 960–1200px)."
+      "Max-width container on desktop (1760px)."
     ]
   }
 }

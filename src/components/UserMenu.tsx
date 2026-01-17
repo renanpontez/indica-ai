@@ -1,14 +1,19 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useLocale } from 'next-intl';
+import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { Avatar } from './Avatar';
 
 export function UserMenu() {
   const { user } = useAuth();
+  const router = useRouter();
+  const locale = useLocale();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const supabase = createClient();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -26,7 +31,9 @@ export function UserMenu() {
   if (!user) return null;
 
   const handleSignOut = async () => {
-    await signOut({ callbackUrl: '/auth/signin' });
+    await supabase.auth.signOut();
+    router.push(`/${locale}/auth/signin`);
+    router.refresh();
   };
 
   return (
@@ -53,10 +60,10 @@ export function UserMenu() {
                 size="md"
               />
               <div className="flex-1 min-w-0">
-                <p className="text-text-primary font-medium truncate">
+                <p className="text-dark-grey font-medium truncate">
                   {user.display_name}
                 </p>
-                <p className="text-text-secondary text-[0.85rem] truncate">
+                <p className="text-medium-grey text-[0.85rem] truncate">
                   @{user.username}
                 </p>
               </div>
@@ -66,7 +73,7 @@ export function UserMenu() {
           <div className="p-2">
             <button
               onClick={handleSignOut}
-              className="w-full text-left px-3 py-2 text-text-primary hover:bg-surface rounded-lg transition-colors text-[0.85rem]"
+              className="w-full text-left px-3 py-2 text-dark-grey hover:bg-surface rounded-lg transition-colors text-[0.85rem]"
             >
               Sign out
             </button>

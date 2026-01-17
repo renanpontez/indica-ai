@@ -9,7 +9,7 @@ export function ErrorMessage({ message, className }: ErrorMessageProps) {
   return (
     <div
       className={cn(
-        'rounded-surface bg-surface p-md text-body text-text-secondary',
+        'rounded-surface bg-surface p-md text-body text-medium-grey',
         className
       )}
       role="alert"

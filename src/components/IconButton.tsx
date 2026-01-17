@@ -24,7 +24,7 @@ export function IconButton({
       aria-label={label}
       className={cn(
         'inline-flex items-center justify-center rounded-full',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
         'disabled:opacity-50 disabled:cursor-not-allowed',
         'hover:bg-surface transition-colors',
         sizeClasses[size],

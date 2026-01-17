@@ -22,10 +22,10 @@ export function Chip({
       onClick={onClick}
       className={cn(
         'inline-flex items-center justify-center rounded-chip px-3 py-1.5 text-small font-medium transition-colors',
-        variant === 'default' && 'bg-chip-bg text-text-primary',
-        variant === 'price' && 'bg-surface text-text-secondary',
-        variant === 'outlined' && 'border border-accent text-accent bg-transparent',
-        active && 'bg-accent text-white',
+        variant === 'default' && 'bg-chip-bg text-dark-grey',
+        variant === 'price' && 'bg-surface text-medium-grey',
+        variant === 'outlined' && 'border border-primary text-primary bg-transparent',
+        active && 'bg-primary text-white',
         onClick && 'cursor-pointer hover:bg-opacity-80',
         className
       )}

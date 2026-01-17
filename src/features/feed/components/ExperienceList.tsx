@@ -18,7 +18,7 @@ function SectionHeader({ icon, title, subtitle }: SectionHeaderProps) {
       <div className="p-2 bg-surface rounded-lg">
         {icon === 'bookmark' ? (
           <svg
-            className="h-5 w-5 text-accent"
+            className="h-5 w-5 text-primary"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -32,7 +32,7 @@ function SectionHeader({ icon, title, subtitle }: SectionHeaderProps) {
           </svg>
         ) : (
           <svg
-            className="h-5 w-5 text-accent"
+            className="h-5 w-5 text-primary"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -52,8 +52,8 @@ function SectionHeader({ icon, title, subtitle }: SectionHeaderProps) {
         )}
       </div>
       <div>
-        <h2 className="text-lg font-semibold text-text-primary">{title}</h2>
-        <p className="text-sm text-text-secondary">{subtitle}</p>
+        <h2 className="text-lg font-semibold text-dark-grey">{title}</h2>
+        <p className="text-sm text-medium-grey">{subtitle}</p>
       </div>
     </div>
   );
