@@ -55,7 +55,7 @@ export const mockApi = {
       user_id: 'me',
       place_id: data.place_id || '',
       price_range: data.price_range || '$$',
-      categories: data.categories || [],
+      tags: data.tags || [],
       brief_description: data.brief_description || null,
       phone_number: data.phone_number || null,
       images: data.images || null,
@@ -87,7 +87,7 @@ export const mockApi = {
           thumbnail_image_url: null,
         },
         price_range: newExperience.price_range,
-        categories: newExperience.categories,
+        tags: newExperience.tags,
         time_ago: 'just now',
       };
       mockFeedItems.unshift(feedItem);

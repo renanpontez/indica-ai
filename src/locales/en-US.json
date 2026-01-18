@@ -102,7 +102,7 @@
     "$$$": "Expensive",
     "$$$$": "Very Expensive"
   },
-  "categories": {
+  "tags": {
     "restaurant": "Restaurant",
     "cafe": "Cafe",
     "bar": "Bar",
@@ -116,7 +116,18 @@
     "italian": "Italian",
     "brazilian": "Brazilian",
     "mexican": "Mexican",
-    "french": "French"
+    "french": "French",
+    "nightlife": "Nightlife",
+    "bakery": "Bakery",
+    "brunch": "Brunch",
+    "seafood": "Seafood",
+    "vegetarian": "Vegetarian",
+    "vegan": "Vegan",
+    "fast-food": "Fast Food",
+    "dessert": "Dessert",
+    "asian-fusion": "Asian Fusion",
+    "american": "American",
+    "chinese": "Chinese"
   },
   "fab": {
     "open": "Add new place",
@@ -150,7 +161,8 @@
     },
     "search": {
       "label": "Search for a place",
-      "placeholder": "Search for a place..."
+      "placeholder": "Search for a place...",
+      "noResults": "No places found. Use manual entry to add a new place."
     },
     "manual": {
       "placeName": "Place Name",
@@ -163,7 +175,11 @@
       "countryPlaceholder": "e.g., USA"
     },
     "priceRange": "Price Range",
-    "categories": "Categories",
+    "tags": "Tags",
+    "tagsInput": {
+      "addCustom": "Add tag",
+      "customPlaceholder": "e.g., rooftop"
+    },
     "optional": {
       "title": "Optional Details",
       "instagramHandle": "Instagram Handle",
@@ -179,7 +195,7 @@
       "countryRequired": "Country is required",
       "placeRequired": "Please select a place",
       "priceRangeRequired": "Please select a price range",
-      "categoriesRequired": "Please select at least one category",
+      "tagsRequired": "Please select at least one tag",
       "createPlaceFailed": "Failed to create place. Please try again."
     },
     "images": {
@@ -216,7 +232,7 @@
     "title": "Explore Public Suggestions",
     "subtitle": "Discover amazing places shared by the community",
     "sections": {
-      "categories": "Browse by Category",
+      "tags": "Browse by Tag",
       "cities": "Popular Cities",
       "recent": "Recent Suggestions"
     },
@@ -236,9 +252,9 @@
       "subtitle": "Find places in cities around the world",
       "empty": "No cities with public suggestions yet."
     },
-    "category": {
-      "subtitle": "{count} places in {category}",
-      "empty": "No public suggestions in {category} yet."
+    "tag": {
+      "subtitle": "{count} places in {tag}",
+      "empty": "No public suggestions in {tag} yet."
     }
   },
   "profile": {

@@ -6,13 +6,14 @@ import type {
   Place,
   PlaceSearchResult,
   Bookmark,
+  Tag,
 } from '@/lib/models';
 
 // Explore response type
 export interface ExploreResponse {
   experiences: ExperienceFeedItem[];
   cities: { city: string; country: string; count: number }[];
-  categories: { category: string; count: number }[];
+  tags: { tag: string; count: number }[];
   total: number;
 }
 
@@ -175,19 +176,39 @@ export const api = {
   // Explore - public experiences
   getExplore: async (params?: {
     city?: string;
-    category?: string;
+    tag?: string;
     limit?: number;
     offset?: number;
   }): Promise<ExploreResponse> => {
     const searchParams = new URLSearchParams();
     if (params?.city) searchParams.append('city', params.city);
-    if (params?.category) searchParams.append('category', params.category);
+    if (params?.tag) searchParams.append('tag', params.tag);
     if (params?.limit) searchParams.append('limit', params.limit.toString());
     if (params?.offset) searchParams.append('offset', params.offset.toString());
 
     const url = `/api/explore${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
     const response = await fetch(url);
     if (!response.ok) throw new Error('Failed to fetch explore data');
+    return response.json();
+  },
+
+  // Tags
+  getTags: async (): Promise<Tag[]> => {
+    const response = await fetch('/api/tags');
+    if (!response.ok) throw new Error('Failed to fetch tags');
+    return response.json();
+  },
+
+  createTag: async (slug: string): Promise<Tag> => {
+    const response = await fetch('/api/tags', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug }),
+    });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.error || 'Failed to create tag');
+    }
     return response.json();
   },
 };

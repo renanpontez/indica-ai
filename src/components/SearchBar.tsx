@@ -102,7 +102,7 @@ export function SearchBar() {
   const showUsers = activeTab === 'all' || activeTab === 'users';
 
   return (
-    <div ref={containerRef} className="hidden lg:flex items-center flex-1 justify-center max-w-2xl mx-8">
+    <div ref={containerRef} className="hidden lg:flex items-center flex-1 justify-center max-w-lg mx-8">
       <div className="relative w-full">
         {/* Search Input Bar */}
         <div

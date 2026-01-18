@@ -32,7 +32,7 @@ function formatAndReturnExperience(experience: any) {
       google_maps_url: (experience.places as any)?.google_maps_url || null,
     },
     price_range: experience.price_range || '$$',
-    categories: experience.categories || [],
+    tags: experience.tags || [],
     brief_description: experience.brief_description,
     phone_number: experience.phone_number,
     images: experience.images || [],
@@ -47,7 +47,7 @@ function formatAndReturnExperience(experience: any) {
 const experienceSelect = `
   id,
   price_range,
-  categories,
+  tags,
   brief_description,
   phone_number,
   images,

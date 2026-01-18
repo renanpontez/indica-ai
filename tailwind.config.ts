@@ -34,10 +34,10 @@ const config: Config = {
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       fontSize: {
-        'title-l': '1.4rem',
-        'title-m': '1.2rem',
-        body: '1rem',
-        small: '0.85rem',
+        'title-l': '1.125rem',
+        'title-m': '1rem',
+        body: '.875rem',
+        small: '0.75rem',
       },
       borderRadius: {
         chip: '8px',

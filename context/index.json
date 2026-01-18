@@ -3,7 +3,7 @@
     "name": "Indica Aí - Context Navigation Index",
     "version": "0.2.0",
     "purpose": "Master index for navigating all context documentation files",
-    "last_updated": "2026-01-17",
+    "last_updated": "2026-01-18",
     "architecture": "Next.js + Supabase (Auth, Database, Storage)"
   },
   "navigation": {
@@ -107,7 +107,8 @@
               "Place": "frontend → tech → domain_models → Place",
               "Experience": "frontend → tech → domain_models → Experience",
               "ExperienceFeedItem": "frontend → tech → domain_models → ExperienceFeedItem",
-              "Bookmark": "frontend → tech → domain_models → Bookmark"
+              "Bookmark": "frontend → tech → domain_models → Bookmark",
+              "Tag": "frontend → tech → domain_models → Tag (database-backed tags with i18n)"
             },
             "view_models": {
               "ExperienceCardProps": "Props for experience cards",
@@ -138,7 +139,7 @@
                 "PlaceSuggestionList",
                 "CustomPlaceForm",
                 "PriceRangeSelector",
-                "CategorySelector",
+                "TagSelector",
                 "AdditionalFieldsPanel",
                 "SaveExperienceButton"
               ],
@@ -222,7 +223,7 @@
                   "time_ago",
                   "place_name",
                   "price_range",
-                  "categories",
+                  "tags",
                   "city_short",
                   "instagram_handle_optional",
                   "thumbnail_image_optional"
@@ -230,7 +231,7 @@
                 "constraints": {
                   "image_optional": true,
                   "one_line_place_name": "ellipsis overflow",
-                  "category_chips_scrollable": true
+                  "tag_chips_scrollable": true
                 }
               },
               "empty_state_copy": "Follow friends to discover places they love."
@@ -244,7 +245,7 @@
                 "Optional Enrich",
                 "Save & Broadcast"
               ],
-              "required_fields": ["place", "price_range", "categories"],
+              "required_fields": ["place", "price_range", "tags"],
               "optional_fields": [
                 "instagram_handle",
                 "brief_description",
@@ -270,7 +271,7 @@
                 "place_name",
                 "user_info",
                 "price_range",
-                "categories",
+                "tags",
                 "instagram_handle_optional",
                 "brief_description_optional",
                 "images_gallery_optional",

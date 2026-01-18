@@ -5,7 +5,7 @@ import type { ExperienceDetail, PriceRange } from '@/lib/models';
 const experienceSelect = `
   id,
   price_range,
-  categories,
+  tags,
   brief_description,
   phone_number,
   images,
@@ -71,7 +71,7 @@ export async function getExperience(id: string): Promise<ExperienceDetail | null
       google_maps_url: (experience.places as any)?.google_maps_url || null,
     },
     price_range: (experience.price_range || '$$') as PriceRange,
-    categories: experience.categories || [],
+    tags: experience.tags || [],
     brief_description: experience.brief_description,
     phone_number: experience.phone_number,
     images: experience.images || [],

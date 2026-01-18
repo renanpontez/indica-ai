@@ -7,25 +7,25 @@ import { useExplore } from '@/features/explore/hooks/useExplore';
 import { ExperienceCard } from '@/features/feed/components/ExperienceCard';
 import { Breadcrumb } from '@/components/Breadcrumb';
 
-export default function ExploreCategoryPage() {
+export default function ExploreTagPage() {
   const params = useParams();
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations();
 
   const slug = params.slug as string;
-  const category = slug.charAt(0).toUpperCase() + slug.slice(1);
 
+  // Use slug directly for filtering (tags are stored as slugs)
   const { experiences, total, isLoading, error, loadMore, hasMore } = useExplore({
-    category,
+    tag: slug,
     limit: 20,
   });
 
-  const categoryLabel = t(`categories.${slug}`, { defaultValue: category });
+  const tagLabel = t(`tags.${slug}`, { defaultValue: slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' ') });
 
   const breadcrumbItems = [
     { label: t('nav.explore'), href: '/explore' },
-    { label: categoryLabel },
+    { label: tagLabel },
   ];
 
   if (error) {
@@ -44,10 +44,10 @@ export default function ExploreCategoryPage() {
 
         <div className="mb-8">
           <h1 className="text-2xl md:text-3xl font-bold text-dark-grey mb-2">
-            {categoryLabel}
+            {tagLabel}
           </h1>
           <p className="text-medium-grey">
-            {t('explore.category.subtitle', { count: total, category: categoryLabel })}
+            {t('explore.tag.subtitle', { count: total, tag: tagLabel })}
           </p>
         </div>
 
@@ -79,7 +79,7 @@ export default function ExploreCategoryPage() {
         ) : experiences.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-xl border border-divider">
             <p className="text-medium-grey">
-              {t('explore.category.empty', { category: categoryLabel })}
+              {t('explore.tag.empty', { tag: tagLabel })}
             </p>
             <Link
               href="/explore"

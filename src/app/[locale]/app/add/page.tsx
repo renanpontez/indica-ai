@@ -9,7 +9,7 @@ import { Input } from '@/components/Input';
 import { TextArea } from '@/components/TextArea';
 import { PlaceSearchInput } from '@/features/add/components/PlaceSearchInput';
 import { PriceRangeSelector } from '@/features/add/components/PriceRangeSelector';
-import { CategorySelector } from '@/features/add/components/CategorySelector';
+import { TagSelector } from '@/features/add/components/TagSelector';
 import { ImagePicker } from '@/features/add/components/ImagePicker';
 import { VisibilitySelector } from '@/features/add/components/VisibilitySelector';
 import { useLocationContext } from '@/features/add/hooks/useLocationContext';
@@ -45,7 +45,7 @@ export default function AddPage() {
   // Shared state
   const [selectedPlace, setSelectedPlace] = useState<PlaceSearchResult | null>(null);
   const [priceRange, setPriceRange] = useState<PriceRange | null>(null);
-  const [categories, setCategories] = useState<string[]>([]);
+  const [tags, setTags] = useState<string[]>([]);
   const [instagramHandle, setInstagramHandle] = useState('');
   const [description, setDescription] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -53,7 +53,7 @@ export default function AddPage() {
   const [isCreatingPlace, setIsCreatingPlace] = useState(false);
   const [isUploadingImages, setIsUploadingImages] = useState(false);
   const [images, setImages] = useState<File[]>([]);
-  const [visibility, setVisibility] = useState<ExperienceVisibility>('public');
+  const [visibility, setVisibility] = useState<ExperienceVisibility>('friends_only');
 
   const [showOptional, setShowOptional] = useState(false);
 
@@ -79,7 +79,7 @@ export default function AddPage() {
     }
 
     if (!priceRange) newErrors.priceRange = t('add.errors.priceRangeRequired');
-    if (categories.length === 0) newErrors.categories = t('add.errors.categoriesRequired');
+    if (tags.length === 0) newErrors.tags = t('add.errors.tagsRequired');
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -157,7 +157,7 @@ export default function AddPage() {
       {
         place_id: placeId!,
         price_range: priceRange!,
-        categories,
+        tags,
         brief_description: description || null,
         phone_number: phoneNumber || null,
         images: imageUrls,
@@ -177,7 +177,7 @@ export default function AddPage() {
     isCreatingPlace ||
     isUploadingImages ||
     !priceRange ||
-    categories.length === 0 ||
+    tags.length === 0 ||
     (inputMode === 'search' && !selectedPlace) ||
     (inputMode === 'manual' && (!manualName.trim() || !manualCity.trim() || !manualCountry.trim()));
 
@@ -385,18 +385,18 @@ export default function AddPage() {
           />
         </div>
 
-        {/* Required: Categories */}
+        {/* Required: Tags */}
         <div>
           <label className="block text-title-m font-medium text-dark-grey mb-md">
-            {t('add.categories')} <span className="text-red-500">*</span>
+            {t('add.tags')} <span className="text-red-500">*</span>
           </label>
-          <CategorySelector
-            value={categories}
+          <TagSelector
+            value={tags}
             onChange={(value) => {
-              setCategories(value);
-              setErrors({ ...errors, categories: '' });
+              setTags(value);
+              setErrors({ ...errors, tags: '' });
             }}
-            error={errors.categories}
+            error={errors.tags}
           />
         </div>
 

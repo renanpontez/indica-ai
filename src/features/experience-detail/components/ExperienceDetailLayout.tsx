@@ -8,6 +8,7 @@ import { LocationMap } from './LocationMap';
 import { MapLinkButton } from './MapLinkButton';
 import { BookmarkButton } from './BookmarkButton';
 import { MoreFromUser } from './MoreFromUser';
+import { useTagLabel } from '@/hooks/useTagLabel';
 import type { ExperienceDetail, ExperienceFeedItem } from '@/lib/models';
 import { formatTimeAgo } from '@/lib/utils/format';
 
@@ -28,6 +29,7 @@ export function ExperienceDetailLayout({
   bookmarkId,
   moreFromUser = [],
 }: ExperienceDetailLayoutProps) {
+  const { getTagLabel } = useTagLabel();
   const visitTimeAgo = experience.visit_date
     ? formatTimeAgo(experience.visit_date)
     : null;
@@ -61,11 +63,11 @@ export function ExperienceDetailLayout({
           />
         </div>
 
-        {/* Categories and Share */}
+        {/* Tags and Share */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2 flex-wrap">
-            {experience.categories.map((category, index) => (
-              <Chip key={index} label={category} variant="outlined" />
+            {experience.tags.map((tag, index) => (
+              <Chip key={index} label={getTagLabel(tag)} variant="outlined" />
             ))}
           </div>
 

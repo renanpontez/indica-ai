@@ -26,7 +26,7 @@ function transformExperience(exp: any) {
       instagram: exp.places?.instagram_handle || null,
     },
     price_range: exp.price_range || '$$',
-    categories: exp.categories || [],
+    tags: exp.tags || [],
     time_ago: formatTimeAgo(exp.created_at),
     description: exp.brief_description,
   };
@@ -35,7 +35,7 @@ function transformExperience(exp: any) {
 export interface ExploreResponse {
   experiences: ReturnType<typeof transformExperience>[];
   cities: { city: string; country: string; count: number }[];
-  categories: { category: string; count: number }[];
+  tags: { tag: string; count: number }[];
   total: number;
 }
 
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
 
   // Query parameters for filtering
   const city = searchParams.get('city');
-  const category = searchParams.get('category');
+  const tag = searchParams.get('tag');
   const limit = parseInt(searchParams.get('limit') || '20');
   const offset = parseInt(searchParams.get('offset') || '0');
 
@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
     .select(`
       id,
       price_range,
-      categories,
+      tags,
       brief_description,
       images,
       created_at,
@@ -83,9 +83,9 @@ export async function GET(request: NextRequest) {
     query = query.ilike('places.city', `%${city}%`);
   }
 
-  // Apply category filter if provided
-  if (category) {
-    query = query.contains('categories', [category]);
+  // Apply tag filter if provided
+  if (tag) {
+    query = query.contains('tags', [tag]);
   }
 
   // Apply pagination
@@ -132,21 +132,21 @@ export async function GET(request: NextRequest) {
   });
   const cities = Array.from(cityMap.values()).sort((a, b) => b.count - a.count);
 
-  // Get aggregated categories
-  const { data: categoriesData } = await supabase
+  // Get aggregated tags
+  const { data: tagsData } = await supabase
     .from('experiences')
-    .select('categories')
+    .select('tags')
     .eq('visibility', 'public');
 
-  // Aggregate categories with counts
-  const categoryMap = new Map<string, number>();
-  (categoriesData || []).forEach((exp: any) => {
-    (exp.categories || []).forEach((cat: string) => {
-      categoryMap.set(cat, (categoryMap.get(cat) || 0) + 1);
+  // Aggregate tags with counts
+  const tagMap = new Map<string, number>();
+  (tagsData || []).forEach((exp: any) => {
+    (exp.tags || []).forEach((t: string) => {
+      tagMap.set(t, (tagMap.get(t) || 0) + 1);
     });
   });
-  const categories = Array.from(categoryMap.entries())
-    .map(([category, count]) => ({ category, count }))
+  const tags = Array.from(tagMap.entries())
+    .map(([tag, count]) => ({ tag, count }))
     .sort((a, b) => b.count - a.count);
 
   // Get total count for pagination
@@ -158,7 +158,7 @@ export async function GET(request: NextRequest) {
   return NextResponse.json({
     experiences: transformedExperiences,
     cities,
-    categories,
+    tags,
     total: total || 0,
   });
 }

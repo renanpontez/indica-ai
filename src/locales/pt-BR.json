@@ -101,7 +101,7 @@
     "$$$": "Caro",
     "$$$$": "Muito caro"
   },
-  "categories": {
+  "tags": {
     "restaurant": "Restaurante",
     "cafe": "Café",
     "bar": "Bar",
@@ -115,7 +115,18 @@
     "italian": "Italiano",
     "brazilian": "Brasileiro",
     "mexican": "Mexicano",
-    "french": "Francês"
+    "french": "Francês",
+    "nightlife": "Balada",
+    "bakery": "Padaria",
+    "brunch": "Brunch",
+    "seafood": "Frutos do Mar",
+    "vegetarian": "Vegetariano",
+    "vegan": "Vegano",
+    "fast-food": "Fast Food",
+    "dessert": "Sobremesa",
+    "asian-fusion": "Asiático Fusion",
+    "american": "Americano",
+    "chinese": "Chinês"
   },
   "fab": {
     "open": "Adicionar novo lugar",
@@ -149,7 +160,8 @@
     },
     "search": {
       "label": "Buscar um lugar",
-      "placeholder": "Buscar um lugar..."
+      "placeholder": "Buscar um lugar...",
+      "noResults": "Nenhum lugar encontrado. Use a entrada manual para adicionar um novo lugar."
     },
     "manual": {
       "placeName": "Nome do Lugar",
@@ -162,7 +174,11 @@
       "countryPlaceholder": "ex: Brasil"
     },
     "priceRange": "Faixa de Preço",
-    "categories": "Categorias",
+    "tags": "Tags",
+    "tagsInput": {
+      "addCustom": "Adicionar tag",
+      "customPlaceholder": "ex: rooftop"
+    },
     "optional": {
       "title": "Detalhes Opcionais",
       "instagramHandle": "Instagram",
@@ -178,7 +194,7 @@
       "countryRequired": "País é obrigatório",
       "placeRequired": "Por favor, selecione um lugar",
       "priceRangeRequired": "Por favor, selecione uma faixa de preço",
-      "categoriesRequired": "Por favor, selecione pelo menos uma categoria",
+      "tagsRequired": "Por favor, selecione pelo menos uma tag",
       "createPlaceFailed": "Erro ao criar lugar. Tente novamente."
     },
     "images": {
@@ -215,7 +231,7 @@
     "title": "Explorar Sugestões Públicas",
     "subtitle": "Descubra lugares incríveis compartilhados pela comunidade",
     "sections": {
-      "categories": "Explorar por Categoria",
+      "tags": "Explorar por Tag",
       "cities": "Cidades Populares",
       "recent": "Sugestões Recentes"
     },
@@ -235,9 +251,9 @@
       "subtitle": "Encontre lugares em cidades ao redor do mundo",
       "empty": "Nenhuma cidade com sugestões públicas ainda."
     },
-    "category": {
-      "subtitle": "{count} lugares em {category}",
-      "empty": "Nenhuma sugestão pública em {category} ainda."
+    "tag": {
+      "subtitle": "{count} lugares em {tag}",
+      "empty": "Nenhuma sugestão pública em {tag} ainda."
     }
   },
   "profile": {

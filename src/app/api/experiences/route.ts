@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { place_id, price_range, categories, brief_description, phone_number, images, visit_date } = body;
+  const { place_id, price_range, tags, brief_description, phone_number, images, visit_date } = body;
 
   // Validate required fields
   if (!place_id) {
@@ -21,8 +21,8 @@ export async function POST(request: NextRequest) {
   if (!price_range) {
     return NextResponse.json({ error: 'price_range is required' }, { status: 400 });
   }
-  if (!categories || categories.length === 0) {
-    return NextResponse.json({ error: 'At least one category is required' }, { status: 400 });
+  if (!tags || tags.length === 0) {
+    return NextResponse.json({ error: 'At least one tag is required' }, { status: 400 });
   }
 
   // Create the experience
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
       user_id: user.id,
       place_id,
       price_range,
-      categories,
+      tags,
       brief_description: brief_description || null,
       phone_number: phone_number || null,
       images: images || null,
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     user_id: experience.user_id,
     place_id: experience.place_id,
     price_range: experience.price_range,
-    categories: experience.categories,
+    tags: experience.tags,
     brief_description: experience.brief_description,
     phone_number: experience.phone_number,
     images: experience.images,

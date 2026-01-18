@@ -4,7 +4,7 @@
     "project_type": "frontend",
     "phase": "tech",
     "version": "0.2.0",
-    "last_updated": "2026-01-17"
+    "last_updated": "2026-01-18"
   },
   "stack": {
     "runtime": "Node.js (for tooling/dev server)",
@@ -133,7 +133,7 @@
         "user_id": "string (UUID)",
         "place_id": "string (UUID)",
         "price_range": "'$' | '$$' | '$$$' | '$$$$'",
-        "categories": "string[]",
+        "tags": "string[]",
         "brief_description": "string | null",
         "phone_number": "string | null",
         "images": "string[] | null",
@@ -157,7 +157,7 @@
           "instagram": "string | null"
         },
         "price_range": "'$' | '$$' | '$$$' | '$$$$'",
-        "categories": "string[]",
+        "tags": "string[]",
         "time_ago": "string",
         "description": "string | null"
       },
@@ -178,7 +178,7 @@
         "step": "'location_search' | 'select_place' | 'enrich' | 'review'",
         "place": "Place | null",
         "price_range": "'$' | '$$' | '$$$' | '$$$$' | null",
-        "categories": "string[]",
+        "tags": "string[]",
         "instagram_handle": "string",
         "brief_description": "string",
         "phone_number": "string",
@@ -232,7 +232,7 @@
           "user_id": "UUID REFERENCES users(id) NOT NULL",
           "place_id": "UUID REFERENCES places(id) NOT NULL",
           "price_range": "TEXT CHECK (price_range IN ('$', '$$', '$$$', '$$$$'))",
-          "categories": "TEXT[]",
+          "tags": "TEXT[]",
           "brief_description": "TEXT",
           "phone_number": "TEXT",
           "images": "TEXT[]",
@@ -293,7 +293,7 @@
         "PlaceSuggestionList",
         "CustomPlaceForm",
         "PriceRangeSelector",
-        "CategorySelector",
+        "TagSelector",
         "AdditionalFieldsPanel",
         "SaveExperienceButton"
       ],

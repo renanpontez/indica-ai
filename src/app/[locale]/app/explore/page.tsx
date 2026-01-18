@@ -10,7 +10,7 @@ export default function ExplorePage() {
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations();
-  const { experiences, cities, categories, isLoading, error } = useExplore({ limit: 6 });
+  const { experiences, cities, tags, isLoading, error } = useExplore({ limit: 6 });
 
   if (error) {
     return (
@@ -35,26 +35,26 @@ export default function ExplorePage() {
       </div>
 
       <div className="max-w-6xl mx-auto px-6 py-8 space-y-12">
-        {/* Categories Section */}
-        {categories.length > 0 && (
+        {/* Tags Section */}
+        {tags.length > 0 && (
           <section>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold text-dark-grey">
-                {t('explore.sections.categories')}
+                {t('explore.sections.tags')}
               </h2>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {categories.slice(0, 8).map((cat) => (
+              {tags.slice(0, 8).map((tagItem) => (
                 <Link
-                  key={cat.category}
-                  href={`/explore/category/${cat.category.toLowerCase()}`}
+                  key={tagItem.tag}
+                  href={`/explore/tag/${tagItem.tag}`}
                   className="group p-4 bg-white rounded-xl border border-divider hover:border-primary hover:shadow-md transition-all"
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-medium text-dark-grey group-hover:text-primary transition-colors">
-                      {t(`categories.${cat.category.toLowerCase()}`, { defaultValue: cat.category })}
+                      {t(`tags.${tagItem.tag}`, { defaultValue: tagItem.tag.charAt(0).toUpperCase() + tagItem.tag.slice(1).replace(/-/g, ' ') })}
                     </span>
-                    <span className="text-sm text-medium-grey">{cat.count}</span>
+                    <span className="text-sm text-medium-grey">{tagItem.count}</span>
                   </div>
                 </Link>
               ))}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { api } from '@/lib/api/endpoints';
 
 type LocationState =
@@ -15,6 +15,35 @@ export function useLocationContext() {
   const [locationState, setLocationState] = useState<LocationState>({
     status: 'idle',
   });
+
+  // Check if GPS permission was already granted and auto-fetch location
+  useEffect(() => {
+    if (!navigator.permissions || !navigator.geolocation) return;
+
+    navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+      if (result.state === 'granted') {
+        // Permission already granted, fetch location automatically
+        setLocationState({ status: 'requesting' });
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setLocationState({
+              status: 'success',
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            });
+          },
+          () => {
+            // Even with permission granted, getting position can fail
+            setLocationState({ status: 'gps_denied' });
+          },
+          {
+            timeout: 10000,
+            maximumAge: 300000,
+          }
+        );
+      }
+    });
+  }, []);
 
   const requestGPS = useCallback(async () => {
     if (!navigator.geolocation) {

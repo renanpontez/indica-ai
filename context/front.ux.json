@@ -4,7 +4,7 @@
     "project_type": "frontend",
     "phase": "experience",
     "version": "0.2.0",
-    "last_updated": "2026-01-17"
+    "last_updated": "2026-01-18"
   },
   "ux_reference": {
     "language": "pt-BR (default), en-US",
@@ -135,7 +135,7 @@
           "time_ago",
           "place_name",
           "price_range",
-          "categories",
+          "tags",
           "city_short",
           "instagram_handle_optional",
           "thumbnail_image_optional"
@@ -143,7 +143,7 @@
         "constraints": {
           "image_optional": true,
           "one_line_place_name": true,
-          "category_chips_scrollable": true
+          "tag_chips_scrollable": true
         }
       },
       "empty_state_copy": "Follow friends to discover places they love."
@@ -161,7 +161,7 @@
       "required_fields": [
         "place",
         "price_range",
-        "categories"
+        "tags"
       ],
       "optional_fields": [
         "instagram_handle",
@@ -200,7 +200,7 @@
         "place_name",
         "user_info",
         "price_range",
-        "categories",
+        "tags",
         "instagram_handle_optional",
         "brief_description_optional",
         "images_gallery_optional",
@@ -257,7 +257,7 @@
       "CitySelector",
       "ImageUploader",
       "PriceRangeSelector",
-      "CategorySelector",
+      "TagSelector",
       "LoadingSpinner",
       "ErrorMessage"
     ],

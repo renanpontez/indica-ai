@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
       .select(`
         id,
         brief_description,
-        categories,
+        tags,
         price_range,
         created_at,
         places:place_id (
@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
           experiences (
             id,
             brief_description,
-            categories,
+            tags,
             price_range,
             created_at,
             users:user_id (
@@ -79,7 +79,7 @@ export async function GET(request: NextRequest) {
           id: exp.id,
           slug: generateExperienceSlug(placeName, placeCity),
           brief_description: exp.brief_description,
-          categories: exp.categories || [],
+          tags: exp.tags || [],
           price_range: exp.price_range,
           place: exp.places,
           user: exp.users,
@@ -93,7 +93,7 @@ export async function GET(request: NextRequest) {
               id: exp.id,
               slug: generateExperienceSlug(place.name || '', place.city || ''),
               brief_description: exp.brief_description,
-              categories: exp.categories || [],
+              tags: exp.tags || [],
               price_range: exp.price_range,
               place: {
                 id: place.id,

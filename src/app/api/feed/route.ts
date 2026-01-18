@@ -9,6 +9,10 @@ function transformExperience(exp: any) {
   const placeCity = exp.places?.city || '';
   const slug = generateExperienceSlug(placeName, placeCity);
 
+  // Use first image from experience as thumbnail
+  const images = exp.images || [];
+  const thumbnailImageUrl = images.length > 0 ? images[0] : null;
+
   return {
     id: exp.id,
     experience_id: exp.id,
@@ -23,11 +27,11 @@ function transformExperience(exp: any) {
       name: placeName,
       city_short: placeCity,
       country: exp.places?.country || '',
-      thumbnail_image_url: null,
+      thumbnail_image_url: thumbnailImageUrl,
       instagram: exp.places?.instagram_handle || null,
     },
     price_range: exp.price_range || '$$',
-    categories: exp.categories || [],
+    tags: exp.tags || [],
     time_ago: formatTimeAgo(exp.created_at),
     description: exp.brief_description,
   };
@@ -62,8 +66,9 @@ export async function GET(request: NextRequest) {
       .select(`
         id,
         price_range,
-        categories,
+        tags,
         brief_description,
+        images,
         created_at,
         user_id,
         place_id,
@@ -96,8 +101,9 @@ export async function GET(request: NextRequest) {
     .select(`
       id,
       price_range,
-      categories,
+      tags,
       brief_description,
+      images,
       created_at,
       user_id,
       place_id,
@@ -150,8 +156,9 @@ export async function GET(request: NextRequest) {
       .select(`
         id,
         price_range,
-        categories,
+        tags,
         brief_description,
+        images,
         created_at,
         user_id,
         place_id,

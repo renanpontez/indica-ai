@@ -1,6 +1,7 @@
 'use client';
 
 import { Avatar } from '@/components/Avatar';
+import { useTagLabel } from '@/hooks/useTagLabel';
 import type { ExperienceFeedItem } from '@/lib/models';
 
 interface ExperienceCardProps {
@@ -14,7 +15,8 @@ export function ExperienceCard({
   onClick,
   onBookmarkToggle,
 }: ExperienceCardProps) {
-  const { user, place, price_range, categories, time_ago, description } = experience;
+  const { user, place, price_range, tags, time_ago, description } = experience;
+  const { getTagLabel } = useTagLabel();
 
   return (
     <article
@@ -92,14 +94,14 @@ export function ExperienceCard({
             {place.city_short}, {place.country}
           </p>
 
-          {/* Categories */}
+          {/* Tags */}
           <div className="flex items-center gap-2 flex-wrap mb-2">
-            {categories.slice(0, 3).map((category, index) => (
+            {tags.slice(0, 3).map((tag, index) => (
               <span
                 key={index}
                 className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-primary border border-primary"
               >
-                {category}
+                {getTagLabel(tag)}
               </span>
             ))}
           </div>

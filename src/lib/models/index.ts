@@ -1,5 +1,19 @@
 // Domain Models - Mirror backend contracts exactly
 
+// Tag model for database-backed tags
+export interface Tag {
+  id: string;
+  slug: string;
+  is_system: boolean;
+  created_by: string | null;
+  created_at: string;
+}
+
+// For UI display - combines tag with resolved label
+export interface TagWithLabel extends Tag {
+  label: string; // Resolved from i18n for system tags, or slug for custom tags
+}
+
 export interface User {
   id: string;
   display_name: string;
@@ -42,7 +56,7 @@ export interface Experience {
   user_id: string;
   place_id: string;
   price_range: '$' | '$$' | '$$$' | '$$$$';
-  categories: string[];
+  tags: string[];
   brief_description: string | null;
   phone_number: string | null;
   images: string[] | null;
@@ -74,7 +88,7 @@ export interface ExperienceDetail {
     google_maps_url: string | null;
   };
   price_range: PriceRange;
-  categories: string[];
+  tags: string[];
   brief_description: string | null;
   phone_number: string | null;
   images: string[];
@@ -101,7 +115,7 @@ export interface ExperienceFeedItem {
     instagram?: string | null;
   };
   price_range: '$' | '$$' | '$$$' | '$$$$';
-  categories: string[];
+  tags: string[];
   time_ago: string;
   description?: string | null;
 }
@@ -137,7 +151,7 @@ export interface QuickAddFormState {
   step: QuickAddStep;
   place: Place | null;
   price_range: '$' | '$$' | '$$$' | '$$$$' | null;
-  categories: string[];
+  tags: string[];
   instagram_handle: string;
   brief_description: string;
   phone_number: string;

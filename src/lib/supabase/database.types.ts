@@ -78,7 +78,7 @@ export type Database = {
       experiences: {
         Row: {
           brief_description: string | null
-          categories: string[] | null
+          tags: string[] | null
           created_at: string | null
           id: string
           images: string[] | null
@@ -91,7 +91,7 @@ export type Database = {
         }
         Insert: {
           brief_description?: string | null
-          categories?: string[] | null
+          tags?: string[] | null
           created_at?: string | null
           id?: string
           images?: string[] | null
@@ -104,7 +104,7 @@ export type Database = {
         }
         Update: {
           brief_description?: string | null
-          categories?: string[] | null
+          tags?: string[] | null
           created_at?: string | null
           id?: string
           images?: string[] | null
@@ -212,6 +212,38 @@ export type Database = {
           name?: string
         }
         Relationships: []
+      }
+      tags: {
+        Row: {
+          id: string
+          slug: string
+          is_system: boolean
+          created_by: string | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          slug: string
+          is_system?: boolean
+          created_by?: string | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          slug?: string
+          is_system?: boolean
+          created_by?: string | null
+          created_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tags_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       users: {
         Row: {

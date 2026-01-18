@@ -4,7 +4,7 @@
     "phase": "setup",
     "version": "0.2.0",
     "created": "2026-01-12",
-    "last_updated": "2026-01-17",
+    "last_updated": "2026-01-18",
     "purpose": "Step-by-step setup plan for frontend application with Supabase backend"
   },
   "project_overview": {
@@ -227,7 +227,7 @@
         "google_maps_url": "string | null",
         "custom": "boolean"
       },
-      "ExperienceFeedItem": "Feed item with user, place, price_range, categories, time_ago"
+      "ExperienceFeedItem": "Feed item with user, place, price_range, tags, time_ago"
     }
   },
   "phase_5_supabase_setup": {
@@ -255,7 +255,7 @@
           },
           "experiences": {
             "description": "User experiences at places",
-            "sql": "CREATE TABLE experiences (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,\n  place_id UUID REFERENCES places(id) ON DELETE CASCADE NOT NULL,\n  price_range TEXT CHECK (price_range IN ('$', '$$', '$$$', '$$$$')),\n  categories TEXT[],\n  brief_description TEXT,\n  phone_number TEXT,\n  images TEXT[],\n  visit_date DATE,\n  created_at TIMESTAMPTZ DEFAULT NOW()\n);"
+            "sql": "CREATE TABLE experiences (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,\n  place_id UUID REFERENCES places(id) ON DELETE CASCADE NOT NULL,\n  price_range TEXT CHECK (price_range IN ('$', '$$', '$$$', '$$$$')),\n  tags TEXT[],\n  brief_description TEXT,\n  phone_number TEXT,\n  images TEXT[],\n  visit_date DATE,\n  created_at TIMESTAMPTZ DEFAULT NOW()\n);"
           },
           "bookmarks": {
             "description": "User bookmarks on experiences",
@@ -527,7 +527,7 @@
       {
         "name": "Chip",
         "file": "src/components/Chip.tsx",
-        "props": "label, variant (category, price)",
+        "props": "label, variant (tag, price)",
         "styling": "bg-chip-bg, rounded-chip (12px)"
       },
       {
@@ -646,7 +646,7 @@
         "data": "useFeed() hook with React Query + Supabase",
         "requirements": [
           "Show user avatar, name, time_ago",
-          "Show place name, city, price_range, categories",
+          "Show place name, city, price_range, tags",
           "Optional thumbnail image",
           "Tap to navigate to experience detail",
           "Empty state: 'Follow friends to discover places they love.'"
@@ -680,14 +680,14 @@
           "PlaceSuggestionList",
           "CustomPlaceForm",
           "PriceRangeSelector",
-          "CategorySelector",
+          "TagSelector",
           "AdditionalFieldsPanel",
           "SaveExperienceButton"
         ],
         "flow": [
           "Step 1: Get location context (GPS → IP fallback → Manual city)",
           "Step 2: Search place via API or enter custom",
-          "Step 3: Required fields (price_range, categories)",
+          "Step 3: Required fields (price_range, tags)",
           "Step 4: Optional enrichment (instagram, description, images, phone, visit_date)",
           "Step 5: Save to Supabase and redirect"
         ],

@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { Input } from '@/components/Input';
 import { api } from '@/lib/api/endpoints';
 import type { PlaceSearchResult } from '@/lib/models';
@@ -22,11 +23,20 @@ export function PlaceSearchInput({
   lng,
   disabled,
 }: PlaceSearchInputProps) {
+  const t = useTranslations();
   const [suggestions, setSuggestions] = useState<PlaceSearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  // Track when a place was just selected to prevent dropdown from reopening
+  const justSelectedRef = useRef(false);
 
   useEffect(() => {
+    // If a place was just selected, skip the search
+    if (justSelectedRef.current) {
+      justSelectedRef.current = false;
+      return;
+    }
+
     if (value.length < 2) {
       setSuggestions([]);
       return;
@@ -52,7 +62,7 @@ export function PlaceSearchInput({
   return (
     <div className="relative">
       <Input
-        placeholder="Search for a place..."
+        placeholder={t('add.search.placeholder')}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onFocus={() => value.length >= 2 && setShowSuggestions(true)}
@@ -73,6 +83,7 @@ export function PlaceSearchInput({
             <button
               key={place.id || `google-${place.google_place_id}-${index}`}
               onClick={() => {
+                justSelectedRef.current = true;
                 onPlaceSelect(place);
                 setShowSuggestions(false);
               }}
@@ -99,7 +110,7 @@ export function PlaceSearchInput({
       {showSuggestions && value.length >= 2 && suggestions.length === 0 && !isSearching && (
         <div className="absolute z-10 w-full mt-1 bg-background border border-divider rounded-surface shadow-lg p-3">
           <p className="text-small text-medium-grey">
-            No places found. Use manual entry below to add a new place.
+            {t('add.search.noResults')}
           </p>
         </div>
       )}
