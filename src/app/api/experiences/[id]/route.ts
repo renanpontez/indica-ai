@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { formatTimeAgo, generateExperienceSlug } from '@/lib/utils/format';
 
-function formatAndReturnExperience(experience: any) {
+function formatAndReturnExperience(experience: any, recommendationCount: number) {
   const placeName = (experience.places as any)?.name || 'Unknown Place';
   const placeCity = (experience.places as any)?.city || '';
 
@@ -30,6 +30,7 @@ function formatAndReturnExperience(experience: any) {
       lng: (experience.places as any)?.lng || null,
       instagram_handle: (experience.places as any)?.instagram_handle || null,
       google_maps_url: (experience.places as any)?.google_maps_url || null,
+      recommendation_count: recommendationCount,
     },
     price_range: experience.price_range || '$$',
     tags: experience.tags || [],
@@ -74,6 +75,152 @@ const experienceSelect = `
   )
 `;
 
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  const supabase = await createClient();
+
+  // Get authenticated user
+  const {
+    data: { user: authUser },
+  } = await supabase.auth.getUser();
+
+  if (!authUser) {
+    return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+  }
+
+  // Fetch experience to verify ownership
+  const { data: experience, error: fetchError } = await supabase
+    .from('experiences')
+    .select('user_id')
+    .eq('id', id)
+    .single();
+
+  if (fetchError || !experience) {
+    return NextResponse.json(
+      { error: 'Experience not found' },
+      { status: 404 }
+    );
+  }
+
+  // Verify ownership
+  if (experience.user_id !== authUser.id) {
+    return NextResponse.json(
+      { error: 'Not authorized to edit this experience' },
+      { status: 403 }
+    );
+  }
+
+  try {
+    const body = await request.json();
+    const {
+      price_range,
+      tags,
+      brief_description,
+      phone_number,
+      images,
+      visibility,
+    } = body;
+
+    // Build update object with only provided fields
+    const updateData: Record<string, unknown> = {};
+    if (price_range !== undefined) updateData.price_range = price_range;
+    if (tags !== undefined) updateData.tags = tags;
+    if (brief_description !== undefined)
+      updateData.brief_description = brief_description || null;
+    if (phone_number !== undefined)
+      updateData.phone_number = phone_number || null;
+    if (images !== undefined) updateData.images = images;
+    if (visibility !== undefined) updateData.visibility = visibility;
+
+    // Update experience
+    const { data: updatedExperience, error: updateError } = await supabase
+      .from('experiences')
+      .update(updateData)
+      .eq('id', id)
+      .select(experienceSelect)
+      .single();
+
+    if (updateError) {
+      console.error('Experience update error:', updateError);
+      return NextResponse.json(
+        { error: 'Failed to update experience' },
+        { status: 500 }
+      );
+    }
+
+    // Get recommendation count for the place
+    const placeId =
+      ((updatedExperience.places as Record<string, unknown>)?.id as string) ||
+      updatedExperience.place_id;
+    const { count } = await supabase
+      .from('experiences')
+      .select('*', { count: 'exact', head: true })
+      .eq('place_id', placeId);
+
+    return formatAndReturnExperience(updatedExperience, count ?? 1);
+  } catch {
+    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+  }
+}
+
+export async function DELETE(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  const supabase = await createClient();
+
+  // Get authenticated user
+  const {
+    data: { user: authUser },
+  } = await supabase.auth.getUser();
+
+  if (!authUser) {
+    return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+  }
+
+  // Fetch experience to verify ownership
+  const { data: experience, error: fetchError } = await supabase
+    .from('experiences')
+    .select('user_id')
+    .eq('id', id)
+    .single();
+
+  if (fetchError || !experience) {
+    return NextResponse.json(
+      { error: 'Experience not found' },
+      { status: 404 }
+    );
+  }
+
+  // Verify ownership
+  if (experience.user_id !== authUser.id) {
+    return NextResponse.json(
+      { error: 'Not authorized to delete this experience' },
+      { status: 403 }
+    );
+  }
+
+  // Delete the experience
+  const { error: deleteError } = await supabase
+    .from('experiences')
+    .delete()
+    .eq('id', id);
+
+  if (deleteError) {
+    console.error('Experience delete error:', deleteError);
+    return NextResponse.json(
+      { error: 'Failed to delete experience' },
+      { status: 500 }
+    );
+  }
+
+  return NextResponse.json({ success: true });
+}
+
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -96,5 +243,12 @@ export async function GET(
     return NextResponse.json({ error: 'Failed to fetch experience' }, { status: 500 });
   }
 
-  return formatAndReturnExperience(experience);
+  // Get recommendation count for this place
+  const placeId = (experience.places as any)?.id || experience.place_id;
+  const { count } = await supabase
+    .from('experiences')
+    .select('*', { count: 'exact', head: true })
+    .eq('place_id', placeId);
+
+  return formatAndReturnExperience(experience, count ?? 1);
 }

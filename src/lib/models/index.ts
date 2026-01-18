@@ -33,6 +33,13 @@ export interface Place {
   instagram_handle: string | null;
   google_maps_url: string | null;
   custom: boolean;
+  recommendation_count?: number;
+}
+
+// Place statistics for recommendation counts and popular tags
+export interface PlaceStats {
+  recommendation_count: number;
+  top_tags: string[];
 }
 
 // Place search result that may or may not exist in the database yet
@@ -49,6 +56,7 @@ export interface PlaceSearchResult {
   google_maps_url: string | null;
   custom: boolean;
   source: 'local' | 'google';
+  recommendation_count?: number;
 }
 
 export interface Experience {
@@ -86,6 +94,7 @@ export interface ExperienceDetail {
     lng: number | null;
     instagram_handle: string | null;
     google_maps_url: string | null;
+    recommendation_count?: number;
   };
   price_range: PriceRange;
   tags: string[];
@@ -113,6 +122,7 @@ export interface ExperienceFeedItem {
     country: string;
     thumbnail_image_url: string | null;
     instagram?: string | null;
+    recommendation_count?: number;
   };
   price_range: '$' | '$$' | '$$$' | '$$$$';
   tags: string[];

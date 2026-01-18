@@ -28,6 +28,21 @@ export async function GET(request: NextRequest) {
     console.error('Local place search error:', error);
   }
 
+  // Get recommendation counts for local places
+  const localPlaceIds = (localPlaces || []).map(p => p.id);
+  let recommendationCounts = new Map<string, number>();
+
+  if (localPlaceIds.length > 0) {
+    const { data: experiences } = await supabase
+      .from('experiences')
+      .select('place_id')
+      .in('place_id', localPlaceIds);
+
+    for (const exp of experiences || []) {
+      recommendationCounts.set(exp.place_id, (recommendationCounts.get(exp.place_id) || 0) + 1);
+    }
+  }
+
   // Transform local results to match Place model
   const localResults = (localPlaces || []).map((place) => ({
     id: place.id,
@@ -42,6 +57,7 @@ export async function GET(request: NextRequest) {
     google_maps_url: place.google_maps_url,
     custom: place.custom ?? true,
     source: 'local' as const,
+    recommendation_count: recommendationCounts.get(place.id) || 0,
   }));
 
   // Search Google Places API
@@ -66,6 +82,7 @@ export async function GET(request: NextRequest) {
       google_maps_url: place.google_maps_url,
       custom: false,
       source: 'google' as const,
+      recommendation_count: 0, // New place, no recommendations yet
     }));
 
   // Combine results: local first, then Google

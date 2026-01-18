@@ -204,7 +204,9 @@
       "hint": "Up to {remaining} more photos",
       "maxReached": "Maximum {max} photos reached",
       "uploading": "Uploading photos...",
-      "uploadError": "Failed to upload photos. Please try again."
+      "uploadError": "Failed to upload photos. Please try again.",
+      "compressing": "Optimizing photos...",
+      "compressingHint": "This may take a moment"
     },
     "visibility": {
       "title": "Who can see this?",
@@ -214,7 +216,19 @@
       "friendsOnlyDescription": "Only your followers"
     },
     "creatingPlace": "Creating place...",
-    "savePlace": "Save Place"
+    "savePlace": "Save Place",
+    "existingPlace": {
+      "title": "Place Already Exists",
+      "description": "This place has already been recommended by others. Would you like to add your experience to the same place?",
+      "recommendationCount": "{count} people recommended this",
+      "oftenTaggedAs": "Often tagged as:",
+      "noExistingRecommendations": "Be the first to recommend this place!",
+      "addMyExperience": "Add My Experience",
+      "differentPlace": "This is a Different Place"
+    }
+  },
+  "place": {
+    "recommendationCount": "{count} recs"
   },
   "auth": {
     "signIn": {
@@ -255,6 +269,25 @@
     "tag": {
       "subtitle": "{count} places in {tag}",
       "empty": "No public suggestions in {tag} yet."
+    }
+  },
+  "experience": {
+    "actions": {
+      "menu": "More options",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "edit": {
+      "title": "Edit Experience",
+      "placeNotEditable": "Place information cannot be changed",
+      "save": "Save Changes"
+    },
+    "deleteModal": {
+      "title": "Delete Experience",
+      "message": "Are you sure you want to delete your experience for:",
+      "cancel": "Cancel",
+      "confirm": "Delete",
+      "deleting": "Deleting..."
     }
   },
   "profile": {

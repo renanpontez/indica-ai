@@ -1,6 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 
+// Helper to get recommendation count for a place
+async function getRecommendationCount(supabase: ReturnType<typeof createClient> extends Promise<infer T> ? T : never, placeId: string): Promise<number> {
+  const { count } = await supabase
+    .from('experiences')
+    .select('*', { count: 'exact', head: true })
+    .eq('place_id', placeId);
+  return count ?? 0;
+}
+
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
 
@@ -31,6 +40,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (existingPlace) {
+      const recommendation_count = await getRecommendationCount(supabase, existingPlace.id);
       // Return existing place instead of creating a duplicate
       return NextResponse.json({
         id: existingPlace.id,
@@ -44,6 +54,38 @@ export async function POST(request: NextRequest) {
         instagram_handle: existingPlace.instagram_handle,
         google_maps_url: existingPlace.google_maps_url,
         custom: existingPlace.custom ?? false,
+        recommendation_count,
+      });
+    }
+  }
+
+  // For manual places (no google_place_id), check for existing match by name/city/country
+  if (!google_place_id) {
+    const { data: existingPlace } = await supabase
+      .from('places')
+      .select('*')
+      .ilike('name', name.trim())
+      .ilike('city', city.trim())
+      .ilike('country', country.trim())
+      .eq('custom', true)
+      .single();
+
+    if (existingPlace) {
+      const recommendation_count = await getRecommendationCount(supabase, existingPlace.id);
+      // Return existing manual place instead of creating a duplicate
+      return NextResponse.json({
+        id: existingPlace.id,
+        google_place_id: existingPlace.google_place_id,
+        name: existingPlace.name,
+        city: existingPlace.city,
+        country: existingPlace.country,
+        address: existingPlace.address,
+        lat: existingPlace.lat,
+        lng: existingPlace.lng,
+        instagram_handle: existingPlace.instagram_handle,
+        google_maps_url: existingPlace.google_maps_url,
+        custom: existingPlace.custom ?? true,
+        recommendation_count,
       });
     }
   }
@@ -83,5 +125,6 @@ export async function POST(request: NextRequest) {
     instagram_handle: place.instagram_handle,
     google_maps_url: place.google_maps_url,
     custom: place.custom ?? true,
+    recommendation_count: 0, // Newly created place has no recommendations yet
   });
 }

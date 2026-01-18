@@ -203,7 +203,9 @@
       "hint": "Até {remaining} fotos restantes",
       "maxReached": "Máximo de {max} fotos atingido",
       "uploading": "Enviando fotos...",
-      "uploadError": "Erro ao enviar fotos. Tente novamente."
+      "uploadError": "Erro ao enviar fotos. Tente novamente.",
+      "compressing": "Otimizando fotos...",
+      "compressingHint": "Isso pode levar um momento"
     },
     "visibility": {
       "title": "Quem pode ver?",
@@ -213,7 +215,19 @@
       "friendsOnlyDescription": "Só seus seguidores"
     },
     "creatingPlace": "Criando lugar...",
-    "savePlace": "Salvar Lugar"
+    "savePlace": "Salvar Lugar",
+    "existingPlace": {
+      "title": "Lugar Já Existe",
+      "description": "Este lugar já foi indicado por outras pessoas. Deseja adicionar sua experiência ao mesmo lugar?",
+      "recommendationCount": "{count} pessoas indicaram",
+      "oftenTaggedAs": "Geralmente marcado como:",
+      "noExistingRecommendations": "Seja o primeiro a indicar este lugar!",
+      "addMyExperience": "Adicionar Minha Experiência",
+      "differentPlace": "É um Lugar Diferente"
+    }
+  },
+  "place": {
+    "recommendationCount": "{count}"
   },
   "auth": {
     "signIn": {
@@ -254,6 +268,25 @@
     "tag": {
       "subtitle": "{count} lugares em {tag}",
       "empty": "Nenhuma sugestão pública em {tag} ainda."
+    }
+  },
+  "experience": {
+    "actions": {
+      "menu": "Mais opções",
+      "edit": "Editar",
+      "delete": "Excluir"
+    },
+    "edit": {
+      "title": "Editar Indicação",
+      "placeNotEditable": "As informações do local não podem ser alteradas",
+      "save": "Salvar Alterações"
+    },
+    "deleteModal": {
+      "title": "Excluir Indicação",
+      "message": "Tem certeza que deseja excluir sua indicação de:",
+      "cancel": "Cancelar",
+      "confirm": "Excluir",
+      "deleting": "Excluindo..."
     }
   },
   "profile": {

@@ -93,6 +93,16 @@ export function PlaceSearchInput({
                 <p className="text-body font-medium text-dark-grey flex-1">
                   {place.name}
                 </p>
+                {/* Recommendation count badge */}
+                {place.recommendation_count && place.recommendation_count > 0 && (
+                  <span className="text-xs px-1.5 py-0.5 bg-primary/10 text-primary rounded-full flex items-center gap-1">
+                    <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                      <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                    </svg>
+                    {place.recommendation_count}
+                  </span>
+                )}
                 {place.source === 'google' && (
                   <span className="text-xs px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded">
                     Google

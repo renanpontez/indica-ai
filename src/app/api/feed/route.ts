@@ -4,7 +4,7 @@ import { formatTimeAgo, generateExperienceSlug } from '@/lib/utils/format';
 import { geolocation } from '@vercel/functions';
 
 // Helper function to transform experience data
-function transformExperience(exp: any) {
+function transformExperience(exp: any, recommendationCounts: Map<string, number>) {
   const placeName = exp.places?.name || 'Unknown Place';
   const placeCity = exp.places?.city || '';
   const slug = generateExperienceSlug(placeName, placeCity);
@@ -12,6 +12,8 @@ function transformExperience(exp: any) {
   // Use first image from experience as thumbnail
   const images = exp.images || [];
   const thumbnailImageUrl = images.length > 0 ? images[0] : null;
+
+  const placeId = exp.places?.id || exp.place_id;
 
   return {
     id: exp.id,
@@ -23,18 +25,42 @@ function transformExperience(exp: any) {
       avatar_url: exp.users?.avatar_url || null,
     },
     place: {
-      id: exp.places?.id || exp.place_id,
+      id: placeId,
       name: placeName,
       city_short: placeCity,
       country: exp.places?.country || '',
       thumbnail_image_url: thumbnailImageUrl,
       instagram: exp.places?.instagram_handle || null,
+      recommendation_count: recommendationCounts.get(placeId) ?? 1,
     },
     price_range: exp.price_range || '$$',
     tags: exp.tags || [],
     time_ago: formatTimeAgo(exp.created_at),
     description: exp.brief_description,
   };
+}
+
+// Helper to get recommendation counts for multiple places in one query
+async function getRecommendationCounts(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  placeIds: string[]
+): Promise<Map<string, number>> {
+  const counts = new Map<string, number>();
+  if (placeIds.length === 0) return counts;
+
+  // Get counts for all places in one query using a raw SQL approach
+  const { data } = await supabase
+    .from('experiences')
+    .select('place_id')
+    .in('place_id', placeIds);
+
+  // Count occurrences of each place_id
+  for (const exp of data || []) {
+    const current = counts.get(exp.place_id) || 0;
+    counts.set(exp.place_id, current + 1);
+  }
+
+  return counts;
 }
 
 export async function GET(request: NextRequest) {
@@ -59,7 +85,7 @@ export async function GET(request: NextRequest) {
   }
 
   // Fetch my suggestions (if authenticated)
-  let mySuggestions: any[] = [];
+  let myExperiencesData: any[] = [];
   if (currentUserId) {
     const { data: myExperiences } = await supabase
       .from('experiences')
@@ -89,7 +115,7 @@ export async function GET(request: NextRequest) {
       .order('created_at', { ascending: false })
       .limit(10);
 
-    mySuggestions = (myExperiences || []).map(transformExperience);
+    myExperiencesData = myExperiences || [];
   }
 
   // Fetch community suggestions (other users' experiences)
@@ -146,10 +172,8 @@ export async function GET(request: NextRequest) {
     return false;
   }).slice(0, 20); // Limit to 20 after filtering
 
-  const communitySuggestions = filteredCommunityExperiences.map(transformExperience);
-
   // Fetch nearby places (based on user's city)
-  let nearbyPlaces: any[] = [];
+  let filteredNearbyExperiences: any[] = [];
   if (userCity) {
     const { data: nearbyExperiences } = await supabase
       .from('experiences')
@@ -181,8 +205,8 @@ export async function GET(request: NextRequest) {
       .limit(30); // Fetch more to account for filtering
 
     // Filter out experiences that are already in my suggestions and apply visibility rules
-    const myIds = new Set(mySuggestions.map(e => e.id));
-    nearbyPlaces = (nearbyExperiences || [])
+    const myIds = new Set(myExperiencesData.map((e: any) => e.id));
+    filteredNearbyExperiences = (nearbyExperiences || [])
       .filter((exp: any) => {
         if (myIds.has(exp.id)) return false;
 
@@ -193,9 +217,20 @@ export async function GET(request: NextRequest) {
         }
         return false;
       })
-      .slice(0, 10)
-      .map(transformExperience);
+      .slice(0, 10);
   }
+
+  // Collect all unique place IDs from all experiences
+  const allExperiences = [...myExperiencesData, ...filteredCommunityExperiences, ...filteredNearbyExperiences];
+  const placeIds = [...new Set(allExperiences.map((exp: any) => exp.places?.id || exp.place_id).filter(Boolean))];
+
+  // Fetch recommendation counts for all places in one query
+  const recommendationCounts = await getRecommendationCounts(supabase, placeIds);
+
+  // Transform experiences with recommendation counts
+  const mySuggestions = myExperiencesData.map(exp => transformExperience(exp, recommendationCounts));
+  const communitySuggestions = filteredCommunityExperiences.map(exp => transformExperience(exp, recommendationCounts));
+  const nearbyPlaces = filteredNearbyExperiences.map(exp => transformExperience(exp, recommendationCounts));
 
   return NextResponse.json({
     mySuggestions,

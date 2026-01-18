@@ -98,8 +98,6 @@ export function ExperienceList({
 
   return (
     <div className="space-y-12">
-
-
       {/* Community Suggestions Section */}
       {communitySuggestions.length > 0 && (
         <section>

@@ -94,6 +94,13 @@
       "gps": "Use Geolocation API only when starting Quick Add; handle permission denied gracefully.",
       "ip_fallback": "Use IP geolocation service (e.g., ipapi, ipinfo).",
       "manual_city": "Show CitySelector component when neither GPS nor IP works."
+    },
+    "place_deduplication": {
+      "description": "Places are deduplicated to allow multiple users to recommend the same place. This enables recommendation counts and shared place data.",
+      "google_places": "Deduplicated by google_place_id. If a place with the same google_place_id exists, the existing place is returned.",
+      "manual_places": "Deduplicated by case-insensitive match on name + city + country. Custom places (custom=true) are checked for duplicates.",
+      "recommendation_count": "The count of experiences referencing a place. Displayed in search results, feed cards, and experience details.",
+      "existing_place_modal": "When selecting a place with existing recommendations during Quick Add, a modal shows the recommendation count and top tags, allowing the user to either add their experience to the existing place or create a new one."
     }
   },
   "domain_models_frontend": {
@@ -126,7 +133,18 @@
         "instagram_handle": "string | null",
         "google_maps_url": "string | null",
         "custom": "boolean",
+        "recommendation_count": "number | undefined (count of experiences for this place)",
         "created_at": "string"
+      },
+      "PlaceStats": {
+        "recommendation_count": "number",
+        "top_tags": "string[] (most common tags for this place)"
+      },
+      "PlaceSearchResult": {
+        "extends": "Place",
+        "id": "string | null (null for Google Places not yet saved)",
+        "source": "'local' | 'google'",
+        "recommendation_count": "number | undefined"
       },
       "Experience": {
         "id": "string (UUID)",
@@ -154,7 +172,8 @@
           "city_short": "string",
           "country": "string",
           "thumbnail_image_url": "string | null",
-          "instagram": "string | null"
+          "instagram": "string | null",
+          "recommendation_count": "number | undefined"
         },
         "price_range": "'$' | '$$' | '$$$' | '$$$$'",
         "tags": "string[]",
@@ -295,7 +314,8 @@
         "PriceRangeSelector",
         "TagSelector",
         "AdditionalFieldsPanel",
-        "SaveExperienceButton"
+        "SaveExperienceButton",
+        "ExistingPlaceModal"
       ],
       "profile": [
         "UserHeader",
@@ -310,6 +330,21 @@
         "BookmarkButton",
         "MoreFromUser"
       ]
+    }
+  },
+  "api_routes": {
+    "places": {
+      "POST /api/places": "Create a new place. Deduplicates by google_place_id for Google Places, or by name+city+country for manual entries. Returns recommendation_count.",
+      "GET /api/places/search": "Search places locally and via Google Places API. Returns recommendation_count for local results.",
+      "GET /api/places/match": "Find matching places by name/city/country for manual deduplication. Returns exact_match and similar_matches with recommendation counts.",
+      "GET /api/places/[id]/stats": "Get place statistics: recommendation_count and top_tags (most common tags)."
+    },
+    "experiences": {
+      "POST /api/experiences": "Create a new experience.",
+      "GET /api/experiences/[id]": "Get experience details with recommendation_count for the place."
+    },
+    "feed": {
+      "GET /api/feed": "Get feed with mySuggestions, communitySuggestions, nearbyPlaces. All include recommendation_count per place."
     }
   },
   "hooks": {

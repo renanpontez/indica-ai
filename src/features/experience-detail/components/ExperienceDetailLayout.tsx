@@ -8,6 +8,7 @@ import { LocationMap } from './LocationMap';
 import { MapLinkButton } from './MapLinkButton';
 import { BookmarkButton } from './BookmarkButton';
 import { MoreFromUser } from './MoreFromUser';
+import { ExperienceActions } from './ExperienceActions';
 import { useTagLabel } from '@/hooks/useTagLabel';
 import type { ExperienceDetail, ExperienceFeedItem } from '@/lib/models';
 import { formatTimeAgo } from '@/lib/utils/format';
@@ -19,6 +20,8 @@ interface ExperienceDetailLayoutProps {
   isBookmarked?: boolean;
   bookmarkId?: string;
   moreFromUser?: ExperienceFeedItem[];
+  isOwner?: boolean;
+  locale?: string;
 }
 
 export function ExperienceDetailLayout({
@@ -28,6 +31,8 @@ export function ExperienceDetailLayout({
   isBookmarked,
   bookmarkId,
   moreFromUser = [],
+  isOwner = false,
+  locale = 'en-US',
 }: ExperienceDetailLayoutProps) {
   const { getTagLabel } = useTagLabel();
   const visitTimeAgo = experience.visit_date
@@ -47,11 +52,19 @@ export function ExperienceDetailLayout({
               {place.city}, {place.country}
             </p>
           </div>
-          <MapLinkButton
-            googleMapsUrl={place.google_maps_url}
-            placeName={place.name}
-            variant="primary"
-          />
+          <div className="flex items-center gap-2">
+            <ExperienceActions
+              experienceId={experience.id}
+              placeName={place.name}
+              isOwner={isOwner}
+              locale={locale}
+            />
+            <MapLinkButton
+              googleMapsUrl={place.google_maps_url}
+              placeName={place.name}
+              variant="primary"
+            />
+          </div>
         </div>
 
         {/* Image Gallery */}

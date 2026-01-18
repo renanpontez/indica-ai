@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { Button } from '@/components/Button';
@@ -12,10 +12,11 @@ import { PriceRangeSelector } from '@/features/add/components/PriceRangeSelector
 import { TagSelector } from '@/features/add/components/TagSelector';
 import { ImagePicker } from '@/features/add/components/ImagePicker';
 import { VisibilitySelector } from '@/features/add/components/VisibilitySelector';
+import { ExistingPlaceModal } from '@/features/add/components/ExistingPlaceModal';
 import { useLocationContext } from '@/features/add/hooks/useLocationContext';
 import { useCreateExperience } from '@/features/add/hooks/useCreateExperience';
 import { api } from '@/lib/api/endpoints';
-import type { PlaceSearchResult, PriceRange, ExperienceVisibility } from '@/lib/models';
+import type { PlaceSearchResult, PriceRange, ExperienceVisibility, PlaceStats } from '@/lib/models';
 
 type InputMode = 'search' | 'manual';
 
@@ -56,6 +57,62 @@ export default function AddPage() {
   const [visibility, setVisibility] = useState<ExperienceVisibility>('friends_only');
 
   const [showOptional, setShowOptional] = useState(false);
+
+  // Existing place modal state
+  const [showExistingPlaceModal, setShowExistingPlaceModal] = useState(false);
+  const [pendingPlace, setPendingPlace] = useState<PlaceSearchResult | null>(null);
+  const [placeStats, setPlaceStats] = useState<PlaceStats | null>(null);
+  const [isLoadingStats, setIsLoadingStats] = useState(false);
+
+  // Fetch place stats when modal opens
+  useEffect(() => {
+    if (showExistingPlaceModal && pendingPlace?.id) {
+      setIsLoadingStats(true);
+      fetch(`/api/places/${pendingPlace.id}/stats`)
+        .then((res) => res.json())
+        .then((data) => setPlaceStats(data))
+        .catch(console.error)
+        .finally(() => setIsLoadingStats(false));
+    }
+  }, [showExistingPlaceModal, pendingPlace?.id]);
+
+  const handlePlaceSelect = (place: PlaceSearchResult) => {
+    // If place has existing recommendations, show the modal
+    if (place.recommendation_count && place.recommendation_count > 0) {
+      setPendingPlace(place);
+      setShowExistingPlaceModal(true);
+    } else {
+      // No existing recommendations, select directly
+      setSelectedPlace(place);
+      setSearchQuery(place.name);
+      setErrors({ ...errors, place: '' });
+    }
+  };
+
+  const handleUseExistingPlace = () => {
+    if (pendingPlace) {
+      setSelectedPlace(pendingPlace);
+      setSearchQuery(pendingPlace.name);
+      setErrors({ ...errors, place: '' });
+    }
+    setShowExistingPlaceModal(false);
+    setPendingPlace(null);
+    setPlaceStats(null);
+  };
+
+  const handleCreateNewPlace = () => {
+    // User wants to create a new place instead - switch to manual mode
+    if (pendingPlace) {
+      setInputMode('manual');
+      setManualName(pendingPlace.name);
+      setManualCity(pendingPlace.city);
+      setManualCountry(pendingPlace.country);
+      setManualAddress(pendingPlace.address || '');
+    }
+    setShowExistingPlaceModal(false);
+    setPendingPlace(null);
+    setPlaceStats(null);
+  };
 
   const clearPlaceSelection = () => {
     setSelectedPlace(null);
@@ -264,11 +321,7 @@ export default function AddPage() {
               <PlaceSearchInput
                 value={searchQuery}
                 onChange={setSearchQuery}
-                onPlaceSelect={(place) => {
-                  setSelectedPlace(place);
-                  setSearchQuery(place.name);
-                  setErrors({ ...errors, place: '' });
-                }}
+                onPlaceSelect={handlePlaceSelect}
                 lat={locationState.status === 'success' ? locationState.lat : undefined}
                 lng={locationState.status === 'success' ? locationState.lng : undefined}
               />
@@ -500,6 +553,22 @@ export default function AddPage() {
             : t('add.savePlace')}
         </Button>
       </div>
+
+      {/* Existing Place Modal */}
+      <ExistingPlaceModal
+        isOpen={showExistingPlaceModal}
+        placeName={pendingPlace?.name || ''}
+        placeCity={`${pendingPlace?.city || ''}, ${pendingPlace?.country || ''}`}
+        stats={placeStats}
+        isLoading={isLoadingStats}
+        onUseExisting={handleUseExistingPlace}
+        onCreateNew={handleCreateNewPlace}
+        onClose={() => {
+          setShowExistingPlaceModal(false);
+          setPendingPlace(null);
+          setPlaceStats(null);
+        }}
+      />
     </div>
   );
 }

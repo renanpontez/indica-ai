@@ -442,6 +442,11 @@
         "Check frontend → tech → integration → location_behaviors",
         "Check frontend → ux → screen_specs → quick_add_flow → location_behaviors",
         "Check frontend → setup-plan → location_handling"
+      ],
+      "place_deduplication": [
+        "Check frontend → tech → integration → place_deduplication for overview",
+        "Check frontend → tech → api_routes → places for API endpoints",
+        "Check frontend → tech → domain_models_frontend → PlaceStats for types"
       ]
     }
   },
@@ -454,7 +459,9 @@
     "find_database_schema": "frontend → setup-plan → phase_5_supabase_setup → database_schema",
     "find_auth_setup": "frontend → setup-plan → phase_6_auth",
     "find_build_order": "frontend → setup-plan → phases → phase_9_core_screens → build_order",
-    "check_mvp_scope": "frontend → strategy → scope_frontend → [in_scope|out_of_scope_mvp]"
+    "check_mvp_scope": "frontend → strategy → scope_frontend → [in_scope|out_of_scope_mvp]",
+    "find_api_routes": "frontend → tech → api_routes → [places|experiences|feed]",
+    "find_place_deduplication": "frontend → tech → integration → place_deduplication"
   },
   "critical_cross_references": {
     "domain_models": {

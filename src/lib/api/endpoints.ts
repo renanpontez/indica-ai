@@ -54,6 +54,39 @@ export const api = {
     return response.json();
   },
 
+  updateExperience: async (
+    id: string,
+    data: {
+      price_range?: Experience['price_range'];
+      tags?: string[];
+      brief_description?: string | null;
+      phone_number?: string | null;
+      images?: string[] | null;
+      visibility?: Experience['visibility'];
+    }
+  ): Promise<ExperienceDetail> => {
+    const response = await fetch(`/api/experiences/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.error || 'Failed to update experience');
+    }
+    return response.json();
+  },
+
+  deleteExperience: async (id: string): Promise<void> => {
+    const response = await fetch(`/api/experiences/${id}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.error || 'Failed to delete experience');
+    }
+  },
+
   // Profile
   getUserProfile: async (userId: string): Promise<{
     user: User;

@@ -88,7 +88,7 @@ export default function SignInForm() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="seuemail@.com"
+            placeholder="seuemail@email.com"
             required
             disabled={isLoading}
           />
