@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
+import Image from 'next/image';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { Button } from '@/components/Button';
 import { useTranslations } from 'next-intl';
@@ -58,6 +59,7 @@ export default function EditExperiencePage() {
       setDescription(experience.brief_description || '');
       setPhoneNumber(experience.phone_number || '');
       setExistingImages(experience.images || []);
+      setVisibility(experience.visibility || 'friends_only');
       setInitialized(true);
     }
   }, [experience, initialized]);
@@ -229,10 +231,11 @@ export default function EditExperiencePage() {
               {keptImages.map((url, index) => (
                 <div key={url} className="relative flex-shrink-0">
                   <div className="w-24 h-24 rounded-lg overflow-hidden bg-surface">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <Image
                       src={url}
                       alt={`Image ${index + 1}`}
+                      width={96}
+                      height={96}
                       className="w-full h-full object-cover"
                     />
                   </div>

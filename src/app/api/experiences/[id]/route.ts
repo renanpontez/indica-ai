@@ -38,6 +38,7 @@ function formatAndReturnExperience(experience: any, recommendationCount: number)
     phone_number: experience.phone_number,
     images: experience.images || [],
     visit_date: experience.visit_date,
+    visibility: experience.visibility || 'friends_only',
     time_ago: experience.created_at ? formatTimeAgo(experience.created_at) : 'Unknown',
     created_at: experience.created_at,
   };
@@ -53,6 +54,7 @@ const experienceSelect = `
   phone_number,
   images,
   visit_date,
+  visibility,
   created_at,
   user_id,
   place_id,

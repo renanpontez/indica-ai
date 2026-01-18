@@ -102,6 +102,7 @@ export interface ExperienceDetail {
   phone_number: string | null;
   images: string[];
   visit_date: string | null;
+  visibility: ExperienceVisibility;
   time_ago: string;
   created_at: string | null;
 }
