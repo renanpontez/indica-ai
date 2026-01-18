@@ -10,6 +10,7 @@ import { createClient } from '@/lib/supabase/client';
 import Image from 'next/image';
 import { Avatar } from './Avatar';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { SearchBar } from './SearchBar';
 
 export function DesktopNav() {
   const pathname = usePathname();
@@ -46,7 +47,7 @@ export function DesktopNav() {
 
   return (
     <nav className="sticky top-0 z-50 bg-white border-b border-divider">
-      <div className="2xl:max-w-[1400px] max-w-[1200px] mx-auto px-6 lg:px-10">
+      <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-4">
         <div className="flex items-center justify-between py-5">
           {/* Logo */}
           <Link href={`/${locale}/app`} className="flex items-center gap-2 flex-shrink-0">
@@ -62,38 +63,15 @@ export function DesktopNav() {
             </span>
           </Link>
 
-          {/* TODO: Extract to SearchBar component and fix functionality
-          <div className="hidden lg:flex items-center flex-1 justify-center max-w-2xl mx-8">
-            <div className="flex items-center border border-divider rounded-full shadow-sm hover:shadow-md transition-shadow bg-white">
-              <button className="flex flex-col items-start px-6 py-2 rounded-full hover:bg-surface transition-colors">
-                <span className="text-xs font-semibold text-dark-grey">{t('nav.search.where')}</span>
-                <span className="text-sm text-medium-grey">{t('nav.search.whereSubtext')}</span>
-              </button>
-              <div className="h-8 w-[1px] bg-divider"></div>
-              <button className="flex flex-col items-start px-6 py-2 hover:bg-surface transition-colors">
-                <span className="text-xs font-semibold text-dark-grey">{t('nav.search.who')}</span>
-                <span className="text-sm text-medium-grey">{t('nav.search.whoSubtext')}</span>
-              </button>
-              <button className="flex items-center gap-2 bg-[#FF385C] text-white rounded-full px-4 py-2 ml-2 mr-2 hover:bg-[#E31C5F] transition-colors">
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                <span className="text-sm font-medium">{t('nav.search.searchButton')}</span>
-              </button>
-            </div>
-          </div>
-          */}
+{/* Search Bar - only visible for authenticated users */}
+          {isAuthenticated && <SearchBar />}
 
           {/* Right Side Actions */}
           <div className="flex items-center gap-3 flex-shrink-0">
+            <LanguageSwitcher />
+
             {isLoading || isAuthenticated ? (
               <>
-                <Link
-                  href={`/${locale}/app/add`}
-                  className="hidden lg:block px-4 py-2 text-sm font-semibold text-white bg-primary hover:bg-primary/90 rounded-full transition-colors"
-                >
-                  {t('nav.addPlace')}
-                </Link>
                 <div className="relative" ref={dropdownRef}>
                   <button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -128,7 +106,6 @@ export function DesktopNav() {
                 {t('nav.signUp')}
               </Link>
             )}
-            <LanguageSwitcher />
           </div>
         </div>
 

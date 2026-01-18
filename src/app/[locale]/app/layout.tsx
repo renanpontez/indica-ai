@@ -1,4 +1,5 @@
 import { DesktopNav } from '@/components/DesktopNav';
+import { FloatingActionButton } from '@/components/FloatingActionButton';
 
 export default function AppLayout({
   children,
@@ -9,6 +10,7 @@ export default function AppLayout({
     <>
       <DesktopNav />
       {children}
+      <FloatingActionButton />
     </>
   );
 }

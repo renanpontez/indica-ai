@@ -2,135 +2,378 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { TopBar } from '@/components/TopBar';
+import { Breadcrumb } from '@/components/Breadcrumb';
 import { Button } from '@/components/Button';
+import { useTranslations } from 'next-intl';
 import { Input } from '@/components/Input';
 import { TextArea } from '@/components/TextArea';
 import { PlaceSearchInput } from '@/features/add/components/PlaceSearchInput';
 import { PriceRangeSelector } from '@/features/add/components/PriceRangeSelector';
 import { CategorySelector } from '@/features/add/components/CategorySelector';
+import { ImagePicker } from '@/features/add/components/ImagePicker';
+import { VisibilitySelector } from '@/features/add/components/VisibilitySelector';
 import { useLocationContext } from '@/features/add/hooks/useLocationContext';
 import { useCreateExperience } from '@/features/add/hooks/useCreateExperience';
-import type { Place, PriceRange } from '@/lib/models';
+import { api } from '@/lib/api/endpoints';
+import type { PlaceSearchResult, PriceRange, ExperienceVisibility } from '@/lib/models';
+
+type InputMode = 'search' | 'manual';
 
 export default function AddPage() {
   const router = useRouter();
+  const t = useTranslations();
   const { locationState, requestGPS } = useLocationContext();
   const { mutate: createExperience, isPending } = useCreateExperience();
 
+  const breadcrumbItems = [
+    { label: t('nav.feed'), href: '/app' },
+    { label: t('nav.add') },
+  ];
+
+  // Input mode: search (GPS-based) or manual
+  const [inputMode, setInputMode] = useState<InputMode>('search');
+
+  // Search mode state
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
+
+  // Manual mode state
+  const [manualName, setManualName] = useState('');
+  const [manualAddress, setManualAddress] = useState('');
+  const [manualCity, setManualCity] = useState('');
+  const [manualCountry, setManualCountry] = useState('');
+
+  // Shared state
+  const [selectedPlace, setSelectedPlace] = useState<PlaceSearchResult | null>(null);
   const [priceRange, setPriceRange] = useState<PriceRange | null>(null);
   const [categories, setCategories] = useState<string[]>([]);
   const [instagramHandle, setInstagramHandle] = useState('');
   const [description, setDescription] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isCreatingPlace, setIsCreatingPlace] = useState(false);
+  const [isUploadingImages, setIsUploadingImages] = useState(false);
+  const [images, setImages] = useState<File[]>([]);
+  const [visibility, setVisibility] = useState<ExperienceVisibility>('public');
 
-  const handleSubmit = () => {
+  const [showOptional, setShowOptional] = useState(false);
+
+  const clearPlaceSelection = () => {
+    setSelectedPlace(null);
+    setSearchQuery('');
+    setManualName('');
+    setManualAddress('');
+    setManualCity('');
+    setManualCountry('');
+  };
+
+  const handleSubmit = async () => {
     // Validate required fields
     const newErrors: Record<string, string> = {};
-    if (!selectedPlace) newErrors.place = 'Please select or create a place';
-    if (!priceRange) newErrors.priceRange = 'Please select a price range';
-    if (categories.length === 0) newErrors.categories = 'Please select at least one category';
+
+    if (inputMode === 'manual') {
+      if (!manualName.trim()) newErrors.name = t('add.errors.nameRequired');
+      if (!manualCity.trim()) newErrors.city = t('add.errors.cityRequired');
+      if (!manualCountry.trim()) newErrors.country = t('add.errors.countryRequired');
+    } else {
+      if (!selectedPlace) newErrors.place = t('add.errors.placeRequired');
+    }
+
+    if (!priceRange) newErrors.priceRange = t('add.errors.priceRangeRequired');
+    if (categories.length === 0) newErrors.categories = t('add.errors.categoriesRequired');
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
+    let placeId = selectedPlace?.id;
+
+    // If manual mode or Google Places result (no id), create place first
+    if (inputMode === 'manual' || (inputMode === 'search' && selectedPlace && !selectedPlace.id)) {
+      setIsCreatingPlace(true);
+      try {
+        const placeData = inputMode === 'manual'
+          ? {
+              name: manualName.trim(),
+              city: manualCity.trim(),
+              country: manualCountry.trim(),
+              address: manualAddress.trim() || undefined,
+              instagram_handle: instagramHandle.trim() || undefined,
+            }
+          : {
+              name: selectedPlace!.name,
+              city: selectedPlace!.city,
+              country: selectedPlace!.country,
+              address: selectedPlace!.address || undefined,
+              lat: selectedPlace!.lat || undefined,
+              lng: selectedPlace!.lng || undefined,
+              google_place_id: selectedPlace!.google_place_id || undefined,
+              google_maps_url: selectedPlace!.google_maps_url || undefined,
+            };
+        const newPlace = await api.createPlace(placeData);
+        placeId = newPlace.id;
+      } catch (error) {
+        console.error('Failed to create place:', error);
+        setErrors({ place: t('add.errors.createPlaceFailed') });
+        setIsCreatingPlace(false);
+        return;
+      }
+      setIsCreatingPlace(false);
+    }
+
+    // Upload images if any
+    let imageUrls: string[] | null = null;
+    if (images.length > 0) {
+      setIsUploadingImages(true);
+      try {
+        const formData = new FormData();
+        images.forEach((file) => {
+          formData.append('files', file);
+        });
+
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'Failed to upload images');
+        }
+
+        const { urls } = await response.json();
+        imageUrls = urls;
+      } catch (error) {
+        console.error('Failed to upload images:', error);
+        setErrors({ images: t('add.images.uploadError') });
+        setIsUploadingImages(false);
+        return;
+      }
+      setIsUploadingImages(false);
+    }
+
     // Create experience
     createExperience(
       {
-        place_id: selectedPlace!.id,
+        place_id: placeId!,
         price_range: priceRange!,
         categories,
         brief_description: description || null,
         phone_number: phoneNumber || null,
-        images: null,
+        images: imageUrls,
         visit_date: null,
+        visibility,
       } as any,
       {
         onSuccess: () => {
-          router.push('/');
+          router.push('/app');
         },
       }
     );
   };
 
-  const [showOptional, setShowOptional] = useState(false);
+  const isSubmitDisabled =
+    isPending ||
+    isCreatingPlace ||
+    isUploadingImages ||
+    !priceRange ||
+    categories.length === 0 ||
+    (inputMode === 'search' && !selectedPlace) ||
+    (inputMode === 'manual' && (!manualName.trim() || !manualCity.trim() || !manualCountry.trim()));
 
   return (
     <div className="min-h-screen bg-white pb-24">
-      <TopBar title="Save a Place" showBack />
+      <Breadcrumb items={breadcrumbItems} />
 
       <div className="p-md space-y-md max-w-[600px] mx-auto">
-        {/* Location Context - Info Card */}
-        {locationState.status === 'idle' && (
-          <div className="bg-surface p-md rounded-surface">
-            <h3 className="text-title-m font-bold text-dark-grey mb-sm">
-              Enable Location
-            </h3>
-            <p className="text-body text-medium-grey mb-md">
-              We use your location to help find nearby places faster.
-            </p>
-            <Button onClick={requestGPS} className="w-full h-[52px] bg-primary text-white">
-              Enable GPS
-            </Button>
-          </div>
-        )}
-
-        {locationState.status === 'requesting' && (
-          <div className="bg-surface p-md rounded-surface">
-            <p className="text-small text-medium-grey">Getting your location...</p>
-          </div>
-        )}
-
-        {locationState.status === 'success' && (
-          <div className="bg-surface p-md rounded-surface">
-            <p className="text-small text-primary font-medium">
-              ✓ Location enabled {locationState.city && `(${locationState.city})`}
-            </p>
-          </div>
-        )}
-
-        {/* Place Search */}
-        <div>
-          <label className="block text-small text-dark-grey mb-2">
-            Search for a place
-          </label>
-          <PlaceSearchInput
-            value={searchQuery}
-            onChange={setSearchQuery}
-            onPlaceSelect={(place) => {
-              setSelectedPlace(place);
-              setSearchQuery(place.name);
-              setErrors({ ...errors, place: '' });
+        {/* Input Mode Toggle */}
+        <div className="flex gap-2 p-1 bg-surface rounded-surface">
+          <button
+            onClick={() => {
+              setInputMode('search');
+              clearPlaceSelection();
             }}
-            lat={locationState.status === 'success' ? locationState.lat : undefined}
-            lng={locationState.status === 'success' ? locationState.lng : undefined}
-          />
-          {errors.place && (
-            <p className="mt-1.5 text-small text-red-500">{errors.place}</p>
-          )}
+            className={`flex-1 py-2 px-4 rounded-lg text-body font-medium transition-colors ${
+              inputMode === 'search'
+                ? 'bg-white text-dark-grey shadow-sm'
+                : 'text-medium-grey hover:text-dark-grey'
+            }`}
+          >
+            {t('add.inputMode.search')}
+          </button>
+          <button
+            onClick={() => {
+              setInputMode('manual');
+              clearPlaceSelection();
+            }}
+            className={`flex-1 py-2 px-4 rounded-lg text-body font-medium transition-colors ${
+              inputMode === 'manual'
+                ? 'bg-white text-dark-grey shadow-sm'
+                : 'text-medium-grey hover:text-dark-grey'
+            }`}
+          >
+            {t('add.inputMode.manual')}
+          </button>
         </div>
 
-        {/* Selected Place Card */}
-        {selectedPlace && (
-          <div className="bg-surface p-3 rounded-surface">
-            <p className="text-title-m font-bold text-dark-grey">
-              {selectedPlace.name}
-            </p>
-            <p className="text-small text-medium-grey">
-              {selectedPlace.city}, {selectedPlace.country}
-            </p>
+        {/* Search Mode */}
+        {inputMode === 'search' && (
+          <>
+            {/* Location Context - Info Card */}
+            {locationState.status === 'idle' && (
+              <div className="bg-surface p-md rounded-surface">
+                <h3 className="text-title-m font-bold text-dark-grey mb-sm">
+                  {t('add.location.enableTitle')}
+                </h3>
+                <p className="text-body text-medium-grey mb-md">
+                  {t('add.location.enableDescription')}
+                </p>
+                <Button onClick={requestGPS} className="w-full h-[52px] bg-primary text-white">
+                  {t('add.location.enableButton')}
+                </Button>
+              </div>
+            )}
+
+            {locationState.status === 'requesting' && (
+              <div className="bg-surface p-md rounded-surface">
+                <p className="text-small text-medium-grey">{t('add.location.requesting')}</p>
+              </div>
+            )}
+
+            {locationState.status === 'success' && (
+              <div className="bg-surface p-md rounded-surface">
+                <p className="text-small text-primary font-medium">
+                  {t('add.location.enabled')} {locationState.city && `(${locationState.city})`}
+                </p>
+              </div>
+            )}
+
+            {(locationState.status === 'gps_denied' || locationState.status === 'ip_failed') && (
+              <div className="bg-yellow-50 p-md rounded-surface border border-yellow-200">
+                <p className="text-small text-yellow-800">
+                  {t('add.location.unavailable')}
+                </p>
+              </div>
+            )}
+
+            {/* Place Search */}
+            <div>
+              <label className="block text-small font-medium text-dark-grey mb-2">
+                {t('add.search.label')} <span className="text-red-500">*</span>
+              </label>
+              <PlaceSearchInput
+                value={searchQuery}
+                onChange={setSearchQuery}
+                onPlaceSelect={(place) => {
+                  setSelectedPlace(place);
+                  setSearchQuery(place.name);
+                  setErrors({ ...errors, place: '' });
+                }}
+                lat={locationState.status === 'success' ? locationState.lat : undefined}
+                lng={locationState.status === 'success' ? locationState.lng : undefined}
+              />
+              {errors.place && (
+                <p className="mt-1.5 text-small text-red-500">{errors.place}</p>
+              )}
+            </div>
+
+            {/* Selected Place Card */}
+            {selectedPlace && (
+              <div className="bg-surface p-3 rounded-surface flex justify-between items-start">
+                <div>
+                  <p className="text-title-m font-bold text-dark-grey">
+                    {selectedPlace.name}
+                  </p>
+                  <p className="text-small text-medium-grey">
+                    {selectedPlace.city}, {selectedPlace.country}
+                  </p>
+                </div>
+                <button
+                  onClick={clearPlaceSelection}
+                  className="text-medium-grey hover:text-dark-grey p-1"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Manual Entry Mode */}
+        {inputMode === 'manual' && (
+          <div className="space-y-md">
+            <div>
+              <label className="block text-small font-medium text-dark-grey mb-2">
+                {t('add.manual.placeName')} <span className="text-red-500">*</span>
+              </label>
+              <Input
+                placeholder={t('add.manual.placeNamePlaceholder')}
+                value={manualName}
+                onChange={(e) => {
+                  setManualName(e.target.value);
+                  setErrors({ ...errors, name: '' });
+                }}
+              />
+              {errors.name && (
+                <p className="mt-1.5 text-small text-red-500">{errors.name}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-small font-medium text-dark-grey mb-2">
+                {t('add.manual.address')}
+              </label>
+              <Input
+                placeholder={t('add.manual.addressPlaceholder')}
+                value={manualAddress}
+                onChange={(e) => setManualAddress(e.target.value)}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-md">
+              <div>
+                <label className="block text-small font-medium text-dark-grey mb-2">
+                  {t('add.manual.city')} <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  placeholder={t('add.manual.cityPlaceholder')}
+                  value={manualCity}
+                  onChange={(e) => {
+                    setManualCity(e.target.value);
+                    setErrors({ ...errors, city: '' });
+                  }}
+                />
+                {errors.city && (
+                  <p className="mt-1.5 text-small text-red-500">{errors.city}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-small font-medium text-dark-grey mb-2">
+                  {t('add.manual.country')} <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  placeholder={t('add.manual.countryPlaceholder')}
+                  value={manualCountry}
+                  onChange={(e) => {
+                    setManualCountry(e.target.value);
+                    setErrors({ ...errors, country: '' });
+                  }}
+                />
+                {errors.country && (
+                  <p className="mt-1.5 text-small text-red-500">{errors.country}</p>
+                )}
+              </div>
+            </div>
           </div>
         )}
 
         {/* Required: Price Range */}
         <div>
           <label className="block text-title-m font-medium text-dark-grey mb-md">
-            Price Range <span className="text-red-500">*</span>
+            {t('add.priceRange')} <span className="text-red-500">*</span>
           </label>
           <PriceRangeSelector
             value={priceRange}
@@ -145,7 +388,7 @@ export default function AddPage() {
         {/* Required: Categories */}
         <div>
           <label className="block text-title-m font-medium text-dark-grey mb-md">
-            Categories <span className="text-red-500">*</span>
+            {t('add.categories')} <span className="text-red-500">*</span>
           </label>
           <CategorySelector
             value={categories}
@@ -154,6 +397,29 @@ export default function AddPage() {
               setErrors({ ...errors, categories: '' });
             }}
             error={errors.categories}
+          />
+        </div>
+
+        {/* Images */}
+        <div>
+          <label className="block text-title-m font-medium text-dark-grey mb-md">
+            {t('add.images.title')}
+          </label>
+          <ImagePicker
+            images={images}
+            onChange={setImages}
+            maxImages={5}
+          />
+        </div>
+
+        {/* Visibility */}
+        <div>
+          <label className="block text-title-m font-medium text-dark-grey mb-md">
+            {t('add.visibility.title')}
+          </label>
+          <VisibilitySelector
+            value={visibility}
+            onChange={setVisibility}
           />
         </div>
 
@@ -166,7 +432,7 @@ export default function AddPage() {
             onClick={() => setShowOptional(!showOptional)}
             className="flex items-center gap-2 text-medium-grey hover:text-dark-grey transition-colors min-h-[44px]"
           >
-            <span className="text-body">Optional Details</span>
+            <span className="text-body">{t('add.optional.title')}</span>
             <svg
               className={`h-4 w-4 transition-transform ${showOptional ? 'rotate-180' : ''}`}
               fill="none"
@@ -181,10 +447,10 @@ export default function AddPage() {
             <div className="mt-md space-y-md">
               <div>
                 <label className="block text-small text-dark-grey mb-2">
-                  Instagram Handle
+                  {t('add.optional.instagramHandle')}
                 </label>
                 <Input
-                  placeholder="@amazingplace"
+                  placeholder={t('add.optional.instagramPlaceholder')}
                   value={instagramHandle}
                   onChange={(e) => setInstagramHandle(e.target.value)}
                   className="min-h-[44px]"
@@ -193,10 +459,10 @@ export default function AddPage() {
 
               <div>
                 <label className="block text-small text-dark-grey mb-2">
-                  Brief Description
+                  {t('add.optional.description')}
                 </label>
                 <TextArea
-                  placeholder="What did you love about this place?"
+                  placeholder={t('add.optional.descriptionPlaceholder')}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={3}
@@ -206,11 +472,11 @@ export default function AddPage() {
 
               <div>
                 <label className="block text-small text-dark-grey mb-2">
-                  Phone Number
+                  {t('add.optional.phoneNumber')}
                 </label>
                 <Input
                   type="tel"
-                  placeholder="+1 (555) 123-4567"
+                  placeholder={t('add.optional.phonePlaceholder')}
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   className="min-h-[44px]"
@@ -223,11 +489,15 @@ export default function AddPage() {
         {/* Submit Button */}
         <Button
           onClick={handleSubmit}
-          loading={isPending}
-          disabled={isPending || !selectedPlace || !priceRange || categories.length === 0}
+          loading={isPending || isCreatingPlace || isUploadingImages}
+          disabled={isSubmitDisabled}
           className="w-full h-[52px] bg-primary text-white rounded-surface disabled:bg-surface disabled:text-medium-grey"
         >
-          Save Place
+          {isUploadingImages
+            ? t('add.images.uploading')
+            : isCreatingPlace
+            ? t('add.creatingPlace')
+            : t('add.savePlace')}
         </Button>
       </div>
     </div>

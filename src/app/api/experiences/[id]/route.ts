@@ -1,0 +1,100 @@
+import { NextResponse } from 'next/server';
+import { createClient } from '@/lib/supabase/server';
+import { formatTimeAgo, generateExperienceSlug } from '@/lib/utils/format';
+
+function formatAndReturnExperience(experience: any) {
+  const placeName = (experience.places as any)?.name || 'Unknown Place';
+  const placeCity = (experience.places as any)?.city || '';
+
+  // Generate slug for the experience (without ID, since ID is now in the URL)
+  const slug = generateExperienceSlug(placeName, placeCity);
+
+  // Transform to a detailed experience format
+  const detailedExperience = {
+    id: experience.id,
+    experience_id: experience.id,
+    slug,
+    user: {
+      id: (experience.users as any)?.id || experience.user_id,
+      display_name: (experience.users as any)?.display_name || 'Unknown User',
+      avatar_url: (experience.users as any)?.avatar_url || null,
+      username: (experience.users as any)?.username || null,
+    },
+    place: {
+      id: (experience.places as any)?.id || experience.place_id,
+      name: placeName,
+      city: placeCity,
+      country: (experience.places as any)?.country || '',
+      address: (experience.places as any)?.address || null,
+      lat: (experience.places as any)?.lat || null,
+      lng: (experience.places as any)?.lng || null,
+      instagram_handle: (experience.places as any)?.instagram_handle || null,
+      google_maps_url: (experience.places as any)?.google_maps_url || null,
+    },
+    price_range: experience.price_range || '$$',
+    categories: experience.categories || [],
+    brief_description: experience.brief_description,
+    phone_number: experience.phone_number,
+    images: experience.images || [],
+    visit_date: experience.visit_date,
+    time_ago: experience.created_at ? formatTimeAgo(experience.created_at) : 'Unknown',
+    created_at: experience.created_at,
+  };
+
+  return NextResponse.json(detailedExperience);
+}
+
+const experienceSelect = `
+  id,
+  price_range,
+  categories,
+  brief_description,
+  phone_number,
+  images,
+  visit_date,
+  created_at,
+  user_id,
+  place_id,
+  users:user_id (
+    id,
+    display_name,
+    avatar_url,
+    username
+  ),
+  places:place_id (
+    id,
+    name,
+    city,
+    country,
+    address,
+    lat,
+    lng,
+    instagram_handle,
+    google_maps_url
+  )
+`;
+
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+  const supabase = await createClient();
+
+  // Direct ID lookup
+  const { data: experience, error } = await supabase
+    .from('experiences')
+    .select(experienceSelect)
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    if (error.code === 'PGRST116') {
+      return NextResponse.json({ error: 'Experience not found' }, { status: 404 });
+    }
+    console.error('Experience fetch error:', error);
+    return NextResponse.json({ error: 'Failed to fetch experience' }, { status: 500 });
+  }
+
+  return formatAndReturnExperience(experience);
+}

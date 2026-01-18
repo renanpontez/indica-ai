@@ -1,51 +1,30 @@
 'use client';
 
-import { use, useMemo } from 'react';
-import { TopBar } from '@/components/TopBar';
+import { use } from 'react';
+import { Breadcrumb } from '@/components/Breadcrumb';
 import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { ErrorMessage } from '@/components/ErrorMessage';
 import { ExperienceDetailLayout } from '@/features/experience-detail/components/ExperienceDetailLayout';
 import { useExperience } from '@/features/experience-detail/hooks/useExperience';
-import {
-  mockUsers,
-  mockPlaces,
-  mockFeedItems,
-} from '@/lib/api/mock-data';
+import { useTranslations } from 'next-intl';
 
 export default function ExperienceDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; slug: string }>;
 }) {
   const { id } = use(params);
   const { data: experience, isLoading, error } = useExperience(id);
+  const t = useTranslations();
 
-  // Find related data from mock data
-  const user = useMemo(() => {
-    if (!experience) return null;
-    return mockUsers.find((u) => u.id === experience.user_id) || mockUsers[0];
-  }, [experience]);
-
-  const place = useMemo(() => {
-    if (!experience) return null;
-    return mockPlaces.find((p) => p.id === experience.place_id) || mockPlaces[0];
-  }, [experience]);
-
-  // Get more experiences from the same user (excluding current)
-  const moreFromUser = useMemo(() => {
-    if (!experience) return [];
-    return mockFeedItems
-      .filter(
-        (item) =>
-          item.user.id === experience.user_id &&
-          item.experience_id !== experience.id
-      )
-      .slice(0, 3);
-  }, [experience]);
+  const breadcrumbItems = [
+    { label: t('nav.feed'), href: '/app' },
+    { label: experience?.place?.name || t('common.loading') },
+  ];
 
   return (
     <div className="min-h-screen bg-background">
-      <TopBar showBack title="" />
+      <Breadcrumb items={breadcrumbItems} />
 
       {isLoading && (
         <div className="flex justify-center items-center min-h-[50vh]">
@@ -65,13 +44,13 @@ export default function ExperienceDetailPage({
         </div>
       )}
 
-      {experience && user && place && (
+      {experience && (
         <ExperienceDetailLayout
           experience={experience}
-          user={user}
-          place={place}
+          user={experience.user}
+          place={experience.place}
           isBookmarked={false}
-          moreFromUser={moreFromUser}
+          moreFromUser={[]}
         />
       )}
     </div>

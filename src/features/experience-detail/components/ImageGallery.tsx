@@ -13,116 +13,157 @@ interface ImageGalleryProps {
 export function ImageGallery({ images, placeName, priceRange }: ImageGalleryProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Placeholder images for demo purposes when no images provided
-  const placeholderImages = [
-    'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800&h=600&fit=crop',
-    'https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=800&h=600&fit=crop',
-    'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&h=600&fit=crop',
-  ];
-
-  const displayImages = images.length > 0 ? images : placeholderImages;
+  const hasImages = images && images.length > 0;
+  const hasMultipleImages = hasImages && images.length > 1;
 
   const goToPrevious = () => {
-    setCurrentIndex((prev) => (prev === 0 ? displayImages.length - 1 : prev - 1));
+    if (!hasMultipleImages) return;
+    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   };
 
   const goToNext = () => {
-    setCurrentIndex((prev) => (prev === displayImages.length - 1 ? 0 : prev + 1));
+    if (!hasMultipleImages) return;
+    setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
+  // Fallback: No images - show placeholder
+  if (!hasImages) {
+    return (
+      <div className="relative w-full">
+        <div className="aspect-[16/9] md:aspect-[21/9] rounded-xl overflow-hidden bg-gradient-to-br from-surface to-divider flex items-center justify-center">
+          <div className="text-center p-8">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/50 flex items-center justify-center">
+              <svg className="w-8 h-8 text-medium-grey" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <p className="text-medium-grey text-body font-medium">{placeName}</p>
+            <p className="text-medium-grey/70 text-small mt-1">No photos available</p>
+          </div>
+          {/* Price Badge */}
+          {priceRange && (
+            <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-4 py-1.5 rounded-full text-small font-medium text-dark-grey shadow-sm">
+              {priceRange}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Single image layout
+  if (!hasMultipleImages) {
+    return (
+      <div className="relative w-full">
+        <div className="aspect-[16/9] md:aspect-[21/9] rounded-xl overflow-hidden bg-surface">
+          <img
+            src={images[0]}
+            alt={placeName}
+            className="h-full w-full object-cover"
+          />
+          {/* Price Badge */}
+          {priceRange && (
+            <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-4 py-1.5 rounded-full text-small font-medium text-dark-grey shadow-sm">
+              {priceRange}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Multiple images layout with side preview
   return (
     <div className="relative w-full">
-      <div className="flex gap-3">
+      <div className="flex gap-2 md:gap-3">
         {/* Main Image */}
-        <div className="relative flex-1 aspect-[4/3] rounded-xl overflow-hidden bg-surface">
+        <div className="relative flex-1 aspect-[4/3] md:aspect-[16/10] rounded-xl overflow-hidden bg-surface">
           <img
-            src={displayImages[currentIndex]}
+            src={images[currentIndex]}
             alt={`${placeName} - Image ${currentIndex + 1}`}
             className="h-full w-full object-cover"
           />
 
           {/* Price Badge */}
           {priceRange && (
-            <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-sm px-4 py-1.5 rounded-full text-small font-medium text-dark-grey shadow-sm">
+            <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-4 py-1.5 rounded-full text-small font-medium text-dark-grey shadow-sm">
               {priceRange}
             </div>
           )}
 
           {/* Navigation Arrows */}
-          {displayImages.length > 1 && (
-            <>
-              <button
-                onClick={goToPrevious}
-                className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-dark-grey rounded-full p-2 transition-colors shadow-sm"
-                aria-label="Previous image"
-              >
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
+          <button
+            onClick={goToPrevious}
+            className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-dark-grey rounded-full p-2 transition-colors shadow-sm"
+            aria-label="Previous image"
+          >
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
 
-              <button
-                onClick={goToNext}
-                className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-dark-grey rounded-full p-2 transition-colors shadow-sm"
-                aria-label="Next image"
-              >
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </>
-          )}
+          <button
+            onClick={goToNext}
+            className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-dark-grey rounded-full p-2 transition-colors shadow-sm"
+            aria-label="Next image"
+          >
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+
+          {/* Image Counter - Mobile */}
+          <div className="absolute bottom-3 right-3 md:hidden bg-black/60 text-white text-small px-2 py-1 rounded-md">
+            {currentIndex + 1} / {images.length}
+          </div>
         </div>
 
-        {/* Thumbnail Sidebar - Only show on desktop with multiple images */}
-        {displayImages.length > 1 && (
-          <div className="hidden md:flex flex-col gap-3 w-28">
-            {displayImages.slice(0, 3).map((image, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentIndex(index)}
-                className={cn(
-                  'aspect-square rounded-lg overflow-hidden transition-all',
-                  index === currentIndex
-                    ? 'ring-2 ring-primary ring-offset-2'
-                    : 'opacity-70 hover:opacity-100'
-                )}
-                aria-label={`View image ${index + 1}`}
-              >
-                <img
-                  src={image}
-                  alt={`${placeName} thumbnail ${index + 1}`}
-                  className="h-full w-full object-cover"
-                />
-              </button>
-            ))}
-            {displayImages.length > 3 && (
-              <div className="aspect-square rounded-lg bg-surface flex items-center justify-center text-medium-grey text-small font-medium">
-                +{displayImages.length - 3}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Mobile Dots */}
-      {displayImages.length > 1 && (
-        <div className="flex md:hidden justify-center gap-2 mt-3">
-          {displayImages.map((_, index) => (
+        {/* Thumbnail Sidebar - Desktop only */}
+        <div className="hidden md:flex flex-col gap-2 w-32 lg:w-40">
+          {images.slice(0, 4).map((image, index) => (
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
               className={cn(
-                'h-2 rounded-full transition-all',
+                'relative flex-1 min-h-0 rounded-lg overflow-hidden transition-all',
                 index === currentIndex
-                  ? 'bg-primary w-6'
-                  : 'bg-divider w-2 hover:bg-text-secondary'
+                  ? 'ring-2 ring-primary ring-offset-2'
+                  : 'opacity-70 hover:opacity-100'
               )}
-              aria-label={`Go to image ${index + 1}`}
-            />
+              aria-label={`View image ${index + 1}`}
+            >
+              <img
+                src={image}
+                alt={`${placeName} thumbnail ${index + 1}`}
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+              {/* Show "+X more" overlay on last visible thumbnail if there are more images */}
+              {index === 3 && images.length > 4 && (
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                  <span className="text-white font-medium">+{images.length - 4}</span>
+                </div>
+              )}
+            </button>
           ))}
         </div>
-      )}
+      </div>
+
+      {/* Mobile Dots */}
+      <div className="flex md:hidden justify-center gap-2 mt-3">
+        {images.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentIndex(index)}
+            className={cn(
+              'h-2 rounded-full transition-all',
+              index === currentIndex
+                ? 'bg-primary w-6'
+                : 'bg-divider w-2 hover:bg-medium-grey'
+            )}
+            aria-label={`Go to image ${index + 1}`}
+          />
+        ))}
+      </div>
     </div>
   );
 }

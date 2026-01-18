@@ -7,7 +7,7 @@ import { FeedEmptyState } from './FeedEmptyState';
 import type { ExperienceFeedItem } from '@/lib/models';
 
 interface SectionHeaderProps {
-  icon: 'bookmark' | 'location';
+  icon: 'bookmark' | 'location' | 'users';
   title: string;
   subtitle: string;
 }
@@ -28,6 +28,20 @@ function SectionHeader({ icon, title, subtitle }: SectionHeaderProps) {
               strokeLinecap="round"
               strokeLinejoin="round"
               d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+            />
+          </svg>
+        ) : icon === 'users' ? (
+          <svg
+            className="h-5 w-5 text-primary"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
             />
           </svg>
         ) : (
@@ -60,51 +74,82 @@ function SectionHeader({ icon, title, subtitle }: SectionHeaderProps) {
 }
 
 interface ExperienceListProps {
-  experiences: ExperienceFeedItem[];
+  mySuggestions: ExperienceFeedItem[];
+  communitySuggestions: ExperienceFeedItem[];
+  nearbyPlaces: ExperienceFeedItem[];
+  userCity: string | null;
 }
 
-export function ExperienceList({ experiences }: ExperienceListProps) {
+export function ExperienceList({
+  mySuggestions,
+  communitySuggestions,
+  nearbyPlaces,
+  userCity,
+}: ExperienceListProps) {
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations();
 
-  if (experiences.length === 0) {
+  const isEmpty = mySuggestions.length === 0 && communitySuggestions.length === 0 && nearbyPlaces.length === 0;
+
+  if (isEmpty) {
     return <FeedEmptyState />;
   }
 
-  // Split experiences into two sections for demo purposes
-  const friendsSuggestions = experiences.slice(0, Math.ceil(experiences.length / 2));
-  const nearbyPlaces = experiences.slice(Math.ceil(experiences.length / 2));
-
   return (
     <div className="space-y-12">
-      {/* Friends Suggestions Section */}
-      <section>
-        <SectionHeader
-          icon="bookmark"
-          title={t('home.sections.friendsSuggestions')}
-          subtitle={t('home.sections.friendsSuggestionsSubtitle')}
-        />
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-          {friendsSuggestions.map((experience) => (
-            <ExperienceCard
-              key={experience.id}
-              experience={experience}
-              onClick={() => router.push(`/${locale}/app/experience/${experience.experience_id}`)}
-              onBookmarkToggle={() => {
-                console.log('Toggle bookmark for', experience.id);
-              }}
-            />
-          ))}
-        </div>
-      </section>
+      {/* My Suggestions Section */}
+      {mySuggestions.length > 0 && (
+        <section>
+          <SectionHeader
+            icon="bookmark"
+            title={t('home.sections.mySuggestions')}
+            subtitle={t('home.sections.mySuggestionsSubtitle')}
+          />
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6">
+            {mySuggestions.map((experience) => (
+              <ExperienceCard
+                key={experience.id}
+                experience={experience}
+                onClick={() => router.push(`/${locale}/app/experience/${experience.experience_id}/${experience.slug}`)}
+                onBookmarkToggle={() => {
+                  console.log('Toggle bookmark for', experience.id);
+                }}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Community Suggestions Section */}
+      {communitySuggestions.length > 0 && (
+        <section>
+          <SectionHeader
+            icon="users"
+            title={t('home.sections.communitySuggestions')}
+            subtitle={t('home.sections.communitySuggestionsSubtitle')}
+          />
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            {communitySuggestions.map((experience) => (
+              <ExperienceCard
+                key={experience.id}
+                experience={experience}
+                onClick={() => router.push(`/${locale}/app/experience/${experience.experience_id}/${experience.slug}`)}
+                onBookmarkToggle={() => {
+                  console.log('Toggle bookmark for', experience.id);
+                }}
+              />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Nearby Places Section */}
       {nearbyPlaces.length > 0 && (
         <section>
           <SectionHeader
             icon="location"
-            title={t('home.sections.nearbyPlaces')}
+            title={userCity ? t('home.sections.nearbyPlacesCity', { city: userCity }) : t('home.sections.nearbyPlaces')}
             subtitle={t('home.sections.nearbyPlacesSubtitle')}
           />
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -112,7 +157,7 @@ export function ExperienceList({ experiences }: ExperienceListProps) {
               <ExperienceCard
                 key={experience.id}
                 experience={experience}
-                onClick={() => router.push(`/${locale}/app/experience/${experience.experience_id}`)}
+                onClick={() => router.push(`/${locale}/app/experience/${experience.experience_id}/${experience.slug}`)}
                 onBookmarkToggle={() => {
                   console.log('Toggle bookmark for', experience.id);
                 }}

@@ -15,7 +15,7 @@ export function TopBar({ title, showBack = false, showUserMenu = true }: TopBarP
 
   return (
     <header className="bg-background border-b border-divider">
-      <div className="mx-auto max-w-7xl px-4 py-4">
+      <div className="mx-auto max-w-[1000px] [lg:max-w-[1440px] px-4 py-4">
         <div className="flex items-center gap-3">
           {showBack && (
             <IconButton
@@ -45,7 +45,6 @@ export function TopBar({ title, showBack = false, showUserMenu = true }: TopBarP
             </h1>
           )}
           {!title && <div className="flex-1" />}
-          {showUserMenu && <UserMenu />}
         </div>
       </div>
     </header>

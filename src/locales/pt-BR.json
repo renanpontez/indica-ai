@@ -50,7 +50,14 @@
       "who": "Quem",
       "whoSubtext": "Adicionar amigos",
       "searchButton": "Buscar",
-      "placeholder": "Buscar lugares, cidades ou amigos..."
+      "placeholder": "Buscar lugares, cidades ou amigos...",
+      "hint": "Digite pelo menos 2 caracteres para buscar",
+      "noResults": "Nenhum resultado encontrado",
+      "tabs": {
+        "all": "Todos",
+        "experiences": "Lugares",
+        "people": "Pessoas"
+      }
     },
     "addPlace": "Nova indicação",
     "signUp": "Criar conta grátis",
@@ -65,9 +72,12 @@
     "title": "Lugares que seus amigos amam",
     "subtitle": "Descubra e explore recomendações da sua rede",
     "sections": {
-      "friendsSuggestions": "Sugestões dos seus amigos",
-      "friendsSuggestionsSubtitle": "Lugares que seus amigos amam",
+      "mySuggestions": "Minhas Indicações",
+      "mySuggestionsSubtitle": "Lugares que você indicou",
+      "communitySuggestions": "Indicações da Comunidade",
+      "communitySuggestionsSubtitle": "Descubra lugares da comunidade",
       "nearbyPlaces": "Próximo a sua localização",
+      "nearbyPlacesCity": "Lugares em {city}",
       "nearbyPlacesSubtitle": "Lugares perto de você"
     }
   },
@@ -108,11 +118,87 @@
     "mexican": "Mexicano",
     "french": "Francês"
   },
+  "fab": {
+    "open": "Adicionar novo lugar",
+    "close": "Fechar menu",
+    "categories": {
+      "restaurant": "Restaurante",
+      "hotel": "Hotel",
+      "bar": "Bar",
+      "cafe": "Café",
+      "experience": "Experiência"
+    }
+  },
   "feed": {
     "empty": {
       "title": "Nenhuma recomendação ainda",
       "subtitle": "Seja o primeiro a adicionar um lugar que você ama!"
     }
+  },
+  "add": {
+    "inputMode": {
+      "search": "Buscar",
+      "manual": "Manual"
+    },
+    "location": {
+      "enableTitle": "Ativar Localização",
+      "enableDescription": "Ative o GPS para encontrar lugares próximos mais rápido.",
+      "enableButton": "Ativar GPS",
+      "requesting": "Obtendo sua localização...",
+      "enabled": "Localização ativada",
+      "unavailable": "Localização indisponível. Você ainda pode buscar ou usar entrada manual."
+    },
+    "search": {
+      "label": "Buscar um lugar",
+      "placeholder": "Buscar um lugar..."
+    },
+    "manual": {
+      "placeName": "Nome do Lugar",
+      "placeNamePlaceholder": "ex: Blue Bottle Coffee",
+      "address": "Endereço",
+      "addressPlaceholder": "ex: Rua das Flores, 123",
+      "city": "Cidade",
+      "cityPlaceholder": "ex: São Paulo",
+      "country": "País",
+      "countryPlaceholder": "ex: Brasil"
+    },
+    "priceRange": "Faixa de Preço",
+    "categories": "Categorias",
+    "optional": {
+      "title": "Detalhes Opcionais",
+      "instagramHandle": "Instagram",
+      "instagramPlaceholder": "@lugarincrivel",
+      "description": "Breve Descrição",
+      "descriptionPlaceholder": "O que você amou nesse lugar?",
+      "phoneNumber": "Telefone",
+      "phonePlaceholder": "+55 (11) 99999-9999"
+    },
+    "errors": {
+      "nameRequired": "Nome é obrigatório",
+      "cityRequired": "Cidade é obrigatória",
+      "countryRequired": "País é obrigatório",
+      "placeRequired": "Por favor, selecione um lugar",
+      "priceRangeRequired": "Por favor, selecione uma faixa de preço",
+      "categoriesRequired": "Por favor, selecione pelo menos uma categoria",
+      "createPlaceFailed": "Erro ao criar lugar. Tente novamente."
+    },
+    "images": {
+      "title": "Fotos",
+      "upload": "Adicionar fotos",
+      "hint": "Até {remaining} fotos restantes",
+      "maxReached": "Máximo de {max} fotos atingido",
+      "uploading": "Enviando fotos...",
+      "uploadError": "Erro ao enviar fotos. Tente novamente."
+    },
+    "visibility": {
+      "title": "Quem pode ver?",
+      "public": "Público",
+      "publicDescription": "Todos podem ver",
+      "friendsOnly": "Apenas Amigos",
+      "friendsOnlyDescription": "Só seus seguidores"
+    },
+    "creatingPlace": "Criando lugar...",
+    "savePlace": "Salvar Lugar"
   },
   "auth": {
     "signIn": {
@@ -124,6 +210,69 @@
     "signUp": {
       "hasAccount": "Já possui uma conta?",
       "signIn": "Entrar"
+    }
+  },
+  "explore": {
+    "title": "Explorar Sugestões Públicas",
+    "subtitle": "Descubra lugares incríveis compartilhados pela comunidade",
+    "sections": {
+      "categories": "Explorar por Categoria",
+      "cities": "Cidades Populares",
+      "recent": "Sugestões Recentes"
+    },
+    "viewAll": "Ver todas",
+    "places": "lugares",
+    "place": "lugar",
+    "loadMore": "Carregar mais",
+    "empty": "Nenhuma sugestão pública ainda. Seja o primeiro a compartilhar um lugar!",
+    "backToExplore": "Voltar para Explorar",
+    "all": {
+      "title": "Todas as Sugestões",
+      "cityTitle": "Lugares em {city}",
+      "subtitle": "{count} sugestões públicas"
+    },
+    "cities": {
+      "title": "Explorar por Cidade",
+      "subtitle": "Encontre lugares em cidades ao redor do mundo",
+      "empty": "Nenhuma cidade com sugestões públicas ainda."
+    },
+    "category": {
+      "subtitle": "{count} lugares em {category}",
+      "empty": "Nenhuma sugestão pública em {category} ainda."
+    }
+  },
+  "profile": {
+    "tabs": {
+      "suggestions": "Indicações",
+      "bookmarks": "Salvos"
+    },
+    "stats": {
+      "suggestions": "Indicações",
+      "followers": "Seguidores",
+      "following": "Seguindo"
+    },
+    "editProfile": "Editar Perfil",
+    "follow": "Seguir",
+    "unfollow": "Seguindo ✓",
+    "empty": {
+      "suggestions": {
+        "title": "Nenhuma indicação ainda",
+        "subtitle": "Compartilhe seus lugares favoritos para ajudar outros a descobrir ótimos lugares."
+      },
+      "bookmarks": {
+        "title": "Nenhum salvo ainda",
+        "subtitle": "Salve lugares para encontrá-los aqui depois."
+      }
+    },
+    "editModal": {
+      "title": "Editar Perfil",
+      "displayName": "Nome de exibição",
+      "displayNamePlaceholder": "Seu nome",
+      "username": "Nome de usuário",
+      "usernamePlaceholder": "usuario",
+      "save": "Salvar Alterações",
+      "cancel": "Cancelar",
+      "saving": "Salvando..."
     }
   }
 }

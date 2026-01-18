@@ -50,7 +50,14 @@
       "who": "Who",
       "whoSubtext": "Add friends",
       "searchButton": "Search",
-      "placeholder": "Search places, cities, or friends..."
+      "placeholder": "Search places, cities, or friends...",
+      "hint": "Type at least 2 characters to search",
+      "noResults": "No results found",
+      "tabs": {
+        "all": "All",
+        "experiences": "Places",
+        "people": "People"
+      }
     },
     "addPlace": "New recommendation",
     "signUp": "Sign up",
@@ -65,9 +72,12 @@
     "title": "Places your friends love",
     "subtitle": "Discover and explore recommendations from your network",
     "sections": {
-      "friendsSuggestions": "Suggestions from your friends",
-      "friendsSuggestionsSubtitle": "Places your friends love",
+      "mySuggestions": "My Suggestions",
+      "mySuggestionsSubtitle": "Places you've recommended",
+      "communitySuggestions": "Community Suggestions",
+      "communitySuggestionsSubtitle": "Discover places from the community",
       "nearbyPlaces": "Near your location",
+      "nearbyPlacesCity": "Places in {city}",
       "nearbyPlacesSubtitle": "Places close to you"
     }
   },
@@ -108,11 +118,87 @@
     "mexican": "Mexican",
     "french": "French"
   },
+  "fab": {
+    "open": "Add new place",
+    "close": "Close menu",
+    "categories": {
+      "restaurant": "Restaurant",
+      "hotel": "Hotel",
+      "bar": "Bar",
+      "cafe": "Cafe",
+      "experience": "Experience"
+    }
+  },
   "feed": {
     "empty": {
       "title": "No recommendations yet",
       "subtitle": "Be the first to add a place you love!"
     }
+  },
+  "add": {
+    "inputMode": {
+      "search": "Search",
+      "manual": "Manual Entry"
+    },
+    "location": {
+      "enableTitle": "Enable Location",
+      "enableDescription": "Enable GPS to find nearby places faster.",
+      "enableButton": "Enable GPS",
+      "requesting": "Getting your location...",
+      "enabled": "Location enabled",
+      "unavailable": "Location unavailable. You can still search or use manual entry."
+    },
+    "search": {
+      "label": "Search for a place",
+      "placeholder": "Search for a place..."
+    },
+    "manual": {
+      "placeName": "Place Name",
+      "placeNamePlaceholder": "e.g., Blue Bottle Coffee",
+      "address": "Address",
+      "addressPlaceholder": "e.g., 123 Main Street",
+      "city": "City",
+      "cityPlaceholder": "e.g., San Francisco",
+      "country": "Country",
+      "countryPlaceholder": "e.g., USA"
+    },
+    "priceRange": "Price Range",
+    "categories": "Categories",
+    "optional": {
+      "title": "Optional Details",
+      "instagramHandle": "Instagram Handle",
+      "instagramPlaceholder": "@amazingplace",
+      "description": "Brief Description",
+      "descriptionPlaceholder": "What did you love about this place?",
+      "phoneNumber": "Phone Number",
+      "phonePlaceholder": "+1 (555) 123-4567"
+    },
+    "errors": {
+      "nameRequired": "Name is required",
+      "cityRequired": "City is required",
+      "countryRequired": "Country is required",
+      "placeRequired": "Please select a place",
+      "priceRangeRequired": "Please select a price range",
+      "categoriesRequired": "Please select at least one category",
+      "createPlaceFailed": "Failed to create place. Please try again."
+    },
+    "images": {
+      "title": "Photos",
+      "upload": "Add photos",
+      "hint": "Up to {remaining} more photos",
+      "maxReached": "Maximum {max} photos reached",
+      "uploading": "Uploading photos...",
+      "uploadError": "Failed to upload photos. Please try again."
+    },
+    "visibility": {
+      "title": "Who can see this?",
+      "public": "Public",
+      "publicDescription": "Everyone can see",
+      "friendsOnly": "Friends Only",
+      "friendsOnlyDescription": "Only your followers"
+    },
+    "creatingPlace": "Creating place...",
+    "savePlace": "Save Place"
   },
   "auth": {
     "signIn": {
@@ -124,6 +210,69 @@
     "signUp": {
       "hasAccount": "Already have an account?",
       "signIn": "Sign in"
+    }
+  },
+  "explore": {
+    "title": "Explore Public Suggestions",
+    "subtitle": "Discover amazing places shared by the community",
+    "sections": {
+      "categories": "Browse by Category",
+      "cities": "Popular Cities",
+      "recent": "Recent Suggestions"
+    },
+    "viewAll": "View all",
+    "places": "places",
+    "place": "place",
+    "loadMore": "Load more",
+    "empty": "No public suggestions yet. Be the first to share a place!",
+    "backToExplore": "Back to Explore",
+    "all": {
+      "title": "All Suggestions",
+      "cityTitle": "Places in {city}",
+      "subtitle": "{count} public suggestions"
+    },
+    "cities": {
+      "title": "Explore by City",
+      "subtitle": "Find places in cities around the world",
+      "empty": "No cities with public suggestions yet."
+    },
+    "category": {
+      "subtitle": "{count} places in {category}",
+      "empty": "No public suggestions in {category} yet."
+    }
+  },
+  "profile": {
+    "tabs": {
+      "suggestions": "Suggestions",
+      "bookmarks": "Bookmarks"
+    },
+    "stats": {
+      "suggestions": "Suggestions",
+      "followers": "Followers",
+      "following": "Following"
+    },
+    "editProfile": "Edit Profile",
+    "follow": "Follow",
+    "unfollow": "Unfollow",
+    "empty": {
+      "suggestions": {
+        "title": "No suggestions yet",
+        "subtitle": "Share your favorite places to help others discover great spots."
+      },
+      "bookmarks": {
+        "title": "No bookmarks yet",
+        "subtitle": "Bookmark places to find them here later."
+      }
+    },
+    "editModal": {
+      "title": "Edit Profile",
+      "displayName": "Display Name",
+      "displayNamePlaceholder": "Your name",
+      "username": "Username",
+      "usernamePlaceholder": "username",
+      "save": "Save Changes",
+      "cancel": "Cancel",
+      "saving": "Saving..."
     }
   }
 }

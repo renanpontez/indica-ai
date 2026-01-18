@@ -15,7 +15,7 @@ export default function LandingNavbar({ locale, showActions = true }: LandingNav
 
   return (
     <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-divider">
-      <div className="2xl:max-w-[1400px] max-w-[1200px] mx-auto px-6 lg:px-10">
+      <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10">
         <div className="flex items-center justify-between py-4">
           {/* Logo */}
           <Link href={`/${locale}`} className="flex items-center gap-2 flex-shrink-0">

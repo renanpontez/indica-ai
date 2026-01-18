@@ -29,3 +29,36 @@ export function getInitials(name: string): string {
     .toUpperCase()
     .slice(0, 2);
 }
+
+/**
+ * Generate a URL-friendly slug from place name and city
+ * Format: place-name-city
+ * Example: "osteria-francescana-modena"
+ */
+export function generateExperienceSlug(
+  placeName: string,
+  city: string
+): string {
+  const slugify = (text: string) =>
+    text
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') // Remove accents
+      .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+      .replace(/\s+/g, '-') // Replace spaces with hyphens
+      .replace(/-+/g, '-') // Remove consecutive hyphens
+      .trim();
+
+  const placeSlug = slugify(placeName);
+  const citySlug = slugify(city);
+
+  return `${placeSlug}-${citySlug}`;
+}
+
+/**
+ * Generate the full experience URL path
+ * Format: /experience/{id}/{slug}
+ */
+export function getExperienceUrl(experienceId: string, slug: string): string {
+  return `/experience/${experienceId}/${slug}`;
+}

@@ -5,8 +5,8 @@ import { useRouter, usePathname } from '@/i18n/routing';
 import { useLocale } from 'next-intl';
 
 const languages = [
-  { code: 'pt-BR', flag: '🇧🇷', label: 'PT' },
-  { code: 'en-US', flag: '🇺🇸', label: 'EN' },
+  { code: 'pt-BR', flag: '🇧🇷', label: 'Português' },
+  { code: 'en-US', flag: '🇺🇸', label: 'English' },
 ] as const;
 
 type LocaleCode = (typeof languages)[number]['code'];
@@ -55,7 +55,7 @@ export function LanguageSwitcher() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-1 w-28 bg-white rounded-lg shadow-lg border border-divider py-1 z-50">
+        <div className="absolute right-0 mt-1 bg-white rounded-lg shadow-lg border border-divider py-1 z-50 px-2">
           {languages.map((lang) => (
             <button
               key={lang.code}
@@ -65,7 +65,7 @@ export function LanguageSwitcher() {
               }`}
             >
               <span className="text-base">{lang.flag}</span>
-              <span>{lang.label}</span>
+              {/* <span>{lang.label}</span> */}
             </button>
           ))}
         </div>

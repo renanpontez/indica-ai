@@ -132,7 +132,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
 
       {/* Hero Section - Floating Cards Style */}
       <section className="relative py-16 lg:py-24 lg:pt-0 overflow-hidden bg-gradient-to-b from-white to-gray-50">
-        <div className="2xl:max-w-[1400px] max-w-[1200px] mx-auto px-6 lg:px-10">
+        <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10">
           {/* Floating Cards Container */}
           <div className="relative h-[400px] lg:h-[400px] mb-12">
             {/* SVG Connection Lines */}
@@ -278,7 +278,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
 
       {/* About Section */}
       <section className="py-16 lg:py-24">
-        <div className="2xl:max-w-[1400px] max-w-[1200px] mx-auto px-6 lg:px-10">
+        <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl lg:text-4xl font-bold text-dark-grey mb-4">
@@ -353,7 +353,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
       </section>
       {/* Featured Places Section */}
       <section className="py-16 lg:py-24 bg-surface">
-        <div className="2xl:max-w-[1400px] max-w-[1200px] mx-auto px-6 lg:px-10">
+        <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl lg:text-3xl font-bold text-dark-grey">
               {t('featured.title')}
@@ -392,7 +392,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
 
       {/* CTA Section */}
       <section className="py-16 lg:py-24 bg-primary text-white">
-        <div className="2xl:max-w-[1400px] max-w-[1200px] mx-auto px-6 lg:px-10">
+        <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10">
           <div className="text-center max-w-2xl mx-auto">
             <h2 className="text-3xl lg:text-4xl font-bold mb-4">
               {t('cta.title')}
@@ -412,7 +412,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
 
       {/* Footer */}
       <footer className="py-12 bg-white border-t border-divider">
-        <div className="2xl:max-w-[1400px] max-w-[1200px] mx-auto px-6 lg:px-10">
+        <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-2">
               <Image

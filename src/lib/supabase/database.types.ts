@@ -87,6 +87,7 @@ export type Database = {
           price_range: string | null
           user_id: string
           visit_date: string | null
+          visibility: string
         }
         Insert: {
           brief_description?: string | null
@@ -99,6 +100,7 @@ export type Database = {
           price_range?: string | null
           user_id: string
           visit_date?: string | null
+          visibility?: string
         }
         Update: {
           brief_description?: string | null
@@ -111,6 +113,7 @@ export type Database = {
           price_range?: string | null
           user_id?: string
           visit_date?: string | null
+          visibility?: string
         }
         Relationships: [
           {
@@ -123,6 +126,42 @@ export type Database = {
           {
             foreignKeyName: "experiences_user_id_fkey"
             columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      follows: {
+        Row: {
+          id: string
+          follower_id: string
+          following_id: string
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          follower_id: string
+          following_id: string
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          follower_id?: string
+          following_id?: string
+          created_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "follows_follower_id_fkey"
+            columns: ["follower_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "follows_following_id_fkey"
+            columns: ["following_id"]
             isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]

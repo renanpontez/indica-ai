@@ -60,6 +60,7 @@ export const mockApi = {
       phone_number: data.phone_number || null,
       images: data.images || null,
       visit_date: data.visit_date || null,
+      visibility: data.visibility || 'public',
       created_at: new Date().toISOString(),
     };
 

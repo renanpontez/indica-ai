@@ -3,14 +3,15 @@
 import { useState, useEffect } from 'react';
 import { Input } from '@/components/Input';
 import { api } from '@/lib/api/endpoints';
-import type { Place } from '@/lib/models';
+import type { PlaceSearchResult } from '@/lib/models';
 
 interface PlaceSearchInputProps {
   value: string;
   onChange: (value: string) => void;
-  onPlaceSelect: (place: Place) => void;
+  onPlaceSelect: (place: PlaceSearchResult) => void;
   lat?: number;
   lng?: number;
+  disabled?: boolean;
 }
 
 export function PlaceSearchInput({
@@ -19,8 +20,9 @@ export function PlaceSearchInput({
   onPlaceSelect,
   lat,
   lng,
+  disabled,
 }: PlaceSearchInputProps) {
-  const [suggestions, setSuggestions] = useState<Place[]>([]);
+  const [suggestions, setSuggestions] = useState<PlaceSearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
@@ -50,35 +52,44 @@ export function PlaceSearchInput({
   return (
     <div className="relative">
       <Input
-        label="Search for a place"
-        placeholder="Restaurant, cafe, bar..."
+        placeholder="Search for a place..."
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        onFocus={() => value.length >= 2 && setShowSuggestions(true)}
+        onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
         autoComplete="off"
+        disabled={disabled}
       />
 
       {isSearching && (
-        <div className="absolute right-3 top-[38px] text-medium-grey">
+        <div className="absolute right-3 top-[12px] text-medium-grey">
           <div className="animate-spin h-4 w-4 border-2 border-primary border-t-transparent rounded-full" />
         </div>
       )}
 
       {showSuggestions && suggestions.length > 0 && (
         <div className="absolute z-10 w-full mt-1 bg-background border border-divider rounded-surface shadow-lg max-h-60 overflow-y-auto">
-          {suggestions.map((place) => (
+          {suggestions.map((place, index) => (
             <button
-              key={place.id}
+              key={place.id || `google-${place.google_place_id}-${index}`}
               onClick={() => {
                 onPlaceSelect(place);
                 setShowSuggestions(false);
               }}
               className="w-full text-left px-3 py-2 hover:bg-surface transition-colors"
             >
-              <p className="text-body font-medium text-dark-grey">
-                {place.name}
-              </p>
+              <div className="flex items-center gap-2">
+                <p className="text-body font-medium text-dark-grey flex-1">
+                  {place.name}
+                </p>
+                {place.source === 'google' && (
+                  <span className="text-xs px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded">
+                    Google
+                  </span>
+                )}
+              </div>
               <p className="text-small text-medium-grey">
-                {place.city}, {place.country}
+                {place.address || `${place.city}, ${place.country}`}
               </p>
             </button>
           ))}
@@ -88,7 +99,7 @@ export function PlaceSearchInput({
       {showSuggestions && value.length >= 2 && suggestions.length === 0 && !isSearching && (
         <div className="absolute z-10 w-full mt-1 bg-background border border-divider rounded-surface shadow-lg p-3">
           <p className="text-small text-medium-grey">
-            No places found. You can create a custom entry below.
+            No places found. Use manual entry below to add a new place.
           </p>
         </div>
       )}

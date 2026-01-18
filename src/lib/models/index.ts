@@ -21,6 +21,22 @@ export interface Place {
   custom: boolean;
 }
 
+// Place search result that may or may not exist in the database yet
+export interface PlaceSearchResult {
+  id: string | null; // null for Google Places results not yet saved
+  google_place_id: string | null;
+  name: string;
+  city: string;
+  country: string;
+  address: string | null;
+  lat: number | null;
+  lng: number | null;
+  instagram_handle: string | null;
+  google_maps_url: string | null;
+  custom: boolean;
+  source: 'local' | 'google';
+}
+
 export interface Experience {
   id: string;
   user_id: string;
@@ -31,12 +47,46 @@ export interface Experience {
   phone_number: string | null;
   images: string[] | null;
   visit_date: string | null;
+  visibility: ExperienceVisibility;
   created_at: string;
+}
+
+// Detailed experience returned from API with nested user and place data
+export interface ExperienceDetail {
+  id: string;
+  experience_id: string;
+  slug: string;
+  user: {
+    id: string;
+    display_name: string;
+    avatar_url: string | null;
+    username: string | null;
+  };
+  place: {
+    id: string;
+    name: string;
+    city: string;
+    country: string;
+    address: string | null;
+    lat: number | null;
+    lng: number | null;
+    instagram_handle: string | null;
+    google_maps_url: string | null;
+  };
+  price_range: PriceRange;
+  categories: string[];
+  brief_description: string | null;
+  phone_number: string | null;
+  images: string[];
+  visit_date: string | null;
+  time_ago: string;
+  created_at: string | null;
 }
 
 export interface ExperienceFeedItem {
   id: string;
   experience_id: string;
+  slug?: string;
   user: {
     id: string;
     display_name: string;
@@ -62,6 +112,22 @@ export interface Bookmark {
   experience_id: string;
   created_at: string;
 }
+
+// Follow/Follower Models
+export interface Follow {
+  id: string;
+  follower_id: string;
+  following_id: string;
+  created_at: string;
+}
+
+export interface FollowWithUser extends Follow {
+  follower?: User;
+  following?: User;
+}
+
+// Experience visibility
+export type ExperienceVisibility = 'public' | 'friends_only';
 
 // View Models for UI
 

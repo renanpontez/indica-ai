@@ -5,6 +5,6 @@ export function useProfile(userId: string) {
   return useQuery({
     queryKey: ['profile', userId],
     queryFn: () => api.getUserProfile(userId),
-    enabled: !!userId && userId !== 'me',
+    enabled: !!userId,
   });
 }

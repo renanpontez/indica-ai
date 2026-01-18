@@ -115,6 +115,7 @@ export const mockExperiences: Experience[] = [
     phone_number: '+1 (415) 495-3394',
     images: null,
     visit_date: '2025-01-05',
+    visibility: 'public',
     created_at: '2025-01-06T10:30:00Z',
   },
   {
@@ -127,6 +128,7 @@ export const mockExperiences: Experience[] = [
     phone_number: '+1 (415) 487-2600',
     images: null,
     visit_date: '2025-01-03',
+    visibility: 'public',
     created_at: '2025-01-04T08:15:00Z',
   },
   {
@@ -139,6 +141,7 @@ export const mockExperiences: Experience[] = [
     phone_number: null,
     images: null,
     visit_date: '2024-12-28',
+    visibility: 'friends_only',
     created_at: '2024-12-29T19:45:00Z',
   },
   {
@@ -151,6 +154,7 @@ export const mockExperiences: Experience[] = [
     phone_number: '+1 (212) 620-0393',
     images: null,
     visit_date: '2024-12-20',
+    visibility: 'public',
     created_at: '2024-12-21T14:20:00Z',
   },
   {
@@ -163,6 +167,7 @@ export const mockExperiences: Experience[] = [
     phone_number: null,
     images: null,
     visit_date: '2024-12-15',
+    visibility: 'public',
     created_at: '2024-12-16T11:00:00Z',
   },
 ];

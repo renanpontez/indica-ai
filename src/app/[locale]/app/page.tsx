@@ -7,12 +7,12 @@ import { useFeed } from '@/features/feed/hooks/useFeed';
 import { useTranslations } from 'next-intl';
 
 export default function FeedPage() {
-  const { data: experiences, isLoading, error } = useFeed();
+  const { data: feedData, isLoading, error } = useFeed();
   const t = useTranslations();
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="2xl:max-w-[1400px] max-w-[1200px] mx-auto px-6 lg:px-10 py-8">
+      <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10 py-8">
         {isLoading && (
           <div className="flex justify-center items-center min-h-[50vh]">
             <LoadingSpinner size="lg" />
@@ -31,7 +31,14 @@ export default function FeedPage() {
           </div>
         )}
 
-        {experiences && <ExperienceList experiences={experiences} />}
+        {feedData && (
+          <ExperienceList
+            mySuggestions={feedData.mySuggestions}
+            communitySuggestions={feedData.communitySuggestions}
+            nearbyPlaces={feedData.nearbyPlaces}
+            userCity={feedData.userCity}
+          />
+        )}
       </div>
     </div>
   );
