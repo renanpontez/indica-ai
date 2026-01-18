@@ -5,7 +5,7 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'indica aí - Lugares que seus amigos amam',
+  title: 'Indica Aí - Lugares que seus amigos amam',
   description: 'Recomendações sociais de lugares que você ama',
 };
 

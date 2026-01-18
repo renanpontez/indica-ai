@@ -9,7 +9,7 @@ export default function AppLayout({
   return (
     <>
       <DesktopNav />
-      {children}
+      <main className="pb-20">{children}</main>
       <FloatingActionButton />
     </>
   );

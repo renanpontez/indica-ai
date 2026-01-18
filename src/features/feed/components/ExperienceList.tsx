@@ -98,28 +98,7 @@ export function ExperienceList({
 
   return (
     <div className="space-y-12">
-      {/* My Suggestions Section */}
-      {mySuggestions.length > 0 && (
-        <section>
-          <SectionHeader
-            icon="bookmark"
-            title={t('home.sections.mySuggestions')}
-            subtitle={t('home.sections.mySuggestionsSubtitle')}
-          />
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6">
-            {mySuggestions.map((experience) => (
-              <ExperienceCard
-                key={experience.id}
-                experience={experience}
-                onClick={() => router.push(`/${locale}/app/experience/${experience.experience_id}/${experience.slug}`)}
-                onBookmarkToggle={() => {
-                  console.log('Toggle bookmark for', experience.id);
-                }}
-              />
-            ))}
-          </div>
-        </section>
-      )}
+
 
       {/* Community Suggestions Section */}
       {communitySuggestions.length > 0 && (
@@ -129,7 +108,7 @@ export function ExperienceList({
             title={t('home.sections.communitySuggestions')}
             subtitle={t('home.sections.communitySuggestionsSubtitle')}
           />
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {communitySuggestions.map((experience) => (
               <ExperienceCard
                 key={experience.id}
@@ -152,8 +131,31 @@ export function ExperienceList({
             title={userCity ? t('home.sections.nearbyPlacesCity', { city: userCity }) : t('home.sections.nearbyPlaces')}
             subtitle={t('home.sections.nearbyPlacesSubtitle')}
           />
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {nearbyPlaces.map((experience) => (
+              <ExperienceCard
+                key={experience.id}
+                experience={experience}
+                onClick={() => router.push(`/${locale}/app/experience/${experience.experience_id}/${experience.slug}`)}
+                onBookmarkToggle={() => {
+                  console.log('Toggle bookmark for', experience.id);
+                }}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* My Suggestions Section */}
+      {mySuggestions.length > 0 && (
+        <section>
+          <SectionHeader
+            icon="bookmark"
+            title={t('home.sections.mySuggestions')}
+            subtitle={t('home.sections.mySuggestionsSubtitle')}
+          />
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6">
+            {mySuggestions.map((experience) => (
               <ExperienceCard
                 key={experience.id}
                 experience={experience}

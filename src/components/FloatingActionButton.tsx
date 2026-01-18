@@ -1,168 +1,120 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useLocale, useTranslations } from 'next-intl';
+import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils/cn';
 import { useAuth } from '@/lib/hooks/useAuth';
-
-const CATEGORIES = [
-  {
-    key: 'hotel',
-    icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-      </svg>
-    ),
-  },
-  {
-    key: 'bar',
-    icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-      </svg>
-    ),
-  },
-  {
-    key: 'cafe',
-    icon: (
-      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M18.5 8h.5a2 2 0 012 2v1a2 2 0 01-2 2h-.5M4 8h12v8a4 4 0 01-4 4H8a4 4 0 01-4-4V8zm4-5v2m4-2v2" />
-      </svg>
-    ),
-  },
-  {
-    key: 'experience',
-    icon: (
-      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-        <circle cx="5" cy="12" r="2" />
-        <circle cx="12" cy="12" r="2" />
-        <circle cx="19" cy="12" r="2" />
-      </svg>
-    ),
-  },
-];
+import { Avatar } from './Avatar';
 
 export function FloatingActionButton() {
-  const [isOpen, setIsOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
   const locale = useLocale();
-  const t = useTranslations();
-  const { isAuthenticated } = useAuth();
+  const pathname = usePathname();
+  const t = useTranslations('nav');
+  const { user } = useAuth();
 
-  // Close menu when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
+  const isActive = (path: string) => {
+    if (path === '/app') {
+      return (
+        pathname === `/${locale}/app` ||
+        (pathname.startsWith(`/${locale}/app`) &&
+          !pathname.includes('/add') &&
+          !pathname.includes('/explore') &&
+          !pathname.includes('/profile'))
+      );
     }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    return pathname.startsWith(`/${locale}${path}`);
+  };
 
-  // Close menu on escape key
-  useEffect(() => {
-    function handleEscape(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
-        setIsOpen(false);
-      }
-    }
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, []);
+  const linkStyles = (active: boolean) =>
+    cn(
+      'flex flex-col items-center justify-center p-2 transition-all duration-200 group',
+      active ? 'text-primary' : 'text-medium-grey hover:text-dark-grey'
+    );
 
-  // Don't render if not authenticated
-  if (!isAuthenticated) {
-    return null;
-  }
+  const iconStyles = (active: boolean) =>
+    cn('w-6 h-6 transition-transform', active ? 'scale-110' : 'group-hover:scale-105');
 
   return (
-    <div ref={containerRef} className="fixed bottom-12 right-6 z-50">
-      {/* Category menu - vertical list */}
-      <div
-        className={`
-          absolute bottom-16 right-0 mb-2
-          flex flex-col gap-2
-          transition-all duration-300 ease-in-out
-          ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}
-        `}
-      >
-        {CATEGORIES.map((category, index) => (
-          <Link
-            key={category.key}
-            href={`/${locale}/app/add?category=${category.key}`}
-            className={`
-              flex items-center gap-3 px-3 py-3
-              bg-white rounded-full
-              transition-all duration-200 ease-out
-              hover:shadow-xl hover:scale-[1.02]
-              ${isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'}
-            `}
-            style={{
-              transitionDelay: isOpen ? `${(CATEGORIES.length - 1 - index) * 40}ms` : '0ms',
-            }}
-            onClick={() => setIsOpen(false)}
+    <nav className="fixed bottom-0 md:bottom-6 left-0 right-0 md:left-1/2 md:-translate-x-1/2 md:right-auto z-50">
+      <div className="flex items-center justify-around gap-5 py-3 px-6 bg-white border-t md:border border-divider md:rounded-2xl md:shadow-lg">
+        {/* Home */}
+        <Link href={`/${locale}/app`} className={linkStyles(isActive('/app'))}>
+          <svg
+            className={iconStyles(isActive('/app'))}
+            fill={isActive('/app') ? 'currentColor' : 'none'}
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={isActive('/app') ? 0 : 1.5}
           >
-            {/* Icon */}
-            <div className="w-9 h-9 rounded-full flex items-center justify-center text-primary flex-shrink-0">
-              {category.icon}
-            </div>
-          </Link>
-        ))}
-      </div>
-
-      {/* Main FAB Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`
-          w-14 h-14 rounded-full bg-primary shadow-lg
-          flex items-center justify-center
-          transition-all duration-300 ease-in-out
-          hover:bg-primary/90 hover:shadow-xl hover:scale-105
-          focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2
-          ${isOpen ? 'rotate-45' : 'rotate-0'}
-        `}
-        aria-label={isOpen ? t('fab.close') : t('fab.open')}
-        aria-expanded={isOpen}
-      >
-        {isOpen ? (
-          <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
+            />
           </svg>
-        ) : (
-          <Image
-            src="/assets/indica-ai-icon-white.svg"
-            alt="indica aí"
-            width={28}
-            height={28}
-            className="w-7 h-7"
-            onError={(e) => {
-              e.currentTarget.style.display = 'none';
-              e.currentTarget.nextElementSibling?.classList.remove('hidden');
-            }}
-          />
-        )}
-        {/* Fallback plus icon */}
-        <svg
-          className={`w-6 h-6 text-white ${isOpen ? 'hidden' : 'hidden'}`}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-        </svg>
-      </button>
+          <span className="text-[10px] mt-1 font-medium">{t('feed')}</span>
+        </Link>
 
-      {/* Backdrop overlay */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black/20 -z-10"
-          onClick={() => setIsOpen(false)}
-          aria-hidden="true"
-        />
-      )}
-    </div>
+        {/* Explore */}
+        <Link
+          href={`/${locale}/app/explore`}
+          className={linkStyles(isActive('/app/explore'))}
+        >
+          <svg
+            className={iconStyles(isActive('/app/explore'))}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={1.5}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+            />
+          </svg>
+          <span className="text-[10px] mt-1 font-medium">{t('explore')}</span>
+        </Link>
+
+        {/* Add */}
+        <Link
+          href={`/${locale}/app/add`}
+          className={linkStyles(isActive('/app/add'))}
+        >
+          <svg
+            className={iconStyles(isActive('/app/add'))}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={1.5}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 4v16m8-8H4"
+            />
+          </svg>
+          <span className="text-[10px] mt-1 font-medium">{t('add')}</span>
+        </Link>
+
+        {/* Profile */}
+        <Link
+          href={`/${locale}/app/profile/me`}
+          className={linkStyles(isActive('/app/profile'))}
+        >
+          <Avatar
+            src={user?.avatar_url ?? null}
+            alt={user?.display_name ?? ''}
+            size="sm"
+            className={cn(
+              'w-6 h-6 ring-2 transition-all',
+              isActive('/app/profile') ? 'ring-primary' : 'ring-transparent'
+            )}
+          />
+          <span className="text-[10px] mt-1 font-medium">{t('profile')}</span>
+        </Link>
+      </div>
+    </nav>
   );
 }

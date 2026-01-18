@@ -42,10 +42,10 @@ export function Button({
       )}
       {...props}
     >
+      {children}
       {loading ? (
         <LoadingSpinner size="sm" className="mr-2" />
       ) : null}
-      {children}
     </button>
   );
 }

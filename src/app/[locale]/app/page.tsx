@@ -5,14 +5,20 @@ import { ErrorMessage } from '@/components/ErrorMessage';
 import { ExperienceList } from '@/features/feed/components/ExperienceList';
 import { useFeed } from '@/features/feed/hooks/useFeed';
 import { useTranslations } from 'next-intl';
+import { Breadcrumb } from '@/components/Breadcrumb';
 
 export default function FeedPage() {
   const { data: feedData, isLoading, error } = useFeed();
   const t = useTranslations();
-
+  const breadcrumbItems = [
+    { label: t('nav.feed') },
+  ];
   return (
     <div className="min-h-screen bg-background">
+        <Breadcrumb items={breadcrumbItems} />
+
       <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10 py-8">
+
         {isLoading && (
           <div className="flex justify-center items-center min-h-[50vh]">
             <LoadingSpinner size="lg" />

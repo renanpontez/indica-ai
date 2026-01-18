@@ -19,7 +19,7 @@
     },
     "about": {
       "title": "Explore places your friends love",
-      "description": "indica aí connects you to the best recommendations from your network of friends. Discover hidden restaurants, cozy cafes, and unique experiences through people you trust.",
+      "description": "Indica Aí connects you to the best recommendations from your network of friends. Discover hidden restaurants, cozy cafes, and unique experiences through people you trust.",
       "cta": "Explore now",
       "feature1": "Culture & History",
       "feature2": "Events",
@@ -43,7 +43,7 @@
     }
   },
   "nav": {
-    "logo": "indica aí",
+    "logo": "Indica Aí",
     "search": {
       "where": "Where",
       "whereSubtext": "Search destinations",
@@ -252,6 +252,8 @@
       "following": "Following"
     },
     "editProfile": "Edit Profile",
+    "signOut": "Sign out",
+    "signingOut": "Signing out...",
     "follow": "Follow",
     "unfollow": "Unfollow",
     "empty": {

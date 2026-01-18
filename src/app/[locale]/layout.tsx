@@ -2,6 +2,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { Providers } from '@/components/Providers';
+import { getServerUser } from '@/lib/auth/getServerUser';
 
 export default async function LocaleLayout({
   children,
@@ -19,12 +20,15 @@ export default async function LocaleLayout({
     notFound();
   }
 
-  // Providing all messages to the client side is the easiest way to get started
-  const messages = await getMessages();
+  // Fetch messages and user data in parallel for optimal performance
+  const [messages, initialUser] = await Promise.all([
+    getMessages(),
+    getServerUser(),
+  ]);
 
   return (
     <NextIntlClientProvider messages={messages} locale={locale}>
-      <Providers>
+      <Providers initialUser={initialUser}>
         <div className="min-h-screen">{children}</div>
       </Providers>
     </NextIntlClientProvider>

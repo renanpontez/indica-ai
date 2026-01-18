@@ -140,12 +140,7 @@ export function ExperienceDetailLayout({
           </div>
           <div className="flex items-center gap-2">
             <FollowButton userId={user.id} showLabel />
-            <BookmarkButton
-              experienceId={experience.id}
-              isBookmarked={isBookmarked}
-              bookmarkId={bookmarkId}
-              showLabel
-            />
+           
           </div>
         </div>
 

@@ -21,13 +21,13 @@ export default function LandingNavbar({ locale, showActions = true }: LandingNav
           <Link href={`/${locale}`} className="flex items-center gap-2 flex-shrink-0">
             <Image
               src="/assets/indica-ai.svg"
-              alt="indica aí logo"
+              alt="Indica Aí logo"
               width={32}
               height={32}
               className="h-8 w-8"
             />
             <span className="text-xl font-bold text-primary hidden lg:block">
-              indica aí
+              Indica Aí
             </span>
           </Link>
 

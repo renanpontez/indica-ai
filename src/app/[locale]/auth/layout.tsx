@@ -19,7 +19,7 @@ export default async function AuthLayout({ children, params }: AuthLayoutProps) 
   return (
     <div className="min-h-screen bg-background">
       <LandingNavbar locale={locale} showActions={false} />
-      <main className="flex items-center justify-center px-4 py-8" style={{ minHeight: 'calc(100vh - 73px)' }}>
+      <main className="flex items-center justify-center px-4 py-8">
         {children}
       </main>
     </div>

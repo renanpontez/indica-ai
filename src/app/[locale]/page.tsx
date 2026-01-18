@@ -158,7 +158,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
               <div className="w-24 h-24 lg:w-32 lg:h-32 rounded-3xl bg-gradient-to-br from-primary to-primary/80 shadow-xl flex items-center justify-center">
                 <Image
                   src="/assets/indica-ai.svg"
-                  alt="indica aí"
+                  alt="Indica Aí"
                   width={64}
                   height={64}
                   className="w-12 h-12 lg:w-16 lg:h-16 brightness-0 invert"
@@ -417,12 +417,12 @@ export default async function LandingPage({ params }: LandingPageProps) {
             <div className="flex items-center gap-2">
               <Image
                 src="/assets/indica-ai.svg"
-                alt="indica aí logo"
+                alt="Indica Aí logo"
                 width={24}
                 height={24}
                 className="h-6 w-6"
               />
-              <span className="font-bold text-primary">indica aí</span>
+              <span className="font-bold text-primary">Indica Aí</span>
             </div>
             <div className="flex items-center gap-6 text-sm text-medium-grey">
               <Link href="#" className="hover:text-dark-grey transition-colors">
@@ -436,7 +436,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
               </Link>
             </div>
             <p className="text-sm text-medium-grey">
-              © 2026 indica aí. {t('footer.rights')}
+              © 2026 Indica Aí. {t('footer.rights')}
             </p>
           </div>
         </div>

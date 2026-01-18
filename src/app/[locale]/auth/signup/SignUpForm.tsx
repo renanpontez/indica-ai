@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useLocale } from 'next-intl';
 
 import { Button } from '@/components/Button';
@@ -9,8 +9,10 @@ import { Input } from '@/components/Input';
 import { createClient } from '@/lib/supabase/client';
 
 export default function SignInForm() {
-  const router = useRouter();
+  const searchParams = useSearchParams();
   const locale = useLocale();
+  const callbackUrl = searchParams.get('callbackUrl') || `/${locale}/app`;
+  const router = useRouter();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -81,11 +83,15 @@ export default function SignInForm() {
     setError('');
     setIsLoading(true);
 
+    const redirectTo = callbackUrl
+      ? `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?next=${encodeURIComponent(callbackUrl)}`
+      : `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`;
+
     try {
       const { error: signInError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback?next=/${locale}/app`,
+          redirectTo,
         },
       });
 

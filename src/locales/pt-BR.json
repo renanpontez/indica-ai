@@ -19,7 +19,7 @@
     },
     "about": {
       "title": "Explore lugares que seus amigos amam",
-      "description": "O indica aí conecta você às melhores recomendações da sua rede de amigos. Descubra restaurantes escondidos, cafés aconchegantes e experiências únicas através de quem você confia.",
+      "description": "O Indica Aí conecta você às melhores recomendações da sua rede de amigos. Descubra restaurantes escondidos, cafés aconchegantes e experiências únicas através de quem você confia.",
       "cta": "Explorar agora",
       "feature1": "Cultura & História",
       "feature2": "Eventos",
@@ -43,7 +43,7 @@
     }
   },
   "nav": {
-    "logo": "indica aí",
+    "logo": "Indica Aí",
     "search": {
       "where": "Onde",
       "whereSubtext": "Buscar destinos",
@@ -61,15 +61,14 @@
     },
     "addPlace": "Nova indicação",
     "signUp": "Criar conta grátis",
-    "signOut": "Sair",
     "becomeHost": "Anunciar espaço",
     "feed": "Feed",
     "explore": "Explorar",
-    "add": "Adicionar",
+    "add": "Indicar",
     "profile": "Perfil"
   },
   "home": {
-    "title": "Lugares que seus amigos amam",
+    "title": "Experiências que seus amigos amam",
     "subtitle": "Descubra e explore recomendações da sua rede",
     "sections": {
       "mySuggestions": "Minhas Indicações",
@@ -252,8 +251,10 @@
       "following": "Seguindo"
     },
     "editProfile": "Editar Perfil",
+    "signOut": "Sair da conta",
+    "signingOut": "Saindo...",
     "follow": "Seguir",
-    "unfollow": "Seguindo ✓",
+    "unfollow": "Seguindo",
     "empty": {
       "suggestions": {
         "title": "Nenhuma indicação ainda",

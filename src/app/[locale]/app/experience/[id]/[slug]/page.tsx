@@ -1,58 +1,41 @@
-'use client';
-
-import { use } from 'react';
+import { notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 import { Breadcrumb } from '@/components/Breadcrumb';
-import { LoadingSpinner } from '@/components/LoadingSpinner';
-import { ErrorMessage } from '@/components/ErrorMessage';
 import { ExperienceDetailLayout } from '@/features/experience-detail/components/ExperienceDetailLayout';
-import { useExperience } from '@/features/experience-detail/hooks/useExperience';
-import { useTranslations } from 'next-intl';
+import { getExperience } from '@/lib/data/getExperience';
 
-export default function ExperienceDetailPage({
+interface ExperienceDetailPageProps {
+  params: Promise<{ id: string; slug: string; locale: string }>;
+}
+
+export default async function ExperienceDetailPage({
   params,
-}: {
-  params: Promise<{ id: string; slug: string }>;
-}) {
-  const { id } = use(params);
-  const { data: experience, isLoading, error } = useExperience(id);
-  const t = useTranslations();
+}: ExperienceDetailPageProps) {
+  const { id, locale } = await params;
+  const [experience, t] = await Promise.all([
+    getExperience(id),
+    getTranslations(),
+  ]);
+
+  if (!experience) {
+    notFound();
+  }
 
   const breadcrumbItems = [
-    { label: t('nav.feed'), href: '/app' },
-    { label: experience?.place?.name || t('common.loading') },
+    { label: t('nav.feed'), href: `/${locale}/app` },
+    { label: experience.place.name },
   ];
 
   return (
     <div className="min-h-screen bg-background">
       <Breadcrumb items={breadcrumbItems} />
-
-      {isLoading && (
-        <div className="flex justify-center items-center min-h-[50vh]">
-          <LoadingSpinner size="lg" />
-        </div>
-      )}
-
-      {error && (
-        <div className="p-md">
-          <ErrorMessage
-            message={
-              error instanceof Error
-                ? error.message
-                : 'Failed to load experience. Please try again.'
-            }
-          />
-        </div>
-      )}
-
-      {experience && (
-        <ExperienceDetailLayout
-          experience={experience}
-          user={experience.user}
-          place={experience.place}
-          isBookmarked={false}
-          moreFromUser={[]}
-        />
-      )}
+      <ExperienceDetailLayout
+        experience={experience}
+        user={experience.user}
+        place={experience.place}
+        isBookmarked={false}
+        moreFromUser={[]}
+      />
     </div>
   );
 }

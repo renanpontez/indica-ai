@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
-import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { Avatar } from './Avatar';
 
@@ -12,8 +11,8 @@ export function UserMenu() {
   const router = useRouter();
   const locale = useLocale();
   const [isOpen, setIsOpen] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const supabase = createClient();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -31,9 +30,18 @@ export function UserMenu() {
   if (!user) return null;
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    router.push(`/${locale}/auth/signin`);
-    router.refresh();
+    setIsSigningOut(true);
+    try {
+      const response = await fetch('/api/auth/signout', { method: 'POST' });
+      if (response.ok) {
+        router.push(`/${locale}/auth/signin`);
+        router.refresh();
+      }
+    } catch (error) {
+      console.error('Sign out failed:', error);
+    } finally {
+      setIsSigningOut(false);
+    }
   };
 
   return (
@@ -73,9 +81,10 @@ export function UserMenu() {
           <div className="p-2">
             <button
               onClick={handleSignOut}
-              className="w-full text-left px-3 py-2 text-dark-grey hover:bg-surface rounded-lg transition-colors text-[0.85rem]"
+              disabled={isSigningOut}
+              className="w-full text-left px-3 py-2 text-dark-grey hover:bg-surface rounded-lg transition-colors text-[0.85rem] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Sign out
+              {isSigningOut ? 'Signing out...' : 'Sign out'}
             </button>
           </div>
         </div>

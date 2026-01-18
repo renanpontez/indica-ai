@@ -27,6 +27,21 @@ export default function ProfilePage({
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<'suggestions' | 'bookmarks'>('suggestions');
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+
+  const handleSignOut = async () => {
+    setIsSigningOut(true);
+    try {
+      const response = await fetch('/api/auth/signout', { method: 'POST' });
+      if (response.ok) {
+        router.push(`/${locale}`);
+        router.refresh();
+      }
+    } catch (error) {
+      setIsSigningOut(false);
+      console.error('Sign out failed:', error);
+    }
+  };
 
   // Fetch profile data from API (works for both 'me' and other user IDs)
   const { data, isLoading, error } = useProfile(userId);
@@ -89,12 +104,21 @@ export default function ProfilePage({
                     </div>
 
                     {userId === 'me' ? (
-                      <button
-                        onClick={() => setIsEditModalOpen(true)}
-                        className="self-center md:self-auto px-6 py-2 text-sm font-medium text-primary border border-primary rounded-lg hover:bg-primary/5 transition-colors"
-                      >
-                        {t('editProfile')}
-                      </button>
+                      <div className="flex flex-col gap-4">
+                        <button
+                          onClick={() => setIsEditModalOpen(true)}
+                          className="self-center md:self-auto px-6 py-2 text-sm font-medium text-primary border border-primary rounded-lg hover:bg-primary/5 transition-colors"
+                        >
+                          {t('editProfile')}
+                        </button>
+                          <button
+                          onClick={handleSignOut}
+                          disabled={isSigningOut}
+                          className="self-center md:self-auto px-6 py-2 text-sm font-medium text-medium-grey border border-chip-bg rounded-lg hover:bg-primary/5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {isSigningOut ? t('signingOut') : t('signOut')}
+                        </button>
+                      </div>
                     ) : (
                       <FollowButton
                         userId={displayUser.id}
@@ -155,7 +179,7 @@ export default function ProfilePage({
               {activeTab === 'suggestions' && (
                 <>
                   {experiences.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {experiences.map((experience) => (
                         <ExperienceCard
                           key={experience.id}
