@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Avatar } from '@/components/Avatar';
+import { PlaceholderImage } from '@/components/PlaceholderImage';
 import { VisibilityBadge } from '@/components/VisibilityBadge';
 import { useTagLabel } from '@/hooks/useTagLabel';
 import { useTranslations } from 'next-intl';
@@ -180,11 +181,18 @@ export function ExperienceCard({
       <div className="flex px-4 pb-4 gap-4">
         {/* Image with Price Badge */}
         <div className="relative w-40 h-40 flex-shrink-0 rounded-xl overflow-hidden bg-surface">
-          <img
-            src={place.thumbnail_image_url || `https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=400&fit=crop`}
-            alt={place.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          />
+          {place.thumbnail_image_url ? (
+            <img
+              src={place.thumbnail_image_url}
+              alt={place.name}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+          ) : (
+            <PlaceholderImage
+              size="md"
+              className="w-full h-full group-hover:scale-105 transition-transform duration-300"
+            />
+          )}
           {/* Recommendation count */}
           {place.recommendation_count && place.recommendation_count > 1 && (
             <div className="flex items-center gap-1 text-xs text-white absolute left-2 top-2">
