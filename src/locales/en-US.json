@@ -241,11 +241,46 @@
       "title": "Welcome back",
       "subtitle": "Sign in to share your experiences with friends",
       "noAccount": "Don't have an account?",
-      "createAccount": "Create account"
+      "createAccount": "Create account",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "password": "Password",
+      "signingIn": "Signing in...",
+      "signInButton": "Sign in",
+      "or": "or",
+      "googleButton": "Sign in with Google",
+      "errors": {
+        "invalidCredentials": "Invalid email or password",
+        "generic": "An error occurred. Please try again."
+      }
     },
     "signUp": {
+      "title": "Create your account",
+      "subtitle": "Join to share your favorite places with friends",
       "hasAccount": "Already have an account?",
-      "signIn": "Sign in"
+      "signIn": "Sign in",
+      "displayName": "Your name",
+      "displayNamePlaceholder": "John Doe",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "password": "Password",
+      "passwordHint": "Minimum 6 characters",
+      "confirmPassword": "Confirm password",
+      "validation": {
+        "minChars": "At least 6 characters",
+        "passwordsMatch": "Passwords match",
+        "passwordsNoMatch": "Passwords do not match"
+      },
+      "creatingAccount": "Creating account...",
+      "createAccountButton": "Create account",
+      "orContinueWith": "Or continue with",
+      "googleButton": "Continue with Google",
+      "errors": {
+        "passwordMismatch": "Passwords do not match",
+        "passwordTooShort": "Password must be at least 6 characters",
+        "displayNameTooShort": "Display name must be at least 2 characters",
+        "generic": "An error occurred. Please try again."
+      }
     }
   },
   "explore": {

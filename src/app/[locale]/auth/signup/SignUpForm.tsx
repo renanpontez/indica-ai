@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
@@ -11,6 +11,7 @@ export default function SignUpForm() {
   const locale = useLocale();
   const callbackUrl = searchParams.get('callbackUrl') || `/${locale}/app`;
   const router = useRouter();
+  const t = useTranslations('auth.signUp');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -19,6 +20,8 @@ export default function SignUpForm() {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [passwordFocused, setPasswordFocused] = useState(false);
+  const [confirmPasswordFocused, setConfirmPasswordFocused] = useState(false);
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -30,17 +33,17 @@ export default function SignUpForm() {
 
     // Client-side validation
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError(t('errors.passwordMismatch'));
       return;
     }
 
     if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters');
+      setError(t('errors.passwordTooShort'));
       return;
     }
 
     if (formData.display_name.length < 2) {
-      setError('Display name must be at least 2 characters');
+      setError(t('errors.displayNameTooShort'));
       return;
     }
 
@@ -60,21 +63,21 @@ export default function SignUpForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || 'An error occurred');
+        setError(data.error || t('errors.generic'));
         setIsLoading(false);
         return;
       }
 
       // Handle different signup outcomes
       if (data.requiresEmailConfirmation) {
-        setError(data.message || 'Please check your email to confirm your account');
+        setError(data.message || t('errors.generic'));
         setIsLoading(false);
         return;
       }
 
       if (data.requiresSignIn) {
-        // Redirect to signin with a message
-        router.push(`/${locale}/auth/signin?message=Account created. Please sign in.`);
+        // Redirect to signin
+        router.push(`/${locale}/auth/signin`);
         return;
       }
 
@@ -82,7 +85,7 @@ export default function SignUpForm() {
       router.push(`/${locale}/app`);
       router.refresh();
     } catch {
-      setError('An error occurred. Please try again.');
+      setError(t('errors.generic'));
       setIsLoading(false);
     }
   };
@@ -112,14 +115,14 @@ export default function SignUpForm() {
             htmlFor="display_name"
             className="block text-dark-grey text-[0.85rem] font-medium mb-2"
           >
-            Seu nome
+            {t('displayName')}
           </label>
           <Input
             id="display_name"
             type="text"
             value={formData.display_name}
             onChange={(e) => handleChange('display_name', e.target.value)}
-            placeholder="John Doe"
+            placeholder={t('displayNamePlaceholder')}
             required
             disabled={isLoading}
           />
@@ -130,14 +133,14 @@ export default function SignUpForm() {
             htmlFor="email"
             className="block text-dark-grey text-[0.85rem] font-medium mb-2"
           >
-            Email
+            {t('email')}
           </label>
           <Input
             id="email"
             type="email"
             value={formData.email}
             onChange={(e) => handleChange('email', e.target.value)}
-            placeholder="your@email.com"
+            placeholder={t('emailPlaceholder')}
             required
             disabled={isLoading}
           />
@@ -148,21 +151,33 @@ export default function SignUpForm() {
             htmlFor="password"
             className="block text-dark-grey text-[0.85rem] font-medium mb-2"
           >
-            Senha
+            {t('password')}
           </label>
           <Input
             id="password"
             type="password"
             value={formData.password}
             onChange={(e) => handleChange('password', e.target.value)}
+            onFocus={() => setPasswordFocused(true)}
             placeholder="••••••••"
             required
             disabled={isLoading}
             minLength={6}
           />
-          <p className="text-medium-grey text-[0.75rem] mt-1">
-            No mínimo 6 caracteres
-          </p>
+          {passwordFocused && (
+            <div className="flex items-center gap-1.5 mt-1.5">
+              <div className={`w-3.5 h-3.5 rounded-full flex items-center justify-center ${formData.password.length >= 6 ? 'bg-green-500' : 'bg-gray-300'}`}>
+                {formData.password.length >= 6 && (
+                  <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                )}
+              </div>
+              <span className={`text-[0.75rem] ${formData.password.length >= 6 ? 'text-green-600' : 'text-medium-grey'}`}>
+                {t('validation.minChars')}
+              </span>
+            </div>
+          )}
         </div>
 
         <div>
@@ -170,17 +185,36 @@ export default function SignUpForm() {
             htmlFor="confirmPassword"
             className="block text-dark-grey text-[0.85rem] font-medium mb-2"
           >
-            Confirmar senha
+            {t('confirmPassword')}
           </label>
           <Input
             id="confirmPassword"
             type="password"
             value={formData.confirmPassword}
             onChange={(e) => handleChange('confirmPassword', e.target.value)}
+            onFocus={() => setConfirmPasswordFocused(true)}
             placeholder="••••••••"
             required
             disabled={isLoading}
           />
+          {confirmPasswordFocused && formData.confirmPassword.length > 0 && (
+            <div className="flex items-center gap-1.5 mt-1.5">
+              <div className={`w-3.5 h-3.5 rounded-full flex items-center justify-center ${formData.password === formData.confirmPassword ? 'bg-green-500' : 'bg-red-500'}`}>
+                {formData.password === formData.confirmPassword ? (
+                  <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                ) : (
+                  <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                )}
+              </div>
+              <span className={`text-[0.75rem] ${formData.password === formData.confirmPassword ? 'text-green-600' : 'text-red-600'}`}>
+                {formData.password === formData.confirmPassword ? t('validation.passwordsMatch') : t('validation.passwordsNoMatch')}
+              </span>
+            </div>
+          )}
         </div>
 
         <Button
@@ -189,7 +223,7 @@ export default function SignUpForm() {
           className="w-full"
           disabled={isLoading}
         >
-          {isLoading ? 'Criando conta...' : 'Criar conta'}
+          {isLoading ? t('creatingAccount') : t('createAccountButton')}
         </Button>
       </form>
 
@@ -199,7 +233,7 @@ export default function SignUpForm() {
         </div>
         <div className="relative flex justify-center text-[0.85rem]">
           <span className="px-4 bg-surface text-medium-grey">
-            Ou continue com
+            {t('orContinueWith')}
           </span>
         </div>
       </div>
@@ -227,7 +261,7 @@ export default function SignUpForm() {
             d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
           />
         </svg>
-        Continue with Google
+        {t('googleButton')}
       </button>
     </div>
   )

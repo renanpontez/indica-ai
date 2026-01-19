@@ -28,7 +28,7 @@ export async function DesktopNav({ user }: DesktopNavProps) {
               height={32}
               className="h-8 w-8"
             />
-            <span className="text-xl font-bold text-primary hidden lg:block">
+            <span className="text-xl font-bold text-primary">
               {t('nav.logo')}
             </span>
           </Link>

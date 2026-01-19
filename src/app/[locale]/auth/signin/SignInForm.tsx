@@ -3,7 +3,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 
@@ -11,6 +11,7 @@ export default function SignInForm() {
   const router = useRouter();
   const locale = useLocale();
   const searchParams = useSearchParams();
+  const t = useTranslations('auth.signIn');
 
   const callbackUrl = searchParams.get('callbackUrl') || `/${locale}/app`;
   const [email, setEmail] = useState('');
@@ -33,7 +34,7 @@ export default function SignInForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || 'Invalid email or password');
+        setError(data.error || t('errors.invalidCredentials'));
         setIsLoading(false);
         return;
       }
@@ -41,7 +42,7 @@ export default function SignInForm() {
       router.push(callbackUrl);
       router.refresh();
     } catch {
-      setError('An error occurred. Please try again.');
+      setError(t('errors.generic'));
       setIsLoading(false);
     }
   };
@@ -69,14 +70,14 @@ export default function SignInForm() {
             htmlFor="email"
             className="block text-dark-grey text-[0.85rem] font-medium mb-2"
           >
-            Email
+            {t('email')}
           </label>
           <Input
             id="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="seuemail@email.com"
+            placeholder={t('emailPlaceholder')}
             required
             disabled={isLoading}
           />
@@ -87,7 +88,7 @@ export default function SignInForm() {
             htmlFor="password"
             className="block text-dark-grey text-[0.85rem] font-medium mb-2"
           >
-            Senha
+            {t('password')}
           </label>
           <Input
             id="password"
@@ -106,7 +107,7 @@ export default function SignInForm() {
           className="w-full"
           disabled={isLoading}
         >
-          {isLoading ? 'Signing in...' : 'Sign in'}
+          {isLoading ? t('signingIn') : t('signInButton')}
         </Button>
       </form>
 
@@ -116,7 +117,7 @@ export default function SignInForm() {
         </div>
         <div className="relative flex justify-center text-[0.85rem]">
           <span className="px-4 bg-surface text-medium-grey">
-            ou
+            {t('or')}
           </span>
         </div>
       </div>
@@ -144,7 +145,7 @@ export default function SignInForm() {
             d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
           />
         </svg>
-        Entrar com Google
+        {t('googleButton')}
       </button>
     </div>
   )

@@ -26,7 +26,7 @@ export default function LandingNavbar({ locale, showActions = true }: LandingNav
               height={32}
               className="h-8 w-8"
             />
-            <span className="text-xl font-bold text-primary hidden lg:block">
+            <span className="text-xl font-bold text-primary">
               Indica Aí
             </span>
           </Link>
@@ -37,7 +37,7 @@ export default function LandingNavbar({ locale, showActions = true }: LandingNav
               <>
                 <Link
                   href={`/${locale}/auth/signin`}
-                  className="px-4 py-2 text-sm font-semibold text-dark-grey hover:text-primary transition-colors"
+                  className="px-4 py-2 text-sm font-semibold text-dark-grey hover:text-primary transition-colors hidden sm:block"
                 >
                   {t('nav.login')}
                 </Link>
