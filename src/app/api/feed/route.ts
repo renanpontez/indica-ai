@@ -213,7 +213,7 @@ export async function GET(request: NextRequest) {
           display_name,
           avatar_url
         ),
-        places:place_id (
+        places:place_id!inner (
           id,
           name,
           city,

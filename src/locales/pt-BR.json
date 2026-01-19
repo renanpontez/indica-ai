@@ -18,7 +18,7 @@
       "hotels": "Hotéis"
     },
     "about": {
-      "title": "Explore lugares que seus amigos amam",
+      "title": "Explore experiências que seus amigos amam",
       "description": "O Indica Aí conecta você às melhores recomendações da sua rede de amigos. Descubra restaurantes escondidos, cafés aconchegantes e experiências únicas através de quem você confia.",
       "cta": "Explorar agora",
       "feature1": "Cultura & História",
@@ -32,7 +32,7 @@
     },
     "cta": {
       "title": "Comece a compartilhar suas descobertas",
-      "description": "Junte-se a milhares de pessoas que estão descobrindo lugares incríveis através de amigos. Crie sua conta e comece a compartilhar suas experiências favoritas.",
+      "description": "Junte-se a milhares de pessoas que estão descobrindo experências incríveis através de amigos. Crie sua conta e comece a compartilhar suas experiências favoritas.",
       "button": "Criar conta grátis"
     },
     "footer": {
@@ -72,7 +72,7 @@
     "subtitle": "Descubra e explore recomendações da sua rede",
     "sections": {
       "mySuggestions": "Minhas Indicações",
-      "mySuggestionsSubtitle": "Lugares que você indicou",
+      "mySuggestionsSubtitle": "Experiências que você indicou",
       "communitySuggestions": "Indicações da Comunidade",
       "communitySuggestionsSubtitle": "Descubra lugares da comunidade",
       "nearbyPlaces": "Próximo a sua localização",
