@@ -1,14 +1,12 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useLocale } from 'next-intl';
 
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 
-import { createClient } from '@/lib/supabase/client';
-
-export default function SignInForm() {
+export default function SignUpForm() {
   const searchParams = useSearchParams();
   const locale = useLocale();
   const callbackUrl = searchParams.get('callbackUrl') || `/${locale}/app`;
@@ -21,7 +19,6 @@ export default function SignInForm() {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const supabase = createClient();
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -31,7 +28,7 @@ export default function SignInForm() {
     e.preventDefault();
     setError('');
 
-    // Validation
+    // Client-side validation
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
@@ -50,23 +47,34 @@ export default function SignInForm() {
     setIsLoading(true);
 
     try {
-      const { error: signUpError } = await supabase.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        options: {
-          data: {
-            full_name: formData.display_name,
-          },
-        },
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          display_name: formData.display_name,
+        }),
       });
 
-      if (signUpError) {
-        if (signUpError.message.includes('already registered')) {
-          setError('An account with this email already exists');
-        } else {
-          setError(signUpError.message);
-        }
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || 'An error occurred');
         setIsLoading(false);
+        return;
+      }
+
+      // Handle different signup outcomes
+      if (data.requiresEmailConfirmation) {
+        setError(data.message || 'Please check your email to confirm your account');
+        setIsLoading(false);
+        return;
+      }
+
+      if (data.requiresSignIn) {
+        // Redirect to signin with a message
+        router.push(`/${locale}/auth/signin?message=Account created. Please sign in.`);
         return;
       }
 
@@ -79,7 +87,7 @@ export default function SignInForm() {
     }
   };
 
-  const handleGoogleSignUp = async () => {
+  const handleGoogleSignUp = () => {
     setError('');
     setIsLoading(true);
 
@@ -87,22 +95,8 @@ export default function SignInForm() {
       ? `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?next=${encodeURIComponent(callbackUrl)}`
       : `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`;
 
-    try {
-      const { error: signInError } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo,
-        },
-      });
-
-      if (signInError) {
-        setError('Google sign up failed');
-        setIsLoading(false);
-      }
-    } catch {
-      setError('Google sign up failed');
-      setIsLoading(false);
-    }
+    // Redirect to server-side OAuth endpoint
+    window.location.href = `/api/auth/oauth/google?redirectTo=${encodeURIComponent(redirectTo)}`;
   };
   return (
     <div className="bg-surface rounded-[14px] p-6 mb-4">

@@ -62,8 +62,8 @@
         "action": "Create .env.local with Supabase credentials",
         "variables": {
           "NEXT_PUBLIC_SUPABASE_URL": "Your Supabase project URL",
-          "NEXT_PUBLIC_SUPABASE_ANON_KEY": "Your Supabase anon/public key",
-          "SUPABASE_SERVICE_ROLE_KEY": "Server-side only, for admin operations"
+          "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY": "Client-side publishable key (sb_publishable_xxx)",
+          "SUPABASE_SECRET_KEY": "Server-side secret key (sb_secret_xxx)"
         }
       }
     ]
@@ -917,7 +917,7 @@
       "RLS policies enforce data access at database level"
     ],
     "security": [
-      "Never expose SUPABASE_SERVICE_ROLE_KEY to the client",
+      "Never expose SUPABASE_SECRET_KEY to the client",
       "Use RLS policies for all data access",
       "Validate user input on both client and server",
       "Use httpOnly cookies for session storage (via @supabase/ssr)"

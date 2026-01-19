@@ -7,8 +7,6 @@ import { useLocale } from 'next-intl';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
 
-import { createClient } from '@/lib/supabase/client';
-
 export default function SignInForm() {
   const router = useRouter();
   const locale = useLocale();
@@ -19,7 +17,6 @@ export default function SignInForm() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const supabase = createClient();
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,13 +24,16 @@ export default function SignInForm() {
     setIsLoading(true);
 
     try {
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      const response = await fetch('/api/auth/signin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
       });
 
-      if (signInError) {
-        setError('Invalid email or password');
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || 'Invalid email or password');
         setIsLoading(false);
         return;
       }
@@ -46,26 +46,14 @@ export default function SignInForm() {
     }
   };
 
-  const handleGoogleSignIn = async () => {
+  const handleGoogleSignIn = () => {
     setError('');
     setIsLoading(true);
 
-    try {
-      const { error: signInError } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?next=${encodeURIComponent(callbackUrl)}`,
-        },
-      });
+    const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?next=${encodeURIComponent(callbackUrl)}`;
 
-      if (signInError) {
-        setError('Google sign in failed');
-        setIsLoading(false);
-      }
-    } catch {
-      setError('Google sign in failed');
-      setIsLoading(false);
-    }
+    // Redirect to server-side OAuth endpoint
+    window.location.href = `/api/auth/oauth/google?redirectTo=${encodeURIComponent(redirectTo)}`;
   };
   return (
     <div className="bg-surface rounded-[14px] p-6 mb-4">

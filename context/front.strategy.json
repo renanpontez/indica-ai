@@ -63,7 +63,7 @@
       "Auth session is securely managed via httpOnly cookies (@supabase/ssr)."
     ],
     "security": [
-      "SUPABASE_SERVICE_ROLE_KEY is never exposed to the client.",
+      "SUPABASE_SECRET_KEY is never exposed to the client (server-side only).",
       "All database tables have RLS enabled with appropriate policies.",
       "User input is validated on both client and server.",
       "Protected routes redirect unauthenticated users to sign-in."

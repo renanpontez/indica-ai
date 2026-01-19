@@ -90,7 +90,8 @@
             "path": "frontend → tech → integration",
             "description": "Supabase and API contracts",
             "NEXT_PUBLIC_SUPABASE_URL": "NEXT_PUBLIC_SUPABASE_URL env var",
-            "NEXT_PUBLIC_SUPABASE_ANON_KEY": "NEXT_PUBLIC_SUPABASE_ANON_KEY env var",
+            "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY": "Client-side publishable key (for auth state listening)",
+            "SUPABASE_SECRET_KEY": "Server-side secret key (for all database operations)",
             "location_behaviors": {
               "path": "frontend → tech → integration → location_behaviors",
               "gps": "Geolocation API with permission handling",

@@ -44,8 +44,8 @@
     },
     "environment_variables": {
       "NEXT_PUBLIC_SUPABASE_URL": "Supabase project URL",
-      "NEXT_PUBLIC_SUPABASE_ANON_KEY": "Supabase anonymous/public key",
-      "SUPABASE_SERVICE_ROLE_KEY": "Server-side only, for admin operations"
+      "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY": "Client-side publishable key (for auth state listening)",
+      "SUPABASE_SECRET_KEY": "Server-side secret key (for all database operations)"
     },
     "client_utilities": {
       "lib/supabase/client.ts": "Browser client (createBrowserClient)",
@@ -83,7 +83,8 @@
   },
   "integration": {
     "NEXT_PUBLIC_SUPABASE_URL": "Configured via env var NEXT_PUBLIC_SUPABASE_URL",
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "Configured via env var NEXT_PUBLIC_SUPABASE_ANON_KEY",
+    "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY": "Client-side publishable key for auth state",
+    "SUPABASE_SECRET_KEY": "Server-side secret key for database operations",
     "contracts": [
       "Use TypeScript types that match Supabase database schema exactly.",
       "Handle loading, error, and empty states explicitly.",
@@ -367,7 +368,7 @@
       "Use Supabase realtime sparingly (only where needed)."
     ],
     "security": [
-      "Never expose SUPABASE_SERVICE_ROLE_KEY to the client.",
+      "Never expose SUPABASE_SECRET_KEY to the client.",
       "Use RLS policies for all data access.",
       "Validate user input on both client and server.",
       "Use httpOnly cookies for session storage (via @supabase/ssr)."
