@@ -4,6 +4,10 @@ import { useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { ExperienceCard } from './ExperienceCard';
 import { FeedEmptyState } from './FeedEmptyState';
+import { useToggleBookmark } from '@/features/experience-detail/hooks/useToggleBookmark';
+import { useDeleteExperience } from '@/features/experience-detail/hooks/useExperienceMutations';
+import { useToast } from '@/lib/hooks/useToast';
+import { useAuth } from '@/lib/hooks/useAuth';
 import type { ExperienceFeedItem } from '@/lib/models';
 
 interface SectionHeaderProps {
@@ -89,6 +93,47 @@ export function ExperienceList({
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations();
+  const { mutate: toggleBookmark } = useToggleBookmark();
+  const { mutateAsync: deleteExperience } = useDeleteExperience();
+  const { showToast } = useToast();
+  const { isAuthenticated } = useAuth();
+
+  const handleDelete = async (experienceId: string) => {
+    await deleteExperience(experienceId);
+    showToast(t('experience.deleteModal.success'), 'success');
+  };
+
+  const handleBookmarkToggle = (experience: ExperienceFeedItem) => {
+    if (!isAuthenticated) {
+      router.push(`/${locale}/auth/signin`);
+      return;
+    }
+
+    const wasBookmarked = experience.isBookmarked || false;
+
+    toggleBookmark(
+      {
+        experienceId: experience.experience_id,
+        bookmarkId: experience.bookmarkId,
+        isBookmarked: wasBookmarked,
+      },
+      {
+        onSuccess: (result) => {
+          if (result.action === 'removed') {
+            showToast(t('bookmark.removedToast'), 'success');
+          } else {
+            showToast(t('bookmark.addedToast'), 'success', {
+              label: t('bookmark.seeNow'),
+              href: `/${locale}/app/profile/me?tab=bookmarks`,
+            });
+          }
+        },
+        onError: () => {
+          showToast(t('common.error'), 'error');
+        },
+      }
+    );
+  };
 
   const isEmpty = mySuggestions.length === 0 && communitySuggestions.length === 0 && nearbyPlaces.length === 0;
 
@@ -106,15 +151,13 @@ export function ExperienceList({
             title={t('home.sections.communitySuggestions')}
             subtitle={t('home.sections.communitySuggestionsSubtitle')}
           />
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
             {communitySuggestions.map((experience) => (
               <ExperienceCard
                 key={experience.id}
                 experience={experience}
                 onClick={() => router.push(`/${locale}/app/experience/${experience.experience_id}/${experience.slug}`)}
-                onBookmarkToggle={() => {
-                  console.log('Toggle bookmark for', experience.id);
-                }}
+                onBookmarkToggle={() => handleBookmarkToggle(experience)}
               />
             ))}
           </div>
@@ -129,15 +172,13 @@ export function ExperienceList({
             title={userCity ? t('home.sections.nearbyPlacesCity', { city: userCity }) : t('home.sections.nearbyPlaces')}
             subtitle={t('home.sections.nearbyPlacesSubtitle')}
           />
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
             {nearbyPlaces.map((experience) => (
               <ExperienceCard
                 key={experience.id}
                 experience={experience}
                 onClick={() => router.push(`/${locale}/app/experience/${experience.experience_id}/${experience.slug}`)}
-                onBookmarkToggle={() => {
-                  console.log('Toggle bookmark for', experience.id);
-                }}
+                onBookmarkToggle={() => handleBookmarkToggle(experience)}
               />
             ))}
           </div>
@@ -152,15 +193,14 @@ export function ExperienceList({
             title={t('home.sections.mySuggestions')}
             subtitle={t('home.sections.mySuggestionsSubtitle')}
           />
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
             {mySuggestions.map((experience) => (
               <ExperienceCard
                 key={experience.id}
                 experience={experience}
                 onClick={() => router.push(`/${locale}/app/experience/${experience.experience_id}/${experience.slug}`)}
-                onBookmarkToggle={() => {
-                  console.log('Toggle bookmark for', experience.id);
-                }}
+                onEdit={() => router.push(`/${locale}/app/experience/${experience.experience_id}/edit`)}
+                onDelete={() => handleDelete(experience.experience_id)}
               />
             ))}
           </div>

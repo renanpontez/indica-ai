@@ -286,16 +286,25 @@
       "message": "Tem certeza que deseja excluir sua indicação de:",
       "cancel": "Cancelar",
       "confirm": "Excluir",
-      "deleting": "Excluindo..."
+      "deleting": "Excluindo...",
+      "success": "Indicação excluída com sucesso"
     },
     "otherRecommenders": {
       "title": "{count, plural, one {# outra pessoa} other {# outros}} também indicaram"
     }
   },
+  "bookmark": {
+    "add": "Salvar para ir depois",
+    "remove": "Remover dos salvos",
+    "saved": "Salvo",
+    "addedToast": "Adicionado à sua lista!",
+    "removedToast": "Removido da sua lista",
+    "seeNow": "Ver agora"
+  },
   "profile": {
     "tabs": {
       "suggestions": "Indicações",
-      "bookmarks": "Salvos"
+      "bookmarks": "Quero Ir"
     },
     "stats": {
       "suggestions": "Indicações",

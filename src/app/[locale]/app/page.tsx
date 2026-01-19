@@ -15,9 +15,9 @@ export default function FeedPage() {
   ];
   return (
     <div className="min-h-screen bg-background">
-      <Breadcrumb items={breadcrumbItems} />
+      {/* <Breadcrumb items={breadcrumbItems} /> */}
 
-      <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-2 lg:px-4 py-8">
+      <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto p-4">
 
         {isLoading && (
           <div className="flex justify-center items-center min-h-[50vh]">

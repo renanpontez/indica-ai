@@ -3,7 +3,7 @@ import { getTranslations, getLocale } from 'next-intl/server';
 import Image from 'next/image';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { SearchBar } from './SearchBar';
-import { UserDropdown } from './UserDropdown';
+import { Avatar } from './Avatar';
 import type { AuthUser } from '@/lib/auth/AuthContext';
 
 interface DesktopNavProps {
@@ -41,7 +41,9 @@ export async function DesktopNav({ user }: DesktopNavProps) {
             <LanguageSwitcher />
 
             {isAuthenticated ? (
-              <UserDropdown user={user} locale={locale} />
+              <Link href={`/${locale}/app/profile/me`}>
+                <Avatar src={user.avatar_url} alt={user.display_name} size="sm" />
+              </Link>
             ) : (
               <Link
                 href={`/${locale}/auth/signup`}

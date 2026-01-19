@@ -141,6 +141,8 @@ export interface ExperienceFeedItem {
   time_ago: string;
   description?: string | null;
   visibility?: ExperienceVisibility;
+  isBookmarked?: boolean;
+  bookmarkId?: string;
 }
 
 export interface Bookmark {

@@ -287,16 +287,25 @@
       "message": "Are you sure you want to delete your experience for:",
       "cancel": "Cancel",
       "confirm": "Delete",
-      "deleting": "Deleting..."
+      "deleting": "Deleting...",
+      "success": "Experience deleted successfully"
     },
     "otherRecommenders": {
       "title": "{count, plural, one {# other person} other {# others}} also recommended this"
     }
   },
+  "bookmark": {
+    "add": "Save to go later",
+    "remove": "Remove from saved",
+    "saved": "Saved",
+    "addedToast": "Added to your list!",
+    "removedToast": "Removed from your list",
+    "seeNow": "See now"
+  },
   "profile": {
     "tabs": {
       "suggestions": "Suggestions",
-      "bookmarks": "Bookmarks"
+      "bookmarks": "Want to Go"
     },
     "stats": {
       "suggestions": "Suggestions",

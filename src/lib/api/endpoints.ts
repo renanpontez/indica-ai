@@ -115,7 +115,13 @@ export const api = {
     return response.json();
   },
 
-  // Bookmarks - TODO: implement with Supabase
+  // Bookmarks
+  getBookmarks: async (): Promise<ExperienceFeedItem[]> => {
+    const response = await fetch('/api/bookmarks');
+    if (!response.ok) throw new Error('Failed to fetch bookmarks');
+    return response.json();
+  },
+
   createBookmark: async (experienceId: string): Promise<Bookmark> => {
     const response = await fetch('/api/bookmarks', {
       method: 'POST',

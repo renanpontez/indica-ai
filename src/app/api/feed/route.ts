@@ -4,7 +4,11 @@ import { formatTimeAgo, generateExperienceSlug } from '@/lib/utils/format';
 import { geolocation } from '@vercel/functions';
 
 // Helper function to transform experience data
-function transformExperience(exp: any, recommendationCounts: Map<string, number>) {
+function transformExperience(
+  exp: any,
+  recommendationCounts: Map<string, number>,
+  userBookmarks: Map<string, string>
+) {
   const placeName = exp.places?.name || 'Unknown Place';
   const placeCity = exp.places?.city || '';
   const slug = generateExperienceSlug(placeName, placeCity);
@@ -14,6 +18,7 @@ function transformExperience(exp: any, recommendationCounts: Map<string, number>
   const thumbnailImageUrl = images.length > 0 ? images[0] : null;
 
   const placeId = exp.places?.id || exp.place_id;
+  const bookmarkId = userBookmarks.get(exp.id);
 
   return {
     id: exp.id,
@@ -37,7 +42,9 @@ function transformExperience(exp: any, recommendationCounts: Map<string, number>
     tags: exp.tags || [],
     time_ago: formatTimeAgo(exp.created_at),
     description: exp.brief_description,
-    visibility: exp.visibility
+    visibility: exp.visibility,
+    isBookmarked: !!bookmarkId,
+    bookmarkId: bookmarkId || undefined,
   };
 }
 
@@ -77,12 +84,25 @@ export async function GET(request: NextRequest) {
 
   // Get list of users the current user follows (for visibility filtering)
   let followingIds: string[] = [];
+  // Map of experience_id -> bookmark_id for current user
+  const userBookmarks = new Map<string, string>();
+
   if (currentUserId) {
     const { data: following } = await supabase
       .from('follows')
       .select('following_id')
       .eq('follower_id', currentUserId);
     followingIds = (following || []).map(f => f.following_id);
+
+    // Fetch user's bookmarks
+    const { data: bookmarks } = await supabase
+      .from('bookmarks')
+      .select('id, experience_id')
+      .eq('user_id', currentUserId);
+
+    for (const bookmark of bookmarks || []) {
+      userBookmarks.set(bookmark.experience_id, bookmark.id);
+    }
   }
 
   // Fetch my suggestions (if authenticated)
@@ -228,10 +248,10 @@ export async function GET(request: NextRequest) {
   // Fetch recommendation counts for all places in one query
   const recommendationCounts = await getRecommendationCounts(supabase, placeIds);
 
-  // Transform experiences with recommendation counts
-  const mySuggestions = myExperiencesData.map(exp => transformExperience(exp, recommendationCounts));
-  const communitySuggestions = filteredCommunityExperiences.map(exp => transformExperience(exp, recommendationCounts));
-  const nearbyPlaces = filteredNearbyExperiences.map(exp => transformExperience(exp, recommendationCounts));
+  // Transform experiences with recommendation counts and bookmark data
+  const mySuggestions = myExperiencesData.map(exp => transformExperience(exp, recommendationCounts, userBookmarks));
+  const communitySuggestions = filteredCommunityExperiences.map(exp => transformExperience(exp, recommendationCounts, userBookmarks));
+  const nearbyPlaces = filteredNearbyExperiences.map(exp => transformExperience(exp, recommendationCounts, userBookmarks));
 
   return NextResponse.json({
     mySuggestions,

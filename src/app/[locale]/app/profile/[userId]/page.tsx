@@ -1,7 +1,7 @@
 'use client';
 
-import { use, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { use, useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { useQueryClient } from '@tanstack/react-query';
 import { Avatar } from '@/components/Avatar';
@@ -11,9 +11,15 @@ import { ExperienceCard } from '@/features/feed/components/ExperienceCard';
 import { EditProfileModal } from '@/features/profile/components/EditProfileModal';
 import { FollowButton } from '@/components/FollowButton';
 import { useProfile } from '@/features/profile/hooks/useProfile';
+import { useBookmarks } from '@/features/profile/hooks/useBookmarks';
+import { useToggleBookmark } from '@/features/experience-detail/hooks/useToggleBookmark';
+import { useDeleteExperience } from '@/features/experience-detail/hooks/useExperienceMutations';
+import { useFollowStatus } from '@/features/profile/hooks/useFollow';
+import { useToast } from '@/lib/hooks/useToast';
 import { api } from '@/lib/api/endpoints';
 import { cn } from '@/lib/utils/cn';
 import { useAuth } from '@/lib/hooks/useAuth';
+import type { ExperienceFeedItem } from '@/lib/models';
 
 export default function ProfilePage({
   params,
@@ -23,13 +29,85 @@ export default function ProfilePage({
   const { userId } = use(params);
   const locale = useLocale();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const t = useTranslations('profile');
   const tCommon = useTranslations('common');
+  const tExperience = useTranslations('experience');
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState<'suggestions' | 'bookmarks'>('suggestions');
+
+  // Read initial tab from URL param
+  const tabParam = searchParams.get('tab');
+  const initialTab = tabParam === 'bookmarks' ? 'bookmarks' : 'suggestions';
+  const [activeTab, setActiveTab] = useState<'suggestions' | 'bookmarks'>(initialTab);
+
+  // Update tab when URL param changes
+  useEffect(() => {
+    if (tabParam === 'bookmarks') {
+      setActiveTab('bookmarks');
+    }
+  }, [tabParam]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
-  const { refreshUser } = useAuth();
+  const { refreshUser, user: currentUser } = useAuth();
+  const { showToast } = useToast();
+  const { mutate: toggleBookmark } = useToggleBookmark();
+  const { mutateAsync: deleteExperience } = useDeleteExperience();
+
+  // Fetch profile data from API (works for both 'me' and other user IDs)
+  const { data, isLoading, error } = useProfile(userId);
+
+  const displayUser = data?.user;
+  const isOwnProfile = userId === 'me';
+
+  // Check if current user follows this profile (for tab visibility)
+  const { data: followStatus } = useFollowStatus(
+    displayUser?.id || '',
+    currentUser?.id
+  );
+
+  // Fetch bookmarks only for own profile
+  const { data: bookmarks, isLoading: isLoadingBookmarks } = useBookmarks();
+
+  // Determine if bookmarks tab should be visible
+  // Show if: own profile OR current user follows this profile
+  const showBookmarksTab = isOwnProfile || followStatus?.isFollowing;
+
+  const handleBookmarkToggle = (experience: ExperienceFeedItem) => {
+    const wasBookmarked = experience.isBookmarked || false;
+
+    toggleBookmark(
+      {
+        experienceId: experience.experience_id,
+        bookmarkId: experience.bookmarkId,
+        isBookmarked: wasBookmarked,
+      },
+      {
+        onSuccess: (result) => {
+          if (result.action === 'removed') {
+            showToast(t('bookmark.removedToast'), 'success');
+          } else {
+            // Only show "See now" link if not on own profile (they're likely already in the bookmarks tab)
+            if (isOwnProfile) {
+              showToast(t('bookmark.addedToast'), 'success');
+            } else {
+              showToast(t('bookmark.addedToast'), 'success', {
+                label: t('bookmark.seeNow'),
+                href: `/${locale}/app/profile/me?tab=bookmarks`,
+              });
+            }
+          }
+        },
+        onError: () => {
+          showToast(tCommon('error'), 'error');
+        },
+      }
+    );
+  };
+
+  const handleDelete = async (experienceId: string) => {
+    await deleteExperience(experienceId);
+    showToast(tExperience('deleteModal.success'), 'success');
+  };
 
   const handleSignOut = async () => {
     setIsSigningOut(true);
@@ -45,10 +123,6 @@ export default function ProfilePage({
     }
   };
 
-  // Fetch profile data from API (works for both 'me' and other user IDs)
-  const { data, isLoading, error } = useProfile(userId);
-
-  const displayUser = data?.user;
   const experiences = data?.experiences || [];
   const stats = data?.stats || { suggestions: 0, followers: 0, following: 0 };
 
@@ -168,17 +242,19 @@ export default function ProfilePage({
                 >
                   {t('tabs.suggestions')}
                 </button>
-                <button
-                  onClick={() => setActiveTab('bookmarks')}
-                  className={cn(
-                    'pb-3 text-sm font-medium transition-colors border-b-2 -mb-px',
-                    activeTab === 'bookmarks'
-                      ? 'border-primary text-primary'
-                      : 'border-transparent text-medium-grey hover:text-dark-grey'
-                  )}
-                >
-                  {t('tabs.bookmarks')}
-                </button>
+                {showBookmarksTab && (
+                  <button
+                    onClick={() => setActiveTab('bookmarks')}
+                    className={cn(
+                      'pb-3 text-sm font-medium transition-colors border-b-2 -mb-px',
+                      activeTab === 'bookmarks'
+                        ? 'border-primary text-primary'
+                        : 'border-transparent text-medium-grey hover:text-dark-grey'
+                    )}
+                  >
+                    {t('tabs.bookmarks')}
+                  </button>
+                )}
               </div>
             </div>
 
@@ -193,6 +269,9 @@ export default function ProfilePage({
                           key={experience.id}
                           experience={experience}
                           onClick={() => router.push(`/${locale}/app/experience/${experience.experience_id}/${experience.slug}`)}
+                          onEdit={isOwnProfile ? () => router.push(`/${locale}/app/experience/${experience.experience_id}/edit`) : undefined}
+                          onDelete={isOwnProfile ? () => handleDelete(experience.experience_id) : undefined}
+                          onBookmarkToggle={!isOwnProfile ? () => handleBookmarkToggle(experience) : undefined}
                         />
                       ))}
                     </div>
@@ -229,30 +308,49 @@ export default function ProfilePage({
                 </>
               )}
 
-              {activeTab === 'bookmarks' && (
-                <div className="flex flex-col items-center justify-center py-16 text-center">
-                  <div className="p-4 bg-surface rounded-full mb-4">
-                    <svg
-                      className="h-8 w-8 text-medium-grey"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={1.5}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-                      />
-                    </svg>
-                  </div>
-                  <h2 className="text-lg font-semibold text-dark-grey mb-2">
-                    {t('empty.bookmarks.title')}
-                  </h2>
-                  <p className="text-medium-grey max-w-sm">
-                    {t('empty.bookmarks.subtitle')}
-                  </p>
-                </div>
+              {activeTab === 'bookmarks' && showBookmarksTab && (
+                <>
+                  {isLoadingBookmarks ? (
+                    <div className="flex justify-center items-center py-16">
+                      <LoadingSpinner size="lg" />
+                    </div>
+                  ) : bookmarks && bookmarks.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {bookmarks.map((experience) => (
+                        <ExperienceCard
+                          key={experience.id}
+                          experience={experience}
+                          onClick={() => router.push(`/${locale}/app/experience/${experience.experience_id}/${experience.slug}`)}
+                          onBookmarkToggle={() => handleBookmarkToggle(experience)}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center py-16 text-center">
+                      <div className="p-4 bg-surface rounded-full mb-4">
+                        <svg
+                          className="h-8 w-8 text-medium-grey"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={1.5}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+                          />
+                        </svg>
+                      </div>
+                      <h2 className="text-lg font-semibold text-dark-grey mb-2">
+                        {t('empty.bookmarks.title')}
+                      </h2>
+                      <p className="text-medium-grey max-w-sm">
+                        {t('empty.bookmarks.subtitle')}
+                      </p>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>
