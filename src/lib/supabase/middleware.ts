@@ -6,9 +6,10 @@ export async function updateSession(request: NextRequest) {
     request,
   });
 
+  // Use publishable key for session management
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SECRET_KEY!,
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
     {
       cookies: {
         getAll() {

@@ -98,7 +98,11 @@ export const api = {
     return response.json();
   },
 
-  updateProfile: async (data: { display_name: string; username: string }): Promise<User> => {
+  updateProfile: async (data: {
+    display_name: string;
+    username: string;
+    avatar_url?: string;
+  }): Promise<User> => {
     const response = await fetch('/api/profile', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },

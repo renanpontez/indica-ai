@@ -34,7 +34,13 @@ export function ExperienceCard({
             <p className="text-sm font-semibold text-dark-grey">
               {user.display_name}
             </p>
-            <p className="text-xs text-medium-grey">{time_ago}</p>
+            <div className="flex gap-2 items-center">
+              <p className="text-xs text-medium-grey">{time_ago}</p>
+              {/* Visibility Badge */}
+              {experience.visibility && (
+                <VisibilityBadge visibility={experience.visibility} />
+              )}
+            </div>
           </div>
         </div>
         {onBookmarkToggle && (
@@ -118,12 +124,7 @@ export function ExperienceCard({
           </div>
 
           <div className="flex flex-row gap-2 items-center mb-2">
-            {/* Visibility Badge */}
-            {experience.visibility && (
-              <div className="">
-                <VisibilityBadge visibility={experience.visibility} />
-              </div>
-            )}
+
 
             {/* Price Badge */}
             <div className="backdrop-blur-sm py-1">

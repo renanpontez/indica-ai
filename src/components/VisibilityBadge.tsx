@@ -14,9 +14,8 @@ export function VisibilityBadge({ visibility }: VisibilityBadgeProps) {
 
   return (
     <div
-      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs ${
-        isPublic ? 'bg-green-50 text-green-700' : 'bg-blue-50 text-blue-700'
-      }`}
+      className={`inline-flex items-center gap-1 py-0.5 rounded-full text-xs ${isPublic ? ' text-green-700' : 'text-blue-700'
+        }`}
     >
       {isPublic ? (
         <svg

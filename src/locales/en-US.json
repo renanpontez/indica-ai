@@ -326,7 +326,9 @@
       "usernamePlaceholder": "username",
       "save": "Save Changes",
       "cancel": "Cancel",
-      "saving": "Saving..."
+      "saving": "Saving...",
+      "changePhoto": "Change Photo",
+      "uploadingPhoto": "Uploading..."
     }
   }
 }

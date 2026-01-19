@@ -325,7 +325,9 @@
       "usernamePlaceholder": "usuario",
       "save": "Salvar Alterações",
       "cancel": "Cancelar",
-      "saving": "Salvando..."
+      "saving": "Salvando...",
+      "changePhoto": "Alterar Foto",
+      "uploadingPhoto": "Enviando..."
     }
   }
 }

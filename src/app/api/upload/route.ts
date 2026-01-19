@@ -14,6 +14,13 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const files = formData.getAll('files') as File[];
+    const bucket = (formData.get('bucket') as string) || 'experience-images';
+
+    // Validate bucket
+    const allowedBuckets = ['experience-images', 'avatars'];
+    if (!allowedBuckets.includes(bucket)) {
+      return NextResponse.json({ error: 'Invalid bucket' }, { status: 400 });
+    }
 
     if (!files || files.length === 0) {
       return NextResponse.json({ error: 'No files provided' }, { status: 400 });
@@ -53,7 +60,7 @@ export async function POST(request: NextRequest) {
 
       // Upload to Supabase Storage
       const { data, error } = await supabase.storage
-        .from('experience-images')
+        .from(bucket)
         .upload(filename, buffer, {
           contentType: file.type,
           upsert: false,
@@ -69,7 +76,7 @@ export async function POST(request: NextRequest) {
 
       // Get public URL
       const { data: publicUrlData } = supabase.storage
-        .from('experience-images')
+        .from(bucket)
         .getPublicUrl(data.path);
 
       uploadedUrls.push(publicUrlData.publicUrl);

@@ -24,6 +24,7 @@ interface AuthContextValue {
   isAuthenticated: boolean;
   isLoading: boolean;
   isUnauthenticated: boolean;
+  refreshUser: () => Promise<void>;
 }
 
 interface AuthProviderProps {
@@ -114,14 +115,27 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
     return () => subscription.unsubscribe();
   }, [supabase, fetchUserProfile]);
 
+  const refreshUser = useCallback(async () => {
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    if (authUser) {
+      const profile = await fetchUserProfile(
+        authUser.id,
+        authUser.email,
+        authUser.user_metadata
+      );
+      setUser(profile);
+    }
+  }, [supabase, fetchUserProfile]);
+
   const value: AuthContextValue = useMemo(
     () => ({
       user,
       isAuthenticated: !!user,
       isLoading,
       isUnauthenticated: !isLoading && !user,
+      refreshUser,
     }),
-    [user, isLoading]
+    [user, isLoading, refreshUser]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

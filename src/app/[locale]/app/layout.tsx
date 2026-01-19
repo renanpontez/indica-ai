@@ -1,14 +1,17 @@
 import { DesktopNav } from '@/components/DesktopNav';
 import { FloatingActionButton } from '@/components/FloatingActionButton';
+import { getServerUser } from '@/lib/auth/getServerUser';
 
-export default function AppLayout({
+export default async function AppLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const user = await getServerUser();
+
   return (
     <>
-      <DesktopNav />
+      <DesktopNav user={user} />
       <main className="pb-20">{children}</main>
       <FloatingActionButton />
     </>

@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { createAuthClient } from '@/lib/supabase/server';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const redirectTo = searchParams.get('redirectTo') || `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`;
 
-  const supabase = await createClient();
+  const supabase = await createAuthClient();
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',

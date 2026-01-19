@@ -37,6 +37,7 @@ function transformExperience(exp: any, recommendationCounts: Map<string, number>
     tags: exp.tags || [],
     time_ago: formatTimeAgo(exp.created_at),
     description: exp.brief_description,
+    visibility: exp.visibility
   };
 }
 

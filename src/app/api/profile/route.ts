@@ -13,7 +13,7 @@ export async function PATCH(request: Request) {
 
   try {
     const body = await request.json();
-    const { display_name, username } = body;
+    const { display_name, username, avatar_url } = body;
 
     // Validate input
     if (!display_name || !username) {
@@ -32,10 +32,19 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: 'Username is already taken' }, { status: 400 });
     }
 
+    // Build update object
+    const updateData: { display_name: string; username: string; avatar_url?: string } = {
+      display_name,
+      username,
+    };
+    if (avatar_url !== undefined) {
+      updateData.avatar_url = avatar_url;
+    }
+
     // Update user profile
     const { data: updatedProfile, error } = await supabase
       .from('users')
-      .update({ display_name, username })
+      .update(updateData)
       .eq('id', authUser.id)
       .select()
       .single();

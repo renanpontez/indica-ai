@@ -13,6 +13,7 @@ import { FollowButton } from '@/components/FollowButton';
 import { useProfile } from '@/features/profile/hooks/useProfile';
 import { api } from '@/lib/api/endpoints';
 import { cn } from '@/lib/utils/cn';
+import { useAuth } from '@/lib/hooks/useAuth';
 
 export default function ProfilePage({
   params,
@@ -28,6 +29,7 @@ export default function ProfilePage({
   const [activeTab, setActiveTab] = useState<'suggestions' | 'bookmarks'>('suggestions');
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const { refreshUser } = useAuth();
 
   const handleSignOut = async () => {
     setIsSigningOut(true);
@@ -50,10 +52,16 @@ export default function ProfilePage({
   const experiences = data?.experiences || [];
   const stats = data?.stats || { suggestions: 0, followers: 0, following: 0 };
 
-  const handleSaveProfile = async (profileData: { display_name: string; username: string }) => {
+  const handleSaveProfile = async (profileData: {
+    display_name: string;
+    username: string;
+    avatar_url?: string;
+  }) => {
     await api.updateProfile(profileData);
     // Invalidate profile query to refetch updated data
     queryClient.invalidateQueries({ queryKey: ['profile', userId] });
+    // Refresh auth context so nav components update
+    await refreshUser();
   };
 
   return (
