@@ -1,6 +1,14 @@
 import { createClient } from '@/lib/supabase/server';
 import { formatTimeAgo, generateExperienceSlug } from '@/lib/utils/format';
-import type { ExperienceDetail, PriceRange, ExperienceVisibility, OtherRecommender } from '@/lib/models';
+import type { ExperienceDetail, PriceRange, ExperienceVisibility, OtherRecommender, TagInfo } from '@/lib/models';
+
+// Helper to format slug to display name (capitalize first letter, replace hyphens with spaces)
+function formatSlugToDisplayName(slug: string): string {
+  return slug
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
 
 const experienceSelect = `
   id,
@@ -78,6 +86,28 @@ export async function getExperience(id: string): Promise<ExperienceDetail | null
     experience_id: exp.id,
   }));
 
+  // Fetch tag display names
+  const tagSlugs = experience.tags || [];
+  const tagDisplayNames = new Map<string, string>();
+  if (tagSlugs.length > 0) {
+    const { data: tagDetails } = await supabase
+      .from('tags')
+      .select('slug, display_name')
+      .in('slug', tagSlugs);
+
+    (tagDetails || []).forEach((t: any) => {
+      if (t.display_name) {
+        tagDisplayNames.set(t.slug, t.display_name);
+      }
+    });
+  }
+
+  // Transform tags from slugs to TagInfo objects
+  const tags: TagInfo[] = tagSlugs.map((tagSlug: string) => ({
+    slug: tagSlug,
+    display_name: tagDisplayNames.get(tagSlug) || formatSlugToDisplayName(tagSlug),
+  }));
+
   return {
     id: experience.id,
     experience_id: experience.id,
@@ -100,7 +130,7 @@ export async function getExperience(id: string): Promise<ExperienceDetail | null
       google_maps_url: (experience.places as any)?.google_maps_url || null,
     },
     price_range: (experience.price_range || '$$') as PriceRange,
-    tags: experience.tags || [],
+    tags,
     brief_description: experience.brief_description,
     phone_number: experience.phone_number,
     images: experience.images || [],

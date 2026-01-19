@@ -1,24 +1,28 @@
 {
   "meta": {
-    "project_name": "Indica Aí – Social Recommendations MVP",
+    "project_name": "Indica Ai - Social Recommendations MVP",
     "phase": "setup",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "created": "2026-01-12",
-    "last_updated": "2026-01-18",
-    "purpose": "Step-by-step setup plan for frontend application with Supabase backend"
+    "last_updated": "2026-01-19",
+    "purpose": "Step-by-step setup plan for frontend application with Supabase backend",
+    "status": "MVP implemented - use as reference for future development"
   },
   "project_overview": {
     "type": "Mobile-first responsive web app",
-    "framework": "Next.js (App Router)",
-    "language": "TypeScript",
-    "styling": "Tailwind CSS",
+    "framework": "Next.js 16.1.1 (App Router)",
+    "react": "19.2.3",
+    "language": "TypeScript 5.9.3",
+    "styling": "Tailwind CSS 3.4.19",
     "backend": "Supabase (Auth, Database, Storage)",
-    "state_management": "React Query (TanStack Query) + local component state",
+    "state_management": "TanStack React Query 5.90.16 + local component state",
+    "i18n": "next-intl 4.7.0 (pt-BR default, en-US)",
     "target": "Quick social recommendations app - save places in ~15 seconds"
   },
   "phase_1_initial_setup": {
     "order": 1,
     "title": "Project Initialization & Dependencies",
+    "status": "completed",
     "steps": [
       {
         "id": "1.1",
@@ -30,40 +34,39 @@
         "id": "1.2",
         "task": "Install core dependencies",
         "packages": [
-          "@tanstack/react-query",
-          "react-hook-form",
-          "clsx",
-          "tailwind-merge",
-          "next-intl"
+          "@tanstack/react-query@5.90.16",
+          "react-hook-form@7.71.0",
+          "clsx@2.1.1",
+          "tailwind-merge@3.4.0",
+          "next-intl@4.7.0"
         ]
       },
       {
         "id": "1.3",
         "task": "Install Supabase dependencies",
         "packages": [
-          "@supabase/supabase-js",
-          "@supabase/ssr"
-        ],
-        "note": "These replace NextAuth for authentication"
+          "@supabase/supabase-js@2.90.1",
+          "@supabase/ssr@0.8.0"
+        ]
       },
       {
         "id": "1.4",
-        "task": "Install dev dependencies",
+        "task": "Install utility dependencies",
         "packages": [
-          "@types/node",
-          "@types/react",
-          "@types/react-dom",
-          "vitest (optional for testing)"
+          "browser-image-compression@2.0.2",
+          "bcryptjs@3.0.3"
         ]
       },
       {
         "id": "1.5",
         "task": "Configure environment variables",
-        "action": "Create .env.local with Supabase credentials",
+        "action": "Create .env.local with Supabase and Google credentials",
         "variables": {
+          "NEXT_PUBLIC_SITE_URL": "Site URL for OAuth redirects",
           "NEXT_PUBLIC_SUPABASE_URL": "Your Supabase project URL",
-          "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY": "Client-side publishable key (sb_publishable_xxx)",
-          "SUPABASE_SECRET_KEY": "Server-side secret key (sb_secret_xxx)"
+          "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY": "Client-side publishable key",
+          "SUPABASE_SECRET_KEY": "Server-side secret key",
+          "GOOGLE_PLACES_API_KEY": "Google Places API key"
         }
       }
     ]
@@ -71,868 +74,550 @@
   "phase_2_folder_structure": {
     "order": 2,
     "title": "Create Feature-First Folder Structure",
+    "status": "completed",
     "structure": {
       "app_directory": {
         "app/[locale]/": "Routes with i18n support",
+        "app/[locale]/app/": "Authenticated app routes",
+        "app/[locale]/auth/": "Authentication routes",
         "app/api/": "API routes (thin service layer)",
+        "app/auth/callback/": "Supabase auth callback",
         "components/": "Shared/global UI components",
         "features/": {
           "auth/": "Authentication components, hooks",
-          "feed/": "Feed screen components, hooks, types",
-          "add/": "Quick Add flow components, hooks, types",
-          "profile/": "Profile screen components, hooks, types",
-          "experience-detail/": "Experience detail view"
+          "feed/": "Feed screen components, hooks",
+          "add/": "Quick Add flow components, hooks",
+          "profile/": "Profile screen components, hooks",
+          "experience-detail/": "Experience detail view",
+          "explore/": "Explore feature components, hooks"
         },
+        "hooks/": "Global custom hooks",
         "lib/": {
           "supabase/": "Supabase client utilities",
-          "api/": "API utilities and helpers",
+          "api/": "API utilities and facade",
           "models/": "TypeScript domain types/interfaces",
-          "hooks/": "Shared custom hooks",
+          "auth/": "AuthContext and auth utilities",
           "utils/": "Helper functions"
         },
-        "locales/": "i18n message files",
+        "i18n/": "i18n configuration",
+        "locales/": "Translation files",
         "public/": "Static assets"
       }
-    },
-    "steps": [
-      {
-        "id": "2.1",
-        "task": "Create feature folders",
-        "folders": [
-          "src/features/auth",
-          "src/features/feed",
-          "src/features/add",
-          "src/features/profile",
-          "src/features/experience-detail"
-        ]
-      },
-      {
-        "id": "2.2",
-        "task": "Create lib structure",
-        "folders": [
-          "src/lib/supabase",
-          "src/lib/api",
-          "src/lib/models",
-          "src/lib/hooks",
-          "src/lib/utils"
-        ]
-      },
-      {
-        "id": "2.3",
-        "task": "Create shared components folder",
-        "folders": ["src/components"]
-      },
-      {
-        "id": "2.4",
-        "task": "Create i18n structure",
-        "folders": ["src/locales", "src/i18n"]
-      }
-    ]
+    }
   },
   "phase_3_design_tokens": {
     "order": 3,
     "title": "Configure Design System & Tailwind",
-    "steps": [
-      {
-        "id": "3.1",
-        "task": "Update tailwind.config.js with design tokens",
-        "tokens": {
-          "colors": {
-            "primary": "#111111",
-            "background": "#FFFFFF",
-            "surface": "#F6F7F9",
-            "chip-bg": "#EDEEF1",
-            "text-primary": "#111111",
-            "text-secondary": "#555555",
-            "divider": "#E4E6EA",
-            "accent": "#007AFF"
-          },
-          "fontFamily": {
-            "sans": ["Inter", "system-ui", "sans-serif"]
-          },
-          "fontSize": {
-            "title-l": "1.4rem",
-            "title-m": "1.2rem",
-            "body": "1rem",
-            "small": "0.85rem"
-          },
-          "borderRadius": {
-            "chip": "12px",
-            "surface": "14px"
-          },
-          "spacing": {
-            "xs": "4px",
-            "sm": "8px",
-            "md": "16px",
-            "lg": "24px"
-          }
-        }
+    "status": "completed",
+    "tokens": {
+      "colors": {
+        "primary": "#FD512E (with shades 100-900)",
+        "background": "#FFFFFF",
+        "surface": "#F6F7F9",
+        "chip-bg": "#EDEEF1",
+        "dark-grey": "#111111",
+        "medium-grey": "#555555",
+        "divider": "#E4E6EA"
       },
-      {
-        "id": "3.2",
-        "task": "Add Inter font",
-        "action": "Import using next/font"
+      "fontFamily": {
+        "sans": ["Inter", "system-ui", "sans-serif"]
+      },
+      "fontSize": {
+        "title-l": "1.125rem",
+        "title-m": "1rem",
+        "body": "0.875rem",
+        "small": "0.75rem"
+      },
+      "borderRadius": {
+        "chip": "8px",
+        "surface": "10px"
+      },
+      "spacing": {
+        "xs": "4px",
+        "sm": "8px",
+        "md": "16px",
+        "lg": "24px"
       }
-    ]
+    }
   },
   "phase_4_domain_models": {
     "order": 4,
     "title": "Define TypeScript Domain Models",
-    "steps": [
-      {
-        "id": "4.1",
-        "task": "Create src/lib/models/index.ts",
-        "models_to_define": [
-          "User",
-          "AuthUser",
-          "Place",
-          "Experience",
-          "ExperienceFeedItem",
-          "Bookmark",
-          "QuickAddFormState",
-          "ExperienceCardProps"
-        ]
-      },
-      {
-        "id": "4.2",
-        "task": "Ensure types mirror Supabase database schema",
-        "note": "Reference front.tech.json database_schema and domain_models_frontend sections"
-      }
-    ],
-    "critical_types": {
-      "User": {
-        "id": "string (UUID)",
-        "display_name": "string",
-        "username": "string",
-        "avatar_url": "string | null"
-      },
-      "AuthUser": {
-        "id": "string (UUID, from Supabase auth.users)",
-        "email": "string",
-        "display_name": "string",
-        "username": "string",
-        "avatar_url": "string | null",
-        "provider": "'google' | 'email'"
-      },
-      "Place": {
-        "id": "string (UUID)",
-        "google_place_id": "string | null",
-        "name": "string",
-        "city": "string",
-        "country": "string",
-        "address": "string | null",
-        "lat": "number | null",
-        "lng": "number | null",
-        "instagram_handle": "string | null",
-        "google_maps_url": "string | null",
-        "custom": "boolean"
-      },
-      "ExperienceFeedItem": "Feed item with user, place, price_range, tags, time_ago"
-    }
+    "status": "completed",
+    "location": "src/lib/models/index.ts",
+    "models": [
+      "User",
+      "AuthUser",
+      "Place",
+      "PlaceSearchResult",
+      "PlaceStats",
+      "Tag",
+      "TagWithLabel",
+      "Experience",
+      "ExperienceDetail",
+      "ExperienceFeedItem",
+      "Bookmark",
+      "Follow",
+      "FollowWithUser",
+      "OtherRecommender",
+      "QuickAddFormState",
+      "ExperienceCardProps",
+      "PriceRange",
+      "ExperienceVisibility"
+    ]
   },
   "phase_5_supabase_setup": {
     "order": 5,
     "title": "Supabase Project & Database Setup",
-    "steps": [
-      {
-        "id": "5.1",
-        "task": "Create Supabase project",
-        "action": "Go to supabase.com and create a new project",
-        "note": "Save the project URL and anon key for .env.local"
+    "status": "completed",
+    "tables": {
+      "users": {
+        "description": "User profiles, extends auth.users",
+        "columns": {
+          "id": "UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE",
+          "display_name": "TEXT NOT NULL",
+          "username": "TEXT UNIQUE NOT NULL",
+          "avatar_url": "TEXT",
+          "created_at": "TIMESTAMPTZ DEFAULT NOW()"
+        },
+        "trigger": "handle_new_user() - Auto-creates profile on signup"
       },
-      {
-        "id": "5.2",
-        "task": "Create database tables",
-        "sql": "Run the following SQL in Supabase SQL editor",
-        "tables": {
-          "users": {
-            "description": "User profiles, extends auth.users",
-            "sql": "CREATE TABLE users (\n  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,\n  display_name TEXT NOT NULL,\n  username TEXT UNIQUE NOT NULL,\n  avatar_url TEXT,\n  created_at TIMESTAMPTZ DEFAULT NOW()\n);"
-          },
-          "places": {
-            "description": "Places/locations",
-            "sql": "CREATE TABLE places (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  google_place_id TEXT,\n  name TEXT NOT NULL,\n  city TEXT NOT NULL,\n  country TEXT NOT NULL,\n  address TEXT,\n  lat DECIMAL,\n  lng DECIMAL,\n  instagram_handle TEXT,\n  google_maps_url TEXT,\n  custom BOOLEAN DEFAULT false,\n  created_at TIMESTAMPTZ DEFAULT NOW()\n);"
-          },
-          "experiences": {
-            "description": "User experiences at places",
-            "sql": "CREATE TABLE experiences (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,\n  place_id UUID REFERENCES places(id) ON DELETE CASCADE NOT NULL,\n  price_range TEXT CHECK (price_range IN ('$', '$$', '$$$', '$$$$')),\n  tags TEXT[],\n  brief_description TEXT,\n  phone_number TEXT,\n  images TEXT[],\n  visit_date DATE,\n  created_at TIMESTAMPTZ DEFAULT NOW()\n);"
-          },
-          "bookmarks": {
-            "description": "User bookmarks on experiences",
-            "sql": "CREATE TABLE bookmarks (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,\n  experience_id UUID REFERENCES experiences(id) ON DELETE CASCADE NOT NULL,\n  created_at TIMESTAMPTZ DEFAULT NOW(),\n  UNIQUE(user_id, experience_id)\n);"
-          }
+      "places": {
+        "description": "Places/locations (deduplicated)",
+        "columns": {
+          "id": "UUID PRIMARY KEY DEFAULT gen_random_uuid()",
+          "google_place_id": "TEXT",
+          "name": "TEXT NOT NULL",
+          "city": "TEXT NOT NULL",
+          "country": "TEXT NOT NULL",
+          "address": "TEXT",
+          "lat": "DECIMAL",
+          "lng": "DECIMAL",
+          "instagram_handle": "TEXT",
+          "google_maps_url": "TEXT",
+          "custom": "BOOLEAN DEFAULT false",
+          "created_at": "TIMESTAMPTZ DEFAULT NOW()"
         }
       },
-      {
-        "id": "5.3",
-        "task": "Create indexes for performance",
-        "sql": [
-          "CREATE INDEX idx_experiences_user_id ON experiences(user_id);",
-          "CREATE INDEX idx_experiences_place_id ON experiences(place_id);",
-          "CREATE INDEX idx_experiences_created_at ON experiences(created_at DESC);",
-          "CREATE INDEX idx_bookmarks_user_id ON bookmarks(user_id);",
-          "CREATE INDEX idx_places_google_place_id ON places(google_place_id);"
-        ]
+      "experiences": {
+        "description": "User experiences at places",
+        "columns": {
+          "id": "UUID PRIMARY KEY DEFAULT gen_random_uuid()",
+          "user_id": "UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL",
+          "place_id": "UUID REFERENCES places(id) ON DELETE CASCADE NOT NULL",
+          "price_range": "TEXT CHECK (price_range IN ('$', '$$', '$$$', '$$$$'))",
+          "tags": "TEXT[]",
+          "brief_description": "TEXT",
+          "phone_number": "TEXT",
+          "images": "TEXT[]",
+          "visit_date": "DATE",
+          "visibility": "TEXT DEFAULT 'public' CHECK (visibility IN ('public', 'friends_only'))",
+          "created_at": "TIMESTAMPTZ DEFAULT NOW()"
+        }
       },
-      {
-        "id": "5.4",
-        "task": "Set up Row Level Security (RLS) policies",
-        "policies": {
-          "users": [
-            {
-              "name": "Users can read any profile",
-              "sql": "CREATE POLICY \"Users can read any profile\" ON users FOR SELECT USING (true);"
-            },
-            {
-              "name": "Users can update own profile",
-              "sql": "CREATE POLICY \"Users can update own profile\" ON users FOR UPDATE USING (auth.uid() = id);"
-            },
-            {
-              "name": "Users can insert own profile",
-              "sql": "CREATE POLICY \"Users can insert own profile\" ON users FOR INSERT WITH CHECK (auth.uid() = id);"
-            }
-          ],
-          "places": [
-            {
-              "name": "Anyone can read places",
-              "sql": "CREATE POLICY \"Anyone can read places\" ON places FOR SELECT USING (true);"
-            },
-            {
-              "name": "Authenticated users can create places",
-              "sql": "CREATE POLICY \"Authenticated users can create places\" ON places FOR INSERT WITH CHECK (auth.role() = 'authenticated');"
-            }
-          ],
-          "experiences": [
-            {
-              "name": "Anyone can read experiences",
-              "sql": "CREATE POLICY \"Anyone can read experiences\" ON experiences FOR SELECT USING (true);"
-            },
-            {
-              "name": "Users can create own experiences",
-              "sql": "CREATE POLICY \"Users can create own experiences\" ON experiences FOR INSERT WITH CHECK (auth.uid() = user_id);"
-            },
-            {
-              "name": "Users can update own experiences",
-              "sql": "CREATE POLICY \"Users can update own experiences\" ON experiences FOR UPDATE USING (auth.uid() = user_id);"
-            },
-            {
-              "name": "Users can delete own experiences",
-              "sql": "CREATE POLICY \"Users can delete own experiences\" ON experiences FOR DELETE USING (auth.uid() = user_id);"
-            }
-          ],
-          "bookmarks": [
-            {
-              "name": "Users can read own bookmarks",
-              "sql": "CREATE POLICY \"Users can read own bookmarks\" ON bookmarks FOR SELECT USING (auth.uid() = user_id);"
-            },
-            {
-              "name": "Users can create own bookmarks",
-              "sql": "CREATE POLICY \"Users can create own bookmarks\" ON bookmarks FOR INSERT WITH CHECK (auth.uid() = user_id);"
-            },
-            {
-              "name": "Users can delete own bookmarks",
-              "sql": "CREATE POLICY \"Users can delete own bookmarks\" ON bookmarks FOR DELETE USING (auth.uid() = user_id);"
-            }
-          ]
+      "bookmarks": {
+        "description": "User bookmarks on experiences",
+        "columns": {
+          "id": "UUID PRIMARY KEY DEFAULT gen_random_uuid()",
+          "user_id": "UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL",
+          "experience_id": "UUID REFERENCES experiences(id) ON DELETE CASCADE NOT NULL",
+          "created_at": "TIMESTAMPTZ DEFAULT NOW()"
         },
-        "enable_rls": [
-          "ALTER TABLE users ENABLE ROW LEVEL SECURITY;",
-          "ALTER TABLE places ENABLE ROW LEVEL SECURITY;",
-          "ALTER TABLE experiences ENABLE ROW LEVEL SECURITY;",
-          "ALTER TABLE bookmarks ENABLE ROW LEVEL SECURITY;"
-        ]
+        "constraints": ["UNIQUE(user_id, experience_id)"]
       },
-      {
-        "id": "5.5",
-        "task": "Set up Storage buckets",
-        "buckets": [
-          {
-            "name": "experience-images",
-            "public": true,
-            "description": "Images uploaded for experiences"
-          },
-          {
-            "name": "avatars",
-            "public": true,
-            "description": "User profile pictures"
-          }
+      "tags": {
+        "description": "System and custom tags",
+        "columns": {
+          "id": "UUID PRIMARY KEY DEFAULT gen_random_uuid()",
+          "slug": "TEXT UNIQUE NOT NULL",
+          "display_name": "TEXT",
+          "is_system": "BOOLEAN DEFAULT false",
+          "created_by": "UUID REFERENCES users(id)",
+          "created_at": "TIMESTAMPTZ DEFAULT NOW()"
+        }
+      },
+      "follows": {
+        "description": "User follow relationships",
+        "columns": {
+          "id": "UUID PRIMARY KEY DEFAULT gen_random_uuid()",
+          "follower_id": "UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL",
+          "following_id": "UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL",
+          "created_at": "TIMESTAMPTZ DEFAULT NOW()"
+        },
+        "constraints": [
+          "UNIQUE(follower_id, following_id)",
+          "CHECK(follower_id != following_id)"
         ]
       }
-    ]
+    },
+    "storage_buckets": [
+      {
+        "name": "experience-images",
+        "public": true,
+        "description": "Images uploaded for experiences"
+      },
+      {
+        "name": "avatars",
+        "public": true,
+        "description": "User profile pictures"
+      }
+    ],
+    "rls_policies": {
+      "users": [
+        "Users can read any profile",
+        "Users can update own profile",
+        "Users can insert own profile"
+      ],
+      "places": [
+        "Anyone can read places",
+        "Authenticated users can create places"
+      ],
+      "experiences": [
+        "Users see: own + public + friends_only from followed users",
+        "Users can only CRUD their own experiences"
+      ],
+      "bookmarks": [
+        "Users can only see/manage their own bookmarks"
+      ],
+      "tags": [
+        "Anyone can read tags",
+        "Authenticated users can create custom tags"
+      ],
+      "follows": [
+        "Users can see all follows",
+        "Users can only create/delete their own follows"
+      ]
+    }
   },
   "phase_6_supabase_auth": {
     "order": 6,
     "title": "Supabase Authentication Setup",
-    "steps": [
-      {
-        "id": "6.1",
-        "task": "Configure Google OAuth in Supabase",
-        "action": "In Supabase Dashboard > Authentication > Providers > Google",
-        "requirements": [
-          "Create Google Cloud OAuth credentials",
-          "Add authorized redirect URI: https://your-project.supabase.co/auth/v1/callback",
-          "Copy Client ID and Client Secret to Supabase dashboard"
-        ]
+    "status": "completed",
+    "providers": {
+      "email_password": {
+        "status": "implemented",
+        "features": ["signup", "signin", "signout"]
       },
-      {
-        "id": "6.2",
-        "task": "Enable Email/Password provider",
-        "action": "In Supabase Dashboard > Authentication > Providers > Email",
-        "settings": {
-          "enable_signups": true,
-          "confirm_email": true
-        }
-      },
-      {
-        "id": "6.3",
-        "task": "Create Supabase client utilities",
-        "files": {
-          "lib/supabase/client.ts": {
-            "description": "Browser client for client components",
-            "function": "createBrowserClient()"
-          },
-          "lib/supabase/server.ts": {
-            "description": "Server client for API routes and server components",
-            "function": "createServerClient()"
-          },
-          "lib/supabase/middleware.ts": {
-            "description": "Middleware client for auth session refresh",
-            "function": "createMiddlewareClient()"
-          }
-        }
-      },
-      {
-        "id": "6.4",
-        "task": "Create auth hooks",
-        "hooks": [
-          {
-            "name": "useAuth",
-            "description": "Get current authenticated user",
-            "returns": "{ user, loading, error }"
-          },
-          {
-            "name": "useSession",
-            "description": "Get Supabase session",
-            "returns": "{ session, loading }"
-          }
-        ]
-      },
-      {
-        "id": "6.5",
-        "task": "Create middleware for auth protection",
-        "file": "src/middleware.ts",
-        "functionality": [
-          "Refresh auth session on every request",
-          "Redirect unauthenticated users from protected routes",
-          "Handle i18n routing"
-        ]
-      },
-      {
-        "id": "6.6",
-        "task": "Create user profile on first sign-in",
-        "approach": "Database trigger or API route",
-        "sql": "CREATE OR REPLACE FUNCTION handle_new_user()\nRETURNS TRIGGER AS $$\nBEGIN\n  INSERT INTO public.users (id, display_name, username, avatar_url)\n  VALUES (\n    NEW.id,\n    COALESCE(NEW.raw_user_meta_data->>'full_name', NEW.email),\n    LOWER(REPLACE(COALESCE(NEW.raw_user_meta_data->>'full_name', SPLIT_PART(NEW.email, '@', 1)), ' ', '_')) || '_' || SUBSTRING(NEW.id::TEXT, 1, 4),\n    NEW.raw_user_meta_data->>'avatar_url'\n  );\n  RETURN NEW;\nEND;\n$$ LANGUAGE plpgsql SECURITY DEFINER;\n\nCREATE TRIGGER on_auth_user_created\n  AFTER INSERT ON auth.users\n  FOR EACH ROW EXECUTE FUNCTION handle_new_user();"
+      "google_oauth": {
+        "status": "stub only - not fully implemented"
       }
-    ]
+    },
+    "client_utilities": {
+      "lib/supabase/client.ts": "Browser client (createBrowserClient)",
+      "lib/supabase/server.ts": "Server client (createServerClient with secret key)",
+      "lib/supabase/middleware.ts": "Middleware client (updateSession)"
+    },
+    "auth_context": {
+      "location": "lib/auth/AuthContext.tsx",
+      "hook": "useAuth()",
+      "features": [
+        "Manages user state globally",
+        "Listens for auth state changes",
+        "Fetches user profile from database"
+      ]
+    }
   },
   "phase_7_api_layer": {
     "order": 7,
     "title": "Setup API Layer with Supabase",
-    "steps": [
-      {
-        "id": "7.1",
-        "task": "Create API utilities",
-        "file": "lib/api/index.ts",
-        "content": "Helper functions for common Supabase operations"
-      },
-      {
-        "id": "7.2",
-        "task": "Setup React Query Provider",
-        "action": "Create QueryClient in app layout with proper config"
-      },
-      {
-        "id": "7.3",
-        "task": "Create custom hooks for data fetching",
-        "hooks": [
-          {
-            "name": "useFeed",
-            "query": "Fetch feed experiences with user and place joins",
-            "location": "features/feed"
-          },
-          {
-            "name": "useExperience(id)",
-            "query": "Fetch single experience with full details",
-            "location": "features/experience-detail"
-          },
-          {
-            "name": "useProfile(userId)",
-            "query": "Fetch user profile with their experiences",
-            "location": "features/profile"
-          },
-          {
-            "name": "useCreateExperience",
-            "mutation": "Create new experience (and place if needed)",
-            "location": "features/add"
-          },
-          {
-            "name": "useToggleBookmark",
-            "mutation": "Add or remove bookmark",
-            "location": "features/experience-detail"
-          }
-        ]
-      },
-      {
-        "id": "7.4",
-        "task": "Create API routes for complex operations",
-        "routes": [
-          {
-            "path": "app/api/places/search/route.ts",
-            "description": "Search places via Google Places API"
-          },
-          {
-            "path": "app/api/ip-location/route.ts",
-            "description": "Get location from IP address"
-          }
-        ],
-        "note": "Most data operations use Supabase client directly; API routes only for external services"
-      }
-    ]
+    "status": "completed",
+    "api_facade": {
+      "location": "lib/api/endpoints.ts",
+      "description": "Central API facade for all endpoints"
+    },
+    "react_query": {
+      "provider": "Providers component with QueryClientProvider",
+      "hooks": [
+        "useFeed()",
+        "useExperience(id)",
+        "useProfile(userId)",
+        "useCreateExperience()",
+        "useExperienceMutations()",
+        "useToggleBookmark()",
+        "useBookmarks()",
+        "useTags()",
+        "useCreateTag()",
+        "useFollow()",
+        "useFollowStatus()",
+        "useExplore()"
+      ]
+    }
   },
   "phase_8_global_components": {
     "order": 8,
     "title": "Build Global/Shared Components",
+    "status": "completed",
     "components": [
-      {
-        "name": "BottomNav",
-        "file": "src/components/BottomNav.tsx",
-        "props": "tabs: feed, add, profile, explore_placeholder",
-        "accessibility": "aria-labels, role='navigation', 44px touch targets"
-      },
-      {
-        "name": "DesktopNav",
-        "file": "src/components/DesktopNav.tsx",
-        "props": "navigation items, user menu",
-        "accessibility": "aria-labels, keyboard navigation"
-      },
-      {
-        "name": "TopBar",
-        "file": "src/components/TopBar.tsx",
-        "props": "title, optional back button"
-      },
-      {
-        "name": "Avatar",
-        "file": "src/components/Avatar.tsx",
-        "props": "src, alt, size"
-      },
-      {
-        "name": "Chip",
-        "file": "src/components/Chip.tsx",
-        "props": "label, variant (tag, price)",
-        "styling": "bg-chip-bg, rounded-chip (12px)"
-      },
-      {
-        "name": "Button",
-        "file": "src/components/Button.tsx",
-        "props": "variant, size, disabled, loading"
-      },
-      {
-        "name": "Input",
-        "file": "src/components/Input.tsx",
-        "props": "type, placeholder, value, onChange, error"
-      },
-      {
-        "name": "TextArea",
-        "file": "src/components/TextArea.tsx"
-      },
-      {
-        "name": "IconButton",
-        "file": "src/components/IconButton.tsx"
-      }
-    ],
-    "steps": [
-      {
-        "id": "8.1",
-        "task": "Build navigation components first",
-        "priority": "CRITICAL - core navigation",
-        "components": ["BottomNav", "DesktopNav"]
-      },
-      {
-        "id": "8.2",
-        "task": "Build basic UI primitives",
-        "components": ["Avatar", "Chip", "Button", "Input"]
-      },
-      {
-        "id": "8.3",
-        "task": "Ensure accessibility",
-        "requirements": [
-          "Visible focus states",
-          "Min 44px touch targets",
-          "AA color contrast",
-          "aria-labels where needed"
-        ]
-      }
+      "BottomNav",
+      "Sidebar",
+      "DesktopNav",
+      "TopBar",
+      "Avatar",
+      "Chip",
+      "Button",
+      "Input",
+      "TextArea",
+      "IconButton",
+      "SearchBar",
+      "Breadcrumb",
+      "LanguageSwitcher",
+      "LoadingSpinner",
+      "ErrorMessage",
+      "PlaceholderImage",
+      "VisibilityBadge",
+      "FollowButton",
+      "Toast",
+      "ToastContainer",
+      "FloatingActionButton",
+      "Stories",
+      "AuthGuard",
+      "UserDropdown",
+      "UserMenu",
+      "Providers"
     ]
   },
   "phase_9_auth_screens": {
     "order": 9,
     "title": "Build Authentication Screens",
+    "status": "completed",
     "screens": [
       {
         "name": "Sign In",
         "path": "app/[locale]/auth/signin/page.tsx",
-        "components": ["SignInForm", "SocialSignInButtons"],
-        "features": [
-          "Google OAuth sign-in button",
-          "Email/password form",
-          "Link to sign up",
-          "Error handling"
-        ]
+        "components": ["SignInForm"]
       },
       {
         "name": "Sign Up",
         "path": "app/[locale]/auth/signup/page.tsx",
-        "components": ["SignUpForm", "SocialSignInButtons"],
-        "features": [
-          "Google OAuth sign-up button",
-          "Email/password/name form",
-          "Username selection",
-          "Link to sign in",
-          "Form validation"
-        ]
+        "components": ["SignUpForm"]
       },
       {
         "name": "Auth Error",
-        "path": "app/[locale]/auth/error/page.tsx",
-        "features": ["Display auth errors", "Link back to sign in"]
-      }
-    ],
-    "steps": [
-      {
-        "id": "9.1",
-        "task": "Build SignInForm component",
-        "location": "features/auth/SignInForm.tsx"
-      },
-      {
-        "id": "9.2",
-        "task": "Build SignUpForm component",
-        "location": "features/auth/SignUpForm.tsx"
-      },
-      {
-        "id": "9.3",
-        "task": "Build SocialSignInButtons component",
-        "location": "features/auth/SocialSignInButtons.tsx"
-      },
-      {
-        "id": "9.4",
-        "task": "Build UserMenu component",
-        "location": "features/auth/UserMenu.tsx",
-        "features": ["Display user info", "Sign out button"]
+        "path": "app/[locale]/auth/error/page.tsx"
       }
     ]
   },
   "phase_10_core_screens": {
     "order": 10,
-    "title": "Build Core Screens in Order",
-    "build_order": [
-      {
-        "priority": 1,
-        "screen": "Feed",
-        "path": "features/feed",
-        "components": [
-          "ExperienceCard",
-          "ExperienceList",
-          "FeedEmptyState"
-        ],
-        "data": "useFeed() hook with React Query + Supabase",
-        "requirements": [
-          "Show user avatar, name, time_ago",
-          "Show place name, city, price_range, tags",
-          "Optional thumbnail image",
-          "Tap to navigate to experience detail",
-          "Empty state: 'Follow friends to discover places they love.'"
-        ]
+    "title": "Build Core Screens",
+    "status": "completed",
+    "screens": {
+      "feed": {
+        "path": "app/[locale]/app/page.tsx",
+        "features": ["mySuggestions", "friendsSuggestions", "communitySuggestions", "nearbyPlaces"]
       },
-      {
-        "priority": 2,
-        "screen": "Experience Detail",
-        "path": "features/experience-detail",
-        "components": [
-          "ExperienceDetailLayout",
-          "ImageGallery",
-          "MapLinkButton",
-          "BookmarkButton"
-        ],
-        "data": "useExperience(id) hook",
-        "requirements": [
-          "Display all experience fields",
-          "Auto-generated Google Maps link",
-          "Bookmark toggle (requires auth)",
-          "Image gallery if images exist"
-        ]
+      "experience_detail": {
+        "path": "app/[locale]/app/experience/[id]/[slug]/page.tsx",
+        "features": ["Full details", "Bookmark", "Other recommenders", "More from user"]
       },
-      {
-        "priority": 3,
-        "screen": "Quick Add Flow",
-        "path": "features/add",
-        "components": [
-          "QuickAddLayout",
-          "PlaceSearchInput",
-          "PlaceSuggestionList",
-          "CustomPlaceForm",
-          "PriceRangeSelector",
-          "TagSelector",
-          "AdditionalFieldsPanel",
-          "SaveExperienceButton"
-        ],
-        "flow": [
-          "Step 1: Get location context (GPS → IP fallback → Manual city)",
-          "Step 2: Search place via API or enter custom",
-          "Step 3: Required fields (price_range, tags)",
-          "Step 4: Optional enrichment (instagram, description, images, phone, visit_date)",
-          "Step 5: Save to Supabase and redirect"
-        ],
-        "target": "Complete flow in ~15 seconds",
-        "requirements": [
-          "Requires authentication",
-          "Request GPS permission on-demand with explanatory copy",
-          "Handle GPS denied → IP fallback → Manual city selector",
-          "Places API failure → Custom place entry",
-          "Never allow manual google_maps_url entry",
-          "Form validation with React Hook Form",
-          "Upload images to Supabase Storage"
-        ]
+      "experience_edit": {
+        "path": "app/[locale]/app/experience/[id]/edit/page.tsx",
+        "features": ["Edit price, tags, description, images, visibility"]
       },
-      {
-        "priority": 4,
-        "screen": "Profile",
-        "path": "features/profile",
-        "components": [
-          "UserHeader",
-          "ProfileTabs",
-          "ProfileExperienceList",
-          "ProfileBookmarksPlaceholder"
+      "quick_add": {
+        "path": "app/[locale]/app/add/page.tsx",
+        "features": ["Place search", "Price", "Tags", "Images", "Visibility"]
+      },
+      "profile": {
+        "paths": [
+          "app/[locale]/app/profile/me/page.tsx",
+          "app/[locale]/app/profile/[userId]/page.tsx"
         ],
-        "data": "useProfile(userId) hook",
-        "requirements": [
-          "Display user info with edit entrypoint (own profile)",
-          "Tab 1: User's experiences list",
-          "Tab 2: Bookmarks (own profile only)",
-          "Empty state: 'Save places to build your profile.'"
-        ]
+        "features": ["Stats", "Experiences tab", "Bookmarks tab", "Follow button", "Edit profile"]
       }
-    ]
+    }
   },
   "phase_11_routing": {
     "order": 11,
     "title": "Setup Routing & Navigation",
-    "steps": [
-      {
-        "id": "11.1",
-        "task": "Define routes with i18n",
-        "routes": {
-          "/[locale]": "Feed (default, public)",
-          "/[locale]/add": "Quick Add Flow (protected)",
-          "/[locale]/profile": "Current user profile (protected)",
-          "/[locale]/profile/[userId]": "Other user profile (public)",
-          "/[locale]/experience/[id]": "Experience detail (public)",
-          "/[locale]/explore": "Explore/Browse (public)",
-          "/[locale]/auth/signin": "Sign in (public)",
-          "/[locale]/auth/signup": "Sign up (public)",
-          "/[locale]/auth/error": "Auth error (public)"
-        }
-      },
-      {
-        "id": "11.2",
-        "task": "Configure middleware for protected routes",
-        "protected_routes": ["/add", "/profile"],
-        "action": "Redirect to signin if not authenticated"
-      },
-      {
-        "id": "11.3",
-        "task": "Connect navigation components to routing",
-        "action": "Use Next.js Link with locale prefix"
-      }
-    ]
+    "status": "completed",
+    "routes": {
+      "public": [
+        "/[locale]/ (landing)",
+        "/[locale]/auth/signin",
+        "/[locale]/auth/signup",
+        "/[locale]/auth/error",
+        "/[locale]/app/explore/*"
+      ],
+      "protected": [
+        "/[locale]/app/ (feed)",
+        "/[locale]/app/add",
+        "/[locale]/app/profile/me",
+        "/[locale]/app/experience/[id]/edit"
+      ]
+    },
+    "i18n": {
+      "locales": ["pt-BR (default)", "en-US"],
+      "prefix": "as-needed (no /pt-BR for default)"
+    }
   },
   "phase_12_location_handling": {
     "order": 12,
     "title": "Implement Location Context Logic",
-    "steps": [
-      {
-        "id": "12.1",
-        "task": "Create useLocationContext hook",
-        "flow": [
-          "1. Try Geolocation API (navigator.geolocation)",
-          "2. If denied/failed → Call IP geolocation API route",
-          "3. If both fail → Show CitySelector component"
-        ]
-      },
-      {
-        "id": "12.2",
-        "task": "Build CitySelector component",
-        "action": "Simple dropdown or searchable city list"
-      },
-      {
-        "id": "12.3",
-        "task": "Request GPS permission with explanatory copy",
-        "copy": "We use your location to help you find nearby places faster."
-      }
-    ]
+    "status": "completed",
+    "flow": [
+      "1. Try Geolocation API (navigator.geolocation)",
+      "2. If denied/failed - Use Vercel geolocation headers",
+      "3. If both fail - Show CitySelector component"
+    ],
+    "hook": "useLocationContext() in features/add/hooks/"
   },
   "phase_13_error_loading_states": {
     "order": 13,
     "title": "Implement Error & Loading States",
-    "steps": [
-      {
-        "id": "13.1",
-        "task": "Create LoadingSpinner component"
-      },
-      {
-        "id": "13.2",
-        "task": "Create ErrorMessage component"
-      },
-      {
-        "id": "13.3",
-        "task": "Add loading/error states to all data-fetching components",
-        "components": [
-          "Feed → Loading skeleton or spinner",
-          "Experience Detail → Loading state",
-          "Profile → Loading state"
-        ]
-      },
-      {
-        "id": "13.4",
-        "task": "Handle empty states explicitly",
-        "states": [
-          "Feed empty → 'Follow friends to discover places they love.'",
-          "Profile empty → 'Save places to build your profile.'",
-          "No search results → 'No places found. Try a different search.'"
-        ]
-      }
+    "status": "completed",
+    "components": [
+      "LoadingSpinner",
+      "ErrorMessage",
+      "FeedEmptyState"
+    ],
+    "empty_states": [
+      "Feed empty - 'Follow friends to discover places they love.'",
+      "Profile empty - 'Save places to build your profile.'",
+      "No search results - 'No places found.'"
     ]
   },
   "phase_14_responsive_layout": {
     "order": 14,
     "title": "Ensure Responsive Design",
-    "steps": [
-      {
-        "id": "14.1",
-        "task": "Test on mobile breakpoints",
-        "targets": ["320-414px (mobile)", "~768px (tablet)", "1024+ (desktop)"]
-      },
-      {
-        "id": "14.2",
-        "task": "Add max-width container on desktop",
-        "value": "1760px max-width"
-      },
-      {
-        "id": "14.3",
-        "task": "Test navigation on different screen sizes",
-        "note": "BottomNav on mobile, DesktopNav on larger screens"
-      }
-    ]
+    "status": "completed",
+    "breakpoints": {
+      "mobile": "320-414px",
+      "tablet": "~768px",
+      "desktop": "1024+ (max 1760px)"
+    },
+    "navigation": {
+      "mobile": "BottomNav",
+      "desktop": "Sidebar + TopBar"
+    }
   },
   "phase_15_testing_qa": {
     "order": 15,
-    "title": "Testing & Quality Assurance (Optional for MVP)",
-    "steps": [
-      {
-        "id": "15.1",
-        "task": "Setup Vitest + React Testing Library",
-        "optional": true
-      },
-      {
-        "id": "15.2",
-        "task": "Write basic component tests",
-        "components": ["ExperienceCard", "BottomNav", "Button", "Chip"]
-      },
-      {
-        "id": "15.3",
-        "task": "Test auth flows end-to-end",
-        "manual": true
-      },
-      {
-        "id": "15.4",
-        "task": "Test Quick Add flow end-to-end",
-        "manual": true
-      }
+    "title": "Testing & Quality Assurance",
+    "status": "optional for MVP",
+    "manual_testing": [
+      "Auth flows (signup, signin, signout)",
+      "Quick Add flow end-to-end",
+      "Feed with all sections",
+      "Experience detail and bookmark",
+      "Profile and edit",
+      "Explore filtering"
     ]
   },
-  "immediate_next_steps": {
-    "description": "Steps to migrate from current NextAuth setup to Supabase",
-    "step_1": {
-      "task": "Create Supabase project",
-      "action": "Go to supabase.com, create project, save credentials"
-    },
-    "step_2": {
-      "task": "Run database migrations",
-      "action": "Execute table creation and RLS policy SQL in Supabase SQL editor"
-    },
-    "step_3": {
-      "task": "Configure Google OAuth in Supabase",
-      "action": "Set up Google provider in Supabase dashboard"
-    },
-    "step_4": {
-      "task": "Install Supabase packages",
-      "command": "npm install @supabase/supabase-js @supabase/ssr"
-    },
-    "step_5": {
-      "task": "Update environment variables",
-      "action": "Replace NextAuth vars with Supabase vars in .env.local"
-    },
-    "step_6": {
-      "task": "Create Supabase client utilities",
-      "files": ["lib/supabase/client.ts", "lib/supabase/server.ts", "lib/supabase/middleware.ts"]
-    },
-    "step_7": {
-      "task": "Update middleware",
-      "action": "Replace NextAuth middleware with Supabase session handling"
-    },
-    "step_8": {
-      "task": "Update auth components",
-      "action": "Replace NextAuth signIn/signOut with Supabase auth methods"
-    },
-    "step_9": {
-      "task": "Remove NextAuth",
-      "command": "npm uninstall next-auth",
-      "files_to_remove": ["app/api/auth/[...nextauth]/route.ts"]
-    },
-    "step_10": {
-      "task": "Test auth flows",
-      "action": "Verify sign in, sign up, sign out, and protected routes work"
+  "phase_16_tags_system": {
+    "order": 16,
+    "title": "Database-Backed Tags System",
+    "status": "completed",
+    "features": [
+      "Tags table with system and custom tags",
+      "System tags seeded with Portuguese display_names",
+      "Slug normalization for deduplication",
+      "Custom tags preserve user input via display_name",
+      "i18n resolution via useTagLabel() hook"
+    ],
+    "api": {
+      "GET /api/tags": "Fetch all tags",
+      "POST /api/tags": "Create custom tag"
+    }
+  },
+  "phase_17_follow_visibility": {
+    "order": 17,
+    "title": "Follow System & Visibility",
+    "status": "completed",
+    "features": [
+      "Follows table for user relationships",
+      "Visibility column on experiences (public/friends_only)",
+      "RLS policies for visibility enforcement",
+      "Feed filtering based on visibility and follows",
+      "FollowButton component",
+      "VisibilitySelector component"
+    ],
+    "api": {
+      "POST /api/follow/[userId]": "Toggle follow/unfollow"
+    }
+  },
+  "phase_18_explore": {
+    "order": 18,
+    "title": "Explore Feature",
+    "status": "completed",
+    "pages": [
+      "/app/explore (hub)",
+      "/app/explore/all",
+      "/app/explore/cities",
+      "/app/explore/tag/[slug]"
+    ],
+    "features": [
+      "Browse by tag with counts",
+      "Browse by city with counts",
+      "Recent public experiences",
+      "Filtering and pagination"
+    ],
+    "api": {
+      "GET /api/explore": "Explore data with aggregations"
     }
   },
   "critical_principles": {
     "performance": [
       "Use React Query for server state caching",
       "Memoize heavy lists/cards where needed",
-      "Use React Suspense or skeleton loading states",
-      "Use Supabase realtime sparingly (only where needed)"
+      "Image compression before upload",
+      "Use Suspense or skeleton loading states"
     ],
     "architecture": [
       "Feature-first folders, not component-type folders",
       "Use Supabase client directly in React Query hooks",
       "Avoid unnecessary global state",
       "Mirror Supabase database types for consistency",
-      "RLS policies enforce data access at database level"
+      "RLS policies enforce data access at database level",
+      "AuthContext provides user state via React Context"
     ],
     "security": [
       "Never expose SUPABASE_SECRET_KEY to the client",
       "Use RLS policies for all data access",
       "Validate user input on both client and server",
-      "Use httpOnly cookies for session storage (via @supabase/ssr)"
+      "Use httpOnly cookies for session storage (via @supabase/ssr)",
+      "Visibility restrictions enforced at database level"
     ],
     "ux": [
       "Quick Add must be ~15 seconds",
       "Handle GPS/IP/manual location gracefully",
       "Never allow manual google_maps_url",
-      "Explicit empty/error/loading states"
+      "Explicit empty/error/loading states",
+      "Immediate UI feedback for actions"
     ],
     "accessibility": [
       "44px minimum touch targets",
       "Visible focus states",
       "AA color contrast",
-      "aria-labels on navigation"
+      "aria-labels on navigation",
+      "Keyboard navigation support"
+    ]
+  },
+  "current_state": {
+    "description": "MVP is fully implemented with all core features working",
+    "implemented": [
+      "Email/password authentication",
+      "User profiles with edit",
+      "Create/edit/delete experiences",
+      "Place search and custom places",
+      "Place deduplication",
+      "Price range and tags",
+      "Image upload with compression",
+      "Experience visibility",
+      "Bookmarks",
+      "User follow system",
+      "Personalized feed with sections",
+      "Explore with filtering",
+      "Search",
+      "Multi-language support"
+    ],
+    "not_implemented": [
+      "Google OAuth (stub only)",
+      "Comments/discussions",
+      "Notifications",
+      "Dark mode",
+      "Password reset",
+      "Email verification"
     ]
   }
 }

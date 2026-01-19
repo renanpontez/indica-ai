@@ -2,11 +2,25 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { formatTimeAgo, generateExperienceSlug } from '@/lib/utils/format';
 
+// Helper to format slug to display name (capitalize first letter, replace hyphens with spaces)
+function formatSlugToDisplayName(slug: string): string {
+  return slug
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
 // Helper function to transform experience data
-function transformExperience(exp: any) {
+function transformExperience(exp: any, tagDisplayNames: Map<string, string>) {
   const placeName = exp.places?.name || 'Unknown Place';
   const placeCity = exp.places?.city || '';
   const slug = generateExperienceSlug(placeName, placeCity);
+
+  // Transform tags from slugs to TagInfo objects
+  const tags = (exp.tags || []).map((tagSlug: string) => ({
+    slug: tagSlug,
+    display_name: tagDisplayNames.get(tagSlug) || formatSlugToDisplayName(tagSlug),
+  }));
 
   return {
     id: exp.id,
@@ -26,7 +40,7 @@ function transformExperience(exp: any) {
       instagram: exp.places?.instagram_handle || null,
     },
     price_range: exp.price_range || '$$',
-    tags: exp.tags || [],
+    tags,
     time_ago: formatTimeAgo(exp.created_at),
     description: exp.brief_description,
   };
@@ -100,7 +114,6 @@ export async function GET(request: NextRequest) {
 
   // Filter out experiences where place is null (due to inner join behavior)
   const validExperiences = (experiences || []).filter((exp: any) => exp.places !== null);
-  const transformedExperiences = validExperiences.map(transformExperience);
 
   // Get aggregated cities (for the cities page)
   const { data: citiesData } = await supabase
@@ -159,6 +172,9 @@ export async function GET(request: NextRequest) {
       tagDisplayNames.set(t.slug, t.display_name);
     }
   });
+
+  // Transform experiences with tag display names
+  const transformedExperiences = validExperiences.map(exp => transformExperience(exp, tagDisplayNames));
 
   const tags = Array.from(tagMap.entries())
     .map(([tag, count]) => ({

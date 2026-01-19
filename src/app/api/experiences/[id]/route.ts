@@ -10,16 +10,31 @@ interface OtherRecommender {
   experience_id: string;
 }
 
+// Helper to format slug to display name (capitalize first letter, replace hyphens with spaces)
+function formatSlugToDisplayName(slug: string): string {
+  return slug
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
 function formatAndReturnExperience(
   experience: any,
   recommendationCount: number,
-  otherRecommenders: OtherRecommender[] = []
+  otherRecommenders: OtherRecommender[] = [],
+  tagDisplayNames: Map<string, string> = new Map()
 ) {
   const placeName = (experience.places as any)?.name || 'Unknown Place';
   const placeCity = (experience.places as any)?.city || '';
 
   // Generate slug for the experience (without ID, since ID is now in the URL)
   const slug = generateExperienceSlug(placeName, placeCity);
+
+  // Transform tags from slugs to TagInfo objects
+  const tags = (experience.tags || []).map((tagSlug: string) => ({
+    slug: tagSlug,
+    display_name: tagDisplayNames.get(tagSlug) || formatSlugToDisplayName(tagSlug),
+  }));
 
   // Transform to a detailed experience format
   const detailedExperience = {
@@ -45,7 +60,7 @@ function formatAndReturnExperience(
       recommendation_count: recommendationCount,
     },
     price_range: experience.price_range || '$$',
-    tags: experience.tags || [],
+    tags,
     brief_description: experience.brief_description,
     phone_number: experience.phone_number,
     images: experience.images || [],
@@ -202,7 +217,23 @@ export async function PATCH(
       experience_id: exp.id,
     }));
 
-    return formatAndReturnExperience(updatedExperience, count ?? 1, otherRecommenders);
+    // Fetch tag display names
+    const tagDisplayNames = new Map<string, string>();
+    const tagSlugs = updatedExperience.tags || [];
+    if (tagSlugs.length > 0) {
+      const { data: tagDetails } = await supabase
+        .from('tags')
+        .select('slug, display_name')
+        .in('slug', tagSlugs);
+
+      (tagDetails || []).forEach((t: any) => {
+        if (t.display_name) {
+          tagDisplayNames.set(t.slug, t.display_name);
+        }
+      });
+    }
+
+    return formatAndReturnExperience(updatedExperience, count ?? 1, otherRecommenders, tagDisplayNames);
   } catch {
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
   }
@@ -319,5 +350,21 @@ export async function GET(
     experience_id: exp.id,
   }));
 
-  return formatAndReturnExperience(experience, count ?? 1, otherRecommenders);
+  // Fetch tag display names
+  const tagDisplayNames = new Map<string, string>();
+  const tagSlugs = experience.tags || [];
+  if (tagSlugs.length > 0) {
+    const { data: tagDetails } = await supabase
+      .from('tags')
+      .select('slug, display_name')
+      .in('slug', tagSlugs);
+
+    (tagDetails || []).forEach((t: any) => {
+      if (t.display_name) {
+        tagDisplayNames.set(t.slug, t.display_name);
+      }
+    });
+  }
+
+  return formatAndReturnExperience(experience, count ?? 1, otherRecommenders, tagDisplayNames);
 }

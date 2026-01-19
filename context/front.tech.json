@@ -1,117 +1,188 @@
 {
   "meta": {
-    "project_name": "Indica Aí – Social Recommendations MVP",
+    "project_name": "Indica Ai - Social Recommendations MVP",
     "project_type": "frontend",
     "phase": "tech",
-    "version": "0.2.0",
-    "last_updated": "2026-01-18"
+    "version": "0.3.0",
+    "last_updated": "2026-01-19",
+    "status": "MVP implemented"
   },
   "stack": {
     "runtime": "Node.js (for tooling/dev server)",
-    "framework": "Next.js (App Router)",
-    "language": "TypeScript",
-    "ui_library": "React",
-    "styling": "Tailwind CSS",
-    "state_management": "React Query / TanStack Query for server state; local component state for UI",
-    "forms": "React Hook Form or lightweight controlled components",
+    "framework": "Next.js 16.1.1 (App Router)",
+    "react": "19.2.3",
+    "language": "TypeScript 5.9.3",
+    "ui_library": "React 19",
+    "styling": "Tailwind CSS 3.4.19",
+    "state_management": "TanStack React Query 5.90.16 for server state; local component state for UI",
+    "forms": "React Hook Form 7.71.0",
     "bundling": "Next.js built-in (Turbopack)",
     "testing": "Vitest / Jest + React Testing Library (optional for MVP)",
     "backend": "Supabase (Auth, Database, Storage)",
-    "i18n": "next-intl"
+    "i18n": "next-intl 4.7.0",
+    "utilities": {
+      "clsx": "2.1.1 - Conditional class names",
+      "tailwind-merge": "3.4.0 - Merge Tailwind classes",
+      "browser-image-compression": "2.0.2 - Image compression before upload",
+      "bcryptjs": "3.0.3 - Password hashing"
+    }
   },
   "supabase": {
     "description": "Supabase provides the complete backend infrastructure for the MVP",
     "services": {
       "auth": {
         "description": "Authentication and user management",
-        "providers": ["Google OAuth", "Email/Password"],
-        "features": ["Session management", "JWT tokens", "User metadata"]
+        "providers": ["Email/Password"],
+        "features": ["Session management", "JWT tokens", "User metadata"],
+        "note": "Google OAuth stub exists but not fully implemented"
       },
       "database": {
         "description": "PostgreSQL database with Row Level Security",
-        "tables": ["users", "places", "experiences", "bookmarks"],
-        "features": ["RLS policies", "Foreign key relationships", "Indexes"]
+        "tables": ["users", "places", "experiences", "bookmarks", "tags", "follows"],
+        "features": ["RLS policies", "Foreign key relationships", "Indexes", "Triggers"]
       },
       "storage": {
         "description": "File storage for user uploads",
-        "buckets": ["experience-images", "avatars"],
-        "features": ["Public/private buckets", "Image transformations"]
+        "buckets": {
+          "experience-images": "Images uploaded for experiences (public)",
+          "avatars": "User profile pictures (public, per-user folders)"
+        },
+        "features": ["Public buckets", "RLS policies per folder"]
       }
     },
     "packages": {
-      "@supabase/supabase-js": "Core Supabase client",
-      "@supabase/ssr": "Server-side rendering utilities for Next.js"
+      "@supabase/supabase-js": "2.90.1 - Core Supabase client",
+      "@supabase/ssr": "0.8.0 - Server-side rendering utilities for Next.js"
     },
     "environment_variables": {
       "NEXT_PUBLIC_SUPABASE_URL": "Supabase project URL",
       "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY": "Client-side publishable key (for auth state listening)",
-      "SUPABASE_SECRET_KEY": "Server-side secret key (for all database operations)"
+      "SUPABASE_SECRET_KEY": "Server-side secret key (for all database operations)",
+      "NEXT_PUBLIC_SITE_URL": "Site URL for OAuth redirects (default: http://localhost:3000)",
+      "GOOGLE_PLACES_API_KEY": "Google Places API key for place search"
     },
     "client_utilities": {
-      "lib/supabase/client.ts": "Browser client (createBrowserClient)",
-      "lib/supabase/server.ts": "Server client for API routes (createServerClient)",
-      "lib/supabase/middleware.ts": "Middleware client for auth checks"
+      "lib/supabase/client.ts": "Browser client (createBrowserClient) - cached singleton",
+      "lib/supabase/server.ts": "Server client for API routes (createServerClient with secret key)",
+      "lib/supabase/middleware.ts": "Middleware client for auth checks (updateSession)"
     }
   },
   "architecture": {
     "structure": {
       "suggested_folders": [
         "app/[locale]/ (routes with i18n)",
+        "app/[locale]/app/ (authenticated app routes)",
+        "app/[locale]/auth/ (authentication routes)",
         "app/api/ (API routes)",
+        "app/auth/callback/ (Supabase auth callback)",
         "components/ (shared UI)",
         "features/auth/",
         "features/feed/",
         "features/add/",
         "features/profile/",
         "features/experience-detail/",
+        "features/explore/",
+        "hooks/ (global hooks)",
         "lib/supabase/ (Supabase clients)",
-        "lib/api/ (API utilities)",
+        "lib/api/ (API utilities and facade)",
         "lib/models/",
-        "lib/hooks/",
+        "lib/auth/ (AuthContext, getServerUser)",
         "lib/utils/",
-        "locales/ (i18n messages)"
+        "locales/ (i18n messages: pt-BR.json, en-US.json)",
+        "i18n/ (routing and request config)"
       ]
     },
     "principles": [
-      "Feature-first folders (feed, add, profile, auth) instead of huge global components folder.",
+      "Feature-first folders (feed, add, profile, auth, explore) instead of huge global components folder.",
       "Use Supabase client directly in React Query hooks or API routes.",
       "Use domain types from lib/models mirroring Supabase database schema.",
       "Avoid unnecessary global state; use React Query for data fetching/caching.",
       "RLS policies enforce data access at the database level.",
-      "API routes are thin wrappers for complex operations or server-side logic."
+      "API routes are thin wrappers for complex operations or server-side logic.",
+      "AuthContext provides user state via React Context."
     ]
   },
   "integration": {
-    "NEXT_PUBLIC_SUPABASE_URL": "Configured via env var NEXT_PUBLIC_SUPABASE_URL",
-    "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY": "Client-side publishable key for auth state",
-    "SUPABASE_SECRET_KEY": "Server-side secret key for database operations",
     "contracts": [
       "Use TypeScript types that match Supabase database schema exactly.",
       "Handle loading, error, and empty states explicitly.",
-      "Never send google_maps_url from frontend; compute server-side or via database function.",
-      "All authenticated requests include Supabase session automatically."
+      "Never send google_maps_url from frontend; computed by Google Places API.",
+      "All authenticated requests include Supabase session automatically.",
+      "Tags stored as slug array in experiences.tags field."
     ],
     "location_behaviors": {
       "gps": "Use Geolocation API only when starting Quick Add; handle permission denied gracefully.",
-      "ip_fallback": "Use IP geolocation service (e.g., ipapi, ipinfo).",
+      "ip_fallback": "Use Vercel geolocation headers (x-vercel-ip-city, etc.).",
       "manual_city": "Show CitySelector component when neither GPS nor IP works."
     },
     "place_deduplication": {
       "description": "Places are deduplicated to allow multiple users to recommend the same place. This enables recommendation counts and shared place data.",
-      "google_places": "Deduplicated by google_place_id. If a place with the same google_place_id exists, the existing place is returned.",
-      "manual_places": "Deduplicated by case-insensitive match on name + city + country. Custom places (custom=true) are checked for duplicates.",
-      "recommendation_count": "The count of experiences referencing a place. Displayed in search results, feed cards, and experience details.",
-      "existing_place_modal": "When selecting a place with existing recommendations during Quick Add, a modal shows the recommendation count and top tags, allowing the user to either add their experience to the existing place or create a new one."
+      "strategy": [
+        "1. Exact match by google_place_id for Google Places",
+        "2. Case-insensitive match on name + city + country for manual places",
+        "3. Coordinate proximity (~500m radius) with name similarity as fallback",
+        "4. Country name normalization (Brasil->Brazil, EUA->United States)"
+      ],
+      "recommendation_count": "Count of experiences referencing a place. Displayed in search results, feed cards, and experience details.",
+      "existing_place_modal": "When selecting a place with existing recommendations during Quick Add, a modal shows the recommendation count and top tags."
+    }
+  },
+  "tags_system": {
+    "description": "Database-backed tags with i18n support for categorizing experiences",
+    "database_table": "tags",
+    "system_tags": [
+      "restaurant", "cafe", "bar", "hotel", "breakfast", "lunch", "dinner",
+      "coffee", "japanese", "italian", "brazilian", "mexican", "french",
+      "nightlife", "bakery", "brunch", "seafood", "vegetarian", "vegan",
+      "fast-food", "dessert", "asian-fusion", "american", "chinese", "experience"
+    ],
+    "custom_tags": {
+      "description": "Users can create custom tags",
+      "created_by": "References users.id",
+      "display_name": "Preserves original user input formatting",
+      "is_system": "false for custom tags"
+    },
+    "slug_normalization": {
+      "rules": [
+        "Convert to lowercase",
+        "Replace spaces with hyphens",
+        "Remove special characters",
+        "Trim whitespace"
+      ]
+    },
+    "i18n": {
+      "system_tags": "Display names come from locales/*.json under 'tags' key",
+      "custom_tags": "Display the display_name field, or format slug as fallback",
+      "hook": "useTagLabel() resolves slug to display name"
+    }
+  },
+  "visibility_system": {
+    "description": "Experience visibility control based on follow relationships",
+    "levels": {
+      "public": "Visible to everyone (default)",
+      "friends_only": "Only visible to users who follow the author"
+    },
+    "feed_logic": {
+      "description": "Users see experiences based on visibility and follow status",
+      "rules": [
+        "Own experiences: visible regardless of visibility setting",
+        "Public experiences: visible to everyone",
+        "friends_only experiences: visible only if viewer follows the author"
+      ]
+    },
+    "enforcement": {
+      "database": "RLS policies check auth.uid() and follows table",
+      "api": "Feed API filters based on visibility and follow relationships"
     }
   },
   "domain_models_frontend": {
+    "code_location": "src/lib/models/index.ts",
     "types": {
       "User": {
         "id": "string (UUID)",
         "display_name": "string",
         "username": "string",
-        "avatar_url": "string | null",
-        "created_at": "string"
+        "avatar_url": "string | null"
       },
       "AuthUser": {
         "id": "string (UUID, from Supabase auth.users)",
@@ -134,59 +205,103 @@
         "instagram_handle": "string | null",
         "google_maps_url": "string | null",
         "custom": "boolean",
-        "recommendation_count": "number | undefined (count of experiences for this place)",
-        "created_at": "string"
+        "recommendation_count": "number | undefined"
       },
       "PlaceStats": {
         "recommendation_count": "number",
         "top_tags": "string[] (most common tags for this place)"
       },
       "PlaceSearchResult": {
-        "extends": "Place",
+        "extends": "Place with source field",
         "id": "string | null (null for Google Places not yet saved)",
         "source": "'local' | 'google'",
         "recommendation_count": "number | undefined"
+      },
+      "Tag": {
+        "id": "string (UUID)",
+        "slug": "string (normalized identifier)",
+        "display_name": "string | null (original user input for custom tags)",
+        "is_system": "boolean",
+        "created_by": "string | null (user_id for custom tags)",
+        "created_at": "string"
+      },
+      "TagWithLabel": {
+        "extends": "Tag",
+        "label": "string (resolved display name for UI)"
       },
       "Experience": {
         "id": "string (UUID)",
         "user_id": "string (UUID)",
         "place_id": "string (UUID)",
         "price_range": "'$' | '$$' | '$$$' | '$$$$'",
-        "tags": "string[]",
+        "tags": "string[] (array of tag slugs)",
         "brief_description": "string | null",
         "phone_number": "string | null",
         "images": "string[] | null",
         "visit_date": "string | null",
+        "visibility": "'public' | 'friends_only'",
         "created_at": "string"
+      },
+      "ExperienceDetail": {
+        "id": "string",
+        "experience_id": "string",
+        "slug": "string (URL-friendly name)",
+        "user": "{ id, display_name, avatar_url, username }",
+        "place": "{ id, name, city, country, address, lat, lng, instagram_handle, google_maps_url, recommendation_count }",
+        "price_range": "PriceRange",
+        "tags": "string[]",
+        "brief_description": "string | null",
+        "phone_number": "string | null",
+        "images": "string[]",
+        "visit_date": "string | null",
+        "visibility": "ExperienceVisibility",
+        "time_ago": "string",
+        "created_at": "string | null",
+        "other_recommenders": "OtherRecommender[] | undefined"
       },
       "ExperienceFeedItem": {
         "id": "string",
         "experience_id": "string",
-        "user": {
-          "id": "string",
-          "display_name": "string",
-          "avatar_url": "string | null"
-        },
-        "place": {
-          "id": "string",
-          "name": "string",
-          "city_short": "string",
-          "country": "string",
-          "thumbnail_image_url": "string | null",
-          "instagram": "string | null",
-          "recommendation_count": "number | undefined"
-        },
-        "price_range": "'$' | '$$' | '$$$' | '$$$$'",
+        "slug": "string | undefined",
+        "user": "{ id, display_name, avatar_url }",
+        "place": "{ id, name, city_short, country, thumbnail_image_url, instagram, recommendation_count }",
+        "price_range": "PriceRange",
         "tags": "string[]",
         "time_ago": "string",
-        "description": "string | null"
+        "description": "string | null",
+        "visibility": "ExperienceVisibility | undefined",
+        "isBookmarked": "boolean | undefined",
+        "bookmarkId": "string | undefined"
       },
       "Bookmark": {
         "id": "string (UUID)",
         "user_id": "string (UUID)",
         "experience_id": "string (UUID)",
         "created_at": "string"
+      },
+      "Follow": {
+        "id": "string (UUID)",
+        "follower_id": "string (UUID)",
+        "following_id": "string (UUID)",
+        "created_at": "string"
+      },
+      "FollowWithUser": {
+        "extends": "Follow",
+        "follower": "User | undefined",
+        "following": "User | undefined"
+      },
+      "OtherRecommender": {
+        "id": "string",
+        "display_name": "string",
+        "avatar_url": "string | null",
+        "username": "string | null",
+        "experience_id": "string"
       }
+    },
+    "type_aliases": {
+      "PriceRange": "'$' | '$$' | '$$$' | '$$$$'",
+      "ExperienceVisibility": "'public' | 'friends_only'",
+      "QuickAddStep": "'location_search' | 'select_place' | 'enrich' | 'review'"
     },
     "view_models": {
       "ExperienceCardProps": {
@@ -195,9 +310,9 @@
         "onBookmarkToggle?": "() => void"
       },
       "QuickAddFormState": {
-        "step": "'location_search' | 'select_place' | 'enrich' | 'review'",
+        "step": "QuickAddStep",
         "place": "Place | null",
-        "price_range": "'$' | '$$' | '$$$' | '$$$$' | null",
+        "price_range": "PriceRange | null",
         "tags": "string[]",
         "instagram_handle": "string",
         "brief_description": "string",
@@ -205,15 +320,21 @@
         "images": "File[] | string[]",
         "visit_date": "string | null"
       }
+    },
+    "api_models": {
+      "SignUpRequest": "{ email, password, display_name, username }",
+      "SignInRequest": "{ email, password }",
+      "AuthResponse": "{ user: AuthUser, access_token: string }",
+      "ApiError": "{ message: string, status: number }"
     }
   },
   "database_schema": {
-    "description": "Supabase PostgreSQL tables (defined in Supabase dashboard or migrations)",
+    "description": "Supabase PostgreSQL tables (defined in supabase/migrations/)",
     "tables": {
       "users": {
         "description": "User profiles, extends auth.users",
         "columns": {
-          "id": "UUID PRIMARY KEY REFERENCES auth.users(id)",
+          "id": "UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE",
           "display_name": "TEXT NOT NULL",
           "username": "TEXT UNIQUE NOT NULL",
           "avatar_url": "TEXT",
@@ -221,11 +342,13 @@
         },
         "rls_policies": [
           "Users can read any profile",
-          "Users can only update their own profile"
-        ]
+          "Users can only update their own profile",
+          "Users can insert their own profile"
+        ],
+        "trigger": "handle_new_user() - Auto-creates profile on signup with generated username"
       },
       "places": {
-        "description": "Places/locations",
+        "description": "Places/locations (deduplicated)",
         "columns": {
           "id": "UUID PRIMARY KEY DEFAULT gen_random_uuid()",
           "google_place_id": "TEXT",
@@ -240,6 +363,7 @@
           "custom": "BOOLEAN DEFAULT false",
           "created_at": "TIMESTAMPTZ DEFAULT NOW()"
         },
+        "indexes": ["idx_places_google_place_id ON places(google_place_id)"],
         "rls_policies": [
           "Anyone can read places",
           "Authenticated users can create places"
@@ -249,18 +373,24 @@
         "description": "User experiences at places",
         "columns": {
           "id": "UUID PRIMARY KEY DEFAULT gen_random_uuid()",
-          "user_id": "UUID REFERENCES users(id) NOT NULL",
-          "place_id": "UUID REFERENCES places(id) NOT NULL",
+          "user_id": "UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL",
+          "place_id": "UUID REFERENCES places(id) ON DELETE CASCADE NOT NULL",
           "price_range": "TEXT CHECK (price_range IN ('$', '$$', '$$$', '$$$$'))",
-          "tags": "TEXT[]",
+          "tags": "TEXT[] (array of tag slugs)",
           "brief_description": "TEXT",
           "phone_number": "TEXT",
           "images": "TEXT[]",
           "visit_date": "DATE",
+          "visibility": "TEXT DEFAULT 'public' CHECK (visibility IN ('public', 'friends_only'))",
           "created_at": "TIMESTAMPTZ DEFAULT NOW()"
         },
+        "indexes": [
+          "idx_experiences_user_id ON experiences(user_id)",
+          "idx_experiences_place_id ON experiences(place_id)",
+          "idx_experiences_created_at ON experiences(created_at DESC)"
+        ],
         "rls_policies": [
-          "Anyone can read experiences",
+          "Users see: own + public + friends_only from followed users",
           "Users can only create/update/delete their own experiences"
         ]
       },
@@ -268,120 +398,262 @@
         "description": "User bookmarks on experiences",
         "columns": {
           "id": "UUID PRIMARY KEY DEFAULT gen_random_uuid()",
-          "user_id": "UUID REFERENCES users(id) NOT NULL",
-          "experience_id": "UUID REFERENCES experiences(id) NOT NULL",
+          "user_id": "UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL",
+          "experience_id": "UUID REFERENCES experiences(id) ON DELETE CASCADE NOT NULL",
           "created_at": "TIMESTAMPTZ DEFAULT NOW()"
         },
         "constraints": ["UNIQUE(user_id, experience_id)"],
+        "indexes": ["idx_bookmarks_user_id ON bookmarks(user_id)"],
         "rls_policies": [
           "Users can only see their own bookmarks",
           "Users can only create/delete their own bookmarks"
+        ]
+      },
+      "tags": {
+        "description": "System and custom tags for experiences",
+        "columns": {
+          "id": "UUID PRIMARY KEY DEFAULT gen_random_uuid()",
+          "slug": "TEXT UNIQUE NOT NULL",
+          "display_name": "TEXT (original user input for custom tags)",
+          "is_system": "BOOLEAN DEFAULT false",
+          "created_by": "UUID REFERENCES users(id)",
+          "created_at": "TIMESTAMPTZ DEFAULT NOW()"
+        },
+        "rls_policies": [
+          "Anyone can read tags",
+          "Authenticated users can create custom tags"
+        ],
+        "seed_data": "~25 system tags with Portuguese display_names"
+      },
+      "follows": {
+        "description": "User follow relationships",
+        "columns": {
+          "id": "UUID PRIMARY KEY DEFAULT gen_random_uuid()",
+          "follower_id": "UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL",
+          "following_id": "UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL",
+          "created_at": "TIMESTAMPTZ DEFAULT NOW()"
+        },
+        "constraints": [
+          "UNIQUE(follower_id, following_id)",
+          "CHECK(follower_id != following_id)"
+        ],
+        "indexes": [
+          "idx_follows_follower_id ON follows(follower_id)",
+          "idx_follows_following_id ON follows(following_id)"
+        ],
+        "rls_policies": [
+          "Users can see all follows",
+          "Users can only create/delete their own follows"
         ]
       }
     }
   },
   "ui_components": {
+    "code_location": "src/components/ and src/features/*/components/",
     "global": [
-      "DesktopNav",
-      "BottomNav",
-      "TopBar",
-      "Avatar",
-      "Chip",
-      "Button",
-      "Input",
-      "TextArea",
-      "IconButton",
-      "LoadingSpinner",
-      "ErrorMessage"
+      "DesktopNav - Desktop top navigation wrapper",
+      "Sidebar - Desktop sidebar navigation",
+      "BottomNav - Mobile bottom navigation (Feed, Add, Profile, Explore)",
+      "TopBar - Header with user menu",
+      "Avatar - User avatar with fallback",
+      "Chip - Tag/badge component",
+      "Button - Primary button with variants",
+      "Input - Text input field",
+      "TextArea - Multi-line text area",
+      "IconButton - Icon-only button",
+      "SearchBar - Search input",
+      "Breadcrumb - Breadcrumb navigation",
+      "LanguageSwitcher - Language selector (EN/PT)",
+      "LoadingSpinner - Loading indicator",
+      "ErrorMessage - Error display",
+      "PlaceholderImage - Placeholder for missing images",
+      "VisibilityBadge - Public/Friends-only badge",
+      "FollowButton - Follow/Unfollow button",
+      "Toast - Toast notification",
+      "ToastContainer - Toast container",
+      "FloatingActionButton - FAB for quick actions",
+      "Stories - Stories carousel",
+      "AuthGuard - Route guard component",
+      "UserDropdown - User account dropdown",
+      "UserMenu - Mobile user menu",
+      "Providers - Root provider wrapper (Auth, Toast, Query, Intl)"
     ],
     "features": {
       "auth": [
-        "SignInForm",
-        "SignUpForm",
-        "AuthGuard",
-        "UserMenu"
+        "SignInForm - Email/password sign in form",
+        "SignUpForm - Registration form",
+        "SocialSignInButtons - OAuth buttons (Google stub)"
       ],
       "feed": [
-        "ExperienceCard",
-        "ExperienceList",
-        "SectionHeader",
-        "FeedEmptyState"
+        "ExperienceCard - Individual experience card (reusable)",
+        "ExperienceList - Display feed sections",
+        "SectionHeader - Section header with title",
+        "FeedEmptyState - Empty state UI"
       ],
       "quick_add": [
-        "QuickAddLayout",
-        "PlaceSearchInput",
-        "PlaceSuggestionList",
-        "CustomPlaceForm",
-        "PriceRangeSelector",
-        "TagSelector",
-        "AdditionalFieldsPanel",
-        "SaveExperienceButton",
-        "ExistingPlaceModal"
+        "PlaceSearchInput - Search places (Google + local)",
+        "PlaceSuggestionList - Place search results",
+        "CustomPlaceForm - Manual place entry",
+        "PriceRangeSelector - Select price ($-$$$$)",
+        "TagSelector - Multi-select tags with create",
+        "ImagePicker - Upload up to 5 images",
+        "VisibilitySelector - Public or Friends-only",
+        "ExistingPlaceModal - Modal for existing places",
+        "SaveExperienceButton - Save action"
       ],
       "profile": [
-        "UserHeader",
-        "ProfileTabs",
-        "ProfileExperienceList",
-        "ProfileBookmarksPlaceholder"
+        "UserHeader - Profile header with stats",
+        "ProfileTabs - Experiences/Bookmarks tabs",
+        "ProfileExperienceList - User's experiences",
+        "ProfileBookmarksList - User's bookmarks",
+        "EditProfileModal - Edit profile form"
       ],
       "experience_detail": [
-        "ExperienceDetailLayout",
-        "ImageGallery",
-        "MapLinkButton",
-        "BookmarkButton",
-        "MoreFromUser"
+        "ExperienceDetailLayout - Main detail layout",
+        "ImageGallery - Image carousel",
+        "LocationMap - Map preview",
+        "MapLinkButton - Open in Google Maps",
+        "BookmarkButton - Bookmark toggle",
+        "MoreFromUser - Other experiences by user",
+        "OtherRecommenders - Users who also recommended",
+        "ExperienceActions - Edit/Delete buttons",
+        "DeleteExperienceModal - Delete confirmation"
+      ],
+      "explore": [
+        "TagChips - Tag filter chips",
+        "CityList - City filter list",
+        "ExperienceGrid - Grid of experiences"
       ]
     }
   },
   "api_routes": {
+    "code_location": "src/app/api/",
+    "auth": {
+      "POST /api/auth/signup": "Register with email/password, creates user profile",
+      "POST /api/auth/signin": "Login with email/password",
+      "POST /api/auth/signout": "Logout, clears session",
+      "POST /api/auth/oauth/google": "Google OAuth (stub)"
+    },
     "places": {
-      "POST /api/places": "Create a new place. Deduplicates by google_place_id for Google Places, or by name+city+country for manual entries. Returns recommendation_count.",
-      "GET /api/places/search": "Search places locally and via Google Places API. Returns recommendation_count for local results.",
-      "GET /api/places/match": "Find matching places by name/city/country for manual deduplication. Returns exact_match and similar_matches with recommendation counts.",
-      "GET /api/places/[id]/stats": "Get place statistics: recommendation_count and top_tags (most common tags)."
+      "POST /api/places": "Create place with deduplication, returns existing if match found",
+      "GET /api/places/search": "Search Google Places API + local DB, includes recommendation_count",
+      "GET /api/places/match": "Find matching places for manual deduplication",
+      "GET /api/places/[id]/stats": "Get place stats (recommendation_count, top_tags)"
     },
     "experiences": {
-      "POST /api/experiences": "Create a new experience.",
-      "GET /api/experiences/[id]": "Get experience details with recommendation_count for the place."
+      "POST /api/experiences": "Create experience",
+      "GET /api/experiences/[id]": "Get experience details with other_recommenders",
+      "PATCH /api/experiences/[id]": "Update experience (price, tags, description, images, visibility)",
+      "DELETE /api/experiences/[id]": "Delete own experience"
     },
     "feed": {
-      "GET /api/feed": "Get feed with mySuggestions, communitySuggestions, nearbyPlaces. All include recommendation_count per place."
+      "GET /api/feed": "Get personalized feed with sections: mySuggestions, friendsSuggestions, communitySuggestions, nearbyPlaces"
+    },
+    "explore": {
+      "GET /api/explore": "Get explore data (tags with counts, cities with counts, recent public experiences)"
+    },
+    "bookmarks": {
+      "GET /api/bookmarks": "Get user's bookmarks with experience details",
+      "POST /api/bookmarks": "Create bookmark",
+      "DELETE /api/bookmarks/[id]": "Remove bookmark"
+    },
+    "profile": {
+      "GET /api/profile/[userId]": "Get user profile with stats and experiences",
+      "PATCH /api/profile": "Update own profile (display_name, username, avatar_url)"
+    },
+    "tags": {
+      "GET /api/tags": "Fetch all tags (system + user's custom)",
+      "POST /api/tags": "Create custom tag (returns existing if slug matches)"
+    },
+    "follow": {
+      "POST /api/follow/[userId]": "Toggle follow/unfollow user"
+    },
+    "other": {
+      "POST /api/upload": "Upload image to Supabase Storage",
+      "GET /api/search": "Global search for experiences and/or users"
     }
   },
   "hooks": {
+    "code_location": "src/hooks/ and src/features/*/hooks/",
     "auth": [
-      "useAuth() - Get current authenticated user",
-      "useSession() - Get Supabase session"
+      "useAuth() - Get current authenticated user from AuthContext",
+      "useSession() - Get Supabase session (if needed)"
     ],
     "data": [
-      "useFeed() - Fetch feed experiences",
-      "useExperience(id) - Fetch single experience",
-      "useProfile(userId) - Fetch user profile",
+      "useFeed() - Fetch feed experiences with sections",
+      "useExperience(id) - Fetch single experience with details",
+      "useProfile(userId) - Fetch user profile with experiences",
       "useCreateExperience() - Create new experience mutation",
-      "useToggleBookmark() - Toggle bookmark mutation"
+      "useExperienceMutations() - Update/delete experience mutations",
+      "useToggleBookmark() - Toggle bookmark mutation",
+      "useBookmarks() - Fetch user's bookmarks"
+    ],
+    "tags": [
+      "useTags() - Fetch all tags (5-min stale time)",
+      "useCreateTag() - Create custom tag mutation",
+      "useTagLabel() - Resolve tag slug to i18n display name"
+    ],
+    "follow": [
+      "useFollow() - Follow/unfollow mutation",
+      "useFollowStatus(userId) - Check if current user follows target"
+    ],
+    "explore": [
+      "useExplore(filters) - Fetch explore data with optional city/tag filters"
+    ],
+    "location": [
+      "useLocationContext() - GPS detection with fallbacks"
+    ],
+    "utility": [
+      "useToast() - Display toast notifications"
     ]
+  },
+  "i18n": {
+    "library": "next-intl 4.7.0",
+    "configuration": {
+      "routing": "src/i18n/routing.ts",
+      "request": "src/i18n/request.ts"
+    },
+    "locales": {
+      "pt-BR": "Portuguese (Brazil) - default",
+      "en-US": "English (US)"
+    },
+    "locale_prefix": "as-needed (no /pt-BR prefix for default)",
+    "locale_detection": "Disabled (manual control only)",
+    "translation_files": {
+      "location": "src/locales/",
+      "files": ["pt-BR.json", "en-US.json"]
+    },
+    "usage": {
+      "server": "getTranslations() from next-intl/server",
+      "client": "useTranslations() from next-intl",
+      "routing": "Link, redirect, usePathname, useRouter from src/i18n/routing"
+    }
   },
   "non_functional": {
     "performance": [
-      "Use React Suspense or skeletons for loading states.",
+      "Use React Query for data caching (5-min stale time for tags)",
       "Avoid unnecessary re-renders; memoize heavy lists/cards where needed.",
-      "Use Supabase realtime sparingly (only where needed)."
+      "Image compression before upload (browser-image-compression)",
+      "Use Suspense or loading skeletons for async components"
     ],
     "security": [
       "Never expose SUPABASE_SECRET_KEY to the client.",
       "Use RLS policies for all data access.",
       "Validate user input on both client and server.",
-      "Use httpOnly cookies for session storage (via @supabase/ssr)."
+      "Use httpOnly cookies for session storage (via @supabase/ssr).",
+      "Visibility restrictions enforced at database level."
     ],
     "accessibility": [
       "All interactive elements must have visible focus states.",
       "Navigation buttons must have aria-labels and role='navigation'.",
       "Ensure color contrast meets AA using provided design_tokens.",
-      "Minimum 44px touch targets."
+      "Minimum 44px touch targets.",
+      "Keyboard navigation support."
     ],
     "responsiveness": [
-      "Target common breakpoints: 320–414px (mobile), ~768px (tablet), 1024+ (desktop).",
-      "Max-width container on desktop (1760px)."
+      "Target common breakpoints: 320-414px (mobile), ~768px (tablet), 1024+ (desktop).",
+      "Max-width container on desktop (1760px).",
+      "BottomNav on mobile, Sidebar + TopBar on desktop."
     ]
   }
 }

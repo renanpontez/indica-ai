@@ -6,7 +6,14 @@ import { Link } from '@/i18n/routing';
 import { useExplore } from '@/features/explore/hooks/useExplore';
 import { ExperienceCard } from '@/features/feed/components/ExperienceCard';
 import { Breadcrumb } from '@/components/Breadcrumb';
-import { useTagLabel } from '@/hooks/useTagLabel';
+
+// Helper to format slug to display name (capitalize first letter, replace hyphens with spaces)
+function formatSlugToDisplayName(slug: string): string {
+  return slug
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
 
 export default function ExploreTagPage() {
   const params = useParams();
@@ -15,15 +22,16 @@ export default function ExploreTagPage() {
   const t = useTranslations();
 
   const slug = params.slug as string;
-  const { getTagLabel } = useTagLabel();
 
   // Use slug directly for filtering (tags are stored as slugs)
-  const { experiences, total, isLoading, error, loadMore, hasMore } = useExplore({
+  const { experiences, tags, total, isLoading, error, loadMore, hasMore } = useExplore({
     tag: slug,
     limit: 20,
   });
 
-  const tagLabel = getTagLabel(slug);
+  // Get tag display name from API response, or format slug as fallback
+  const tagFromApi = tags.find(t => t.tag === slug);
+  const tagLabel = tagFromApi?.displayName || formatSlugToDisplayName(slug);
 
   const breadcrumbItems = [
     { label: t('nav.explore'), href: '/explore' },

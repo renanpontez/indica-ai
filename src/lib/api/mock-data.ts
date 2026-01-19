@@ -4,7 +4,16 @@ import type {
   User,
   Place,
   Bookmark,
+  TagInfo,
 } from '@/lib/models';
+
+// Helper to create TagInfo from slug
+function tag(slug: string, displayName?: string): TagInfo {
+  return {
+    slug: slug.toLowerCase().replace(/\s+/g, '-'),
+    display_name: displayName || slug,
+  };
+}
 
 // Mock Users
 export const mockUsers: User[] = [
@@ -110,7 +119,7 @@ export const mockExperiences: Experience[] = [
     user_id: '1',
     place_id: '1',
     price_range: '$$',
-    tags: ['Cafe', 'Coffee', 'Breakfast'],
+    tags: [tag('cafe', 'Cafe'), tag('coffee', 'Coffee'), tag('breakfast', 'Breakfast')],
     brief_description: 'Best coffee in SF! Their espresso is perfectly balanced and the pastries are amazing. The minimalist interior is perfect for working.',
     phone_number: '+1 (415) 495-3394',
     images: null,
@@ -123,7 +132,7 @@ export const mockExperiences: Experience[] = [
     user_id: '2',
     place_id: '2',
     price_range: '$$',
-    tags: ['Bakery', 'Breakfast', 'Dessert'],
+    tags: [tag('bakery', 'Bakery'), tag('breakfast', 'Breakfast'), tag('dessert', 'Dessert')],
     brief_description: 'Their morning buns are legendary! Get there early because they sell out fast. The sourdough bread is also incredible.',
     phone_number: '+1 (415) 487-2600',
     images: null,
@@ -136,7 +145,7 @@ export const mockExperiences: Experience[] = [
     user_id: '3',
     place_id: '3',
     price_range: '$',
-    tags: ['Japanese', 'Ramen', 'Casual'],
+    tags: [tag('japanese', 'Japanese'), tag('ramen', 'Ramen'), tag('casual', 'Casual')],
     brief_description: 'Found this tiny ramen shop in Shibuya. No English menu but the tonkotsu ramen was worth the adventure!',
     phone_number: null,
     images: null,
@@ -149,7 +158,7 @@ export const mockExperiences: Experience[] = [
     user_id: '1',
     place_id: '4',
     price_range: '$$$',
-    tags: ['British', 'Gastropub', 'Dinner'],
+    tags: [tag('british', 'British'), tag('gastropub', 'Gastropub'), tag('dinner', 'Dinner')],
     brief_description: 'Excellent gastropub with creative dishes. The burger is a must-try. Make a reservation!',
     phone_number: '+1 (212) 620-0393',
     images: null,
@@ -162,7 +171,7 @@ export const mockExperiences: Experience[] = [
     user_id: '2',
     place_id: '5',
     price_range: '$',
-    tags: ['Bakery', 'French', 'Breakfast'],
+    tags: [tag('bakery', 'Bakery'), tag('french', 'French'), tag('breakfast', 'Breakfast')],
     brief_description: 'Charming local bakery with authentic French pastries. The croissants remind me of Paris!',
     phone_number: null,
     images: null,
@@ -190,7 +199,7 @@ export const mockFeedItems: ExperienceFeedItem[] = [
       thumbnail_image_url: null,
     },
     price_range: '$$',
-    tags: ['Cafe', 'Coffee', 'Breakfast'],
+    tags: [tag('cafe', 'Cafe'), tag('coffee', 'Coffee'), tag('breakfast', 'Breakfast')],
     time_ago: '2d ago',
   },
   {
@@ -209,7 +218,7 @@ export const mockFeedItems: ExperienceFeedItem[] = [
       thumbnail_image_url: null,
     },
     price_range: '$$',
-    tags: ['Bakery', 'Breakfast', 'Dessert'],
+    tags: [tag('bakery', 'Bakery'), tag('breakfast', 'Breakfast'), tag('dessert', 'Dessert')],
     time_ago: '4d ago',
   },
   {
@@ -228,7 +237,7 @@ export const mockFeedItems: ExperienceFeedItem[] = [
       thumbnail_image_url: null,
     },
     price_range: '$',
-    tags: ['Japanese', 'Ramen', 'Casual'],
+    tags: [tag('japanese', 'Japanese'), tag('ramen', 'Ramen'), tag('casual', 'Casual')],
     time_ago: '2w ago',
   },
   {
@@ -247,7 +256,7 @@ export const mockFeedItems: ExperienceFeedItem[] = [
       thumbnail_image_url: null,
     },
     price_range: '$$$',
-    tags: ['British', 'Gastropub', 'Dinner'],
+    tags: [tag('british', 'British'), tag('gastropub', 'Gastropub'), tag('dinner', 'Dinner')],
     time_ago: '3w ago',
   },
   {
@@ -266,7 +275,7 @@ export const mockFeedItems: ExperienceFeedItem[] = [
       thumbnail_image_url: null,
     },
     price_range: '$',
-    tags: ['Bakery', 'French', 'Breakfast'],
+    tags: [tag('bakery', 'Bakery'), tag('french', 'French'), tag('breakfast', 'Breakfast')],
     time_ago: '1mo ago',
   },
 ];

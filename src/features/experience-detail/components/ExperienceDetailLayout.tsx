@@ -11,7 +11,6 @@ import { MoreFromUser } from './MoreFromUser';
 import { OtherRecommenders } from './OtherRecommenders';
 import { ExperienceActions } from './ExperienceActions';
 import { VisibilityBadge } from '@/components/VisibilityBadge';
-import { useTagLabel } from '@/hooks/useTagLabel';
 import type { ExperienceDetail, ExperienceFeedItem } from '@/lib/models';
 import { formatTimeAgo } from '@/lib/utils/format';
 
@@ -36,7 +35,6 @@ export function ExperienceDetailLayout({
   isOwner = false,
   locale = 'en-US',
 }: ExperienceDetailLayoutProps) {
-  const { getTagLabel } = useTagLabel();
   const visitTimeAgo = experience.visit_date
     ? formatTimeAgo(experience.visit_date)
     : null;
@@ -82,7 +80,7 @@ export function ExperienceDetailLayout({
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2 flex-wrap">
             {experience.tags.map((tag, index) => (
-              <Chip key={index} label={getTagLabel(tag)} variant="outlined" />
+              <Chip key={index} label={tag.display_name} variant="outlined" />
             ))}
           </div>
           <VisibilityBadge visibility={experience.visibility} />
@@ -151,7 +149,7 @@ export function ExperienceDetailLayout({
             <div>
               <p className="font-semibold text-text-primary">{user.display_name}</p>
               <p className="text-small text-text-secondary">
-                {visitTimeAgo ? `Visited ${visitTimeAgo}` : 'Recommended'}
+                {visitTimeAgo ? `Visited ${visitTimeAgo}` : 'Sugeriu'}
               </p>
             </div>
           </div>

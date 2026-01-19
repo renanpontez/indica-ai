@@ -2,6 +2,22 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { formatTimeAgo, generateExperienceSlug } from '@/lib/utils/format';
 
+// Helper to format slug to display name (capitalize first letter, replace hyphens with spaces)
+function formatSlugToDisplayName(slug: string): string {
+  return slug
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
+// Helper to transform tags from slugs to TagInfo objects
+function transformTags(tags: string[], tagDisplayNames: Map<string, string>) {
+  return tags.map(tagSlug => ({
+    slug: tagSlug,
+    display_name: tagDisplayNames.get(tagSlug) || formatSlugToDisplayName(tagSlug),
+  }));
+}
+
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ userId: string }> }
@@ -57,6 +73,22 @@ export async function GET(
       console.error('Experiences fetch error:', expError);
     }
 
+    // Collect all unique tag slugs and fetch display names
+    const allTagSlugs = [...new Set((experiences || []).flatMap((exp: any) => exp.tags || []))];
+    const tagDisplayNames = new Map<string, string>();
+    if (allTagSlugs.length > 0) {
+      const { data: tagDetails } = await supabase
+        .from('tags')
+        .select('slug, display_name')
+        .in('slug', allTagSlugs);
+
+      (tagDetails || []).forEach((t: any) => {
+        if (t.display_name) {
+          tagDisplayNames.set(t.slug, t.display_name);
+        }
+      });
+    }
+
     // Transform experiences to feed item format
     const experienceFeedItems = (experiences || []).map((exp: any) => {
       const placeName = exp.places?.name || 'Unknown Place';
@@ -81,7 +113,7 @@ export async function GET(
           instagram: exp.places?.instagram_handle || null,
         },
         price_range: exp.price_range || '$$',
-        tags: exp.tags || [],
+        tags: transformTags(exp.tags || [], tagDisplayNames),
         time_ago: formatTimeAgo(exp.created_at),
         description: exp.brief_description,
         visibility: exp.visibility || 'friends_only',
@@ -165,6 +197,22 @@ export async function GET(
     console.error('Experiences fetch error:', expError);
   }
 
+  // Collect all unique tag slugs and fetch display names
+  const allTagSlugsOther = [...new Set((experiences || []).flatMap((exp: any) => exp.tags || []))];
+  const tagDisplayNamesOther = new Map<string, string>();
+  if (allTagSlugsOther.length > 0) {
+    const { data: tagDetails } = await supabase
+      .from('tags')
+      .select('slug, display_name')
+      .in('slug', allTagSlugsOther);
+
+    (tagDetails || []).forEach((t: any) => {
+      if (t.display_name) {
+        tagDisplayNamesOther.set(t.slug, t.display_name);
+      }
+    });
+  }
+
   // Transform experiences to feed item format
   const experienceFeedItems = (experiences || []).map((exp: any) => {
     const placeName = exp.places?.name || 'Unknown Place';
@@ -189,7 +237,7 @@ export async function GET(
         instagram: exp.places?.instagram_handle || null,
       },
       price_range: exp.price_range || '$$',
-      tags: exp.tags || [],
+      tags: transformTags(exp.tags || [], tagDisplayNamesOther),
       time_ago: formatTimeAgo(exp.created_at),
       description: exp.brief_description,
       visibility: exp.visibility || 'friends_only',

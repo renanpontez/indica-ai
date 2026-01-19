@@ -2,8 +2,16 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { formatTimeAgo, generateExperienceSlug } from '@/lib/utils/format';
 
+// Helper to format slug to display name (capitalize first letter, replace hyphens with spaces)
+function formatSlugToDisplayName(slug: string): string {
+  return slug
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
 // Helper function to transform bookmark data to ExperienceFeedItem format
-function transformBookmarkToFeedItem(bookmark: any) {
+function transformBookmarkToFeedItem(bookmark: any, tagDisplayNames: Map<string, string>) {
   const exp = bookmark.experiences;
   const place = exp.places;
   const user = exp.users;
@@ -14,6 +22,12 @@ function transformBookmarkToFeedItem(bookmark: any) {
 
   const images = exp.images || [];
   const thumbnailImageUrl = images.length > 0 ? images[0] : null;
+
+  // Transform tags from slugs to TagInfo objects
+  const tags = (exp.tags || []).map((tagSlug: string) => ({
+    slug: tagSlug,
+    display_name: tagDisplayNames.get(tagSlug) || formatSlugToDisplayName(tagSlug),
+  }));
 
   return {
     id: exp.id,
@@ -33,7 +47,7 @@ function transformBookmarkToFeedItem(bookmark: any) {
       instagram: place?.instagram_handle || null,
     },
     price_range: exp.price_range || '$$',
-    tags: exp.tags || [],
+    tags,
     time_ago: formatTimeAgo(exp.created_at),
     description: exp.brief_description,
     visibility: exp.visibility,
@@ -91,10 +105,27 @@ export async function GET() {
     return NextResponse.json({ error: 'Failed to fetch bookmarks' }, { status: 500 });
   }
 
+  // Filter out bookmarks with deleted experiences
+  const validBookmarks = (bookmarks || []).filter((b: any) => b.experiences);
+
+  // Collect all unique tag slugs and fetch display names
+  const allTagSlugs = [...new Set(validBookmarks.flatMap((b: any) => b.experiences?.tags || []))];
+  const tagDisplayNames = new Map<string, string>();
+  if (allTagSlugs.length > 0) {
+    const { data: tagDetails } = await supabase
+      .from('tags')
+      .select('slug, display_name')
+      .in('slug', allTagSlugs);
+
+    (tagDetails || []).forEach((t: any) => {
+      if (t.display_name) {
+        tagDisplayNames.set(t.slug, t.display_name);
+      }
+    });
+  }
+
   // Transform bookmarks to feed items
-  const feedItems = (bookmarks || [])
-    .filter((b: any) => b.experiences) // Filter out bookmarks with deleted experiences
-    .map(transformBookmarkToFeedItem);
+  const feedItems = validBookmarks.map(b => transformBookmarkToFeedItem(b, tagDisplayNames));
 
   return NextResponse.json(feedItems);
 }

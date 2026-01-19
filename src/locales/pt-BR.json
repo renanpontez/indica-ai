@@ -153,8 +153,8 @@
   },
   "add": {
     "inputMode": {
-      "search": "Buscar",
-      "manual": "Manual"
+      "search": "Buscar com GPS",
+      "manual": "Inserir Manualmente"
     },
     "location": {
       "enableTitle": "Ativar Localização",

@@ -1,49 +1,67 @@
 {
   "meta": {
-    "project_name": "Indica Aí – Social Recommendations MVP",
+    "project_name": "Indica Ai - Social Recommendations MVP",
     "project_type": "frontend",
     "phase": "strategy",
-    "version": "0.2.0",
-    "last_updated": "2026-01-17"
+    "version": "0.3.0",
+    "last_updated": "2026-01-19",
+    "status": "MVP implemented"
   },
   "objective": "Deliver a mobile-first web app where users can quickly save, view, and browse friends' recommended places, using Next.js with Supabase as the complete backend infrastructure.",
   "core_value_prop": "Make it extremely easy to save a place you liked and let your friends discover it through a simple, trust-based social graph.",
   "architecture": {
     "description": "Full-stack Next.js application with Supabase backend",
-    "frontend": "Next.js App Router with React, TypeScript, Tailwind CSS",
+    "frontend": "Next.js 16.1.1 App Router with React 19, TypeScript 5.9, Tailwind CSS",
     "backend": "Supabase (Auth, PostgreSQL Database, Storage)",
     "data_access": "React Query hooks calling Supabase client directly",
-    "security": "Row Level Security (RLS) policies at database level"
+    "security": "Row Level Security (RLS) policies at database level",
+    "i18n": "next-intl with pt-BR (default) and en-US"
   },
   "primary_use_cases": [
-    "User signs up or signs in via Google OAuth or email/password.",
+    "User signs up or signs in via email/password.",
     "User visits or remembers a place and wants to save it in a few seconds via Quick Add Flow.",
-    "User opens the app to see a feed of places saved by friends.",
+    "User opens the app to see a feed of places saved by friends and community.",
+    "User follows other users to see their recommendations in their feed.",
     "User views their own profile and saved places (experiences + bookmarks).",
     "User taps into a specific experience to see more details and open maps.",
-    "User bookmarks experiences from friends to save for later."
+    "User bookmarks experiences from others to save for later.",
+    "User browses explore to discover experiences by tag, city, or recent activity.",
+    "User edits or deletes their own experiences.",
+    "User searches for experiences or other users."
   ],
   "scope_frontend": {
     "in_scope": [
       "Responsive web UI, mobile-first.",
-      "Authentication (Supabase Auth with Google OAuth and email/password).",
-      "Bottom navigation (mobile) and Desktop navigation with core tabs: Feed, Add, Profile + Explore.",
-      "Quick Add Flow: location context, place search, optional enrichment, save to Supabase.",
+      "Authentication (Supabase Auth with email/password).",
+      "Bottom navigation (mobile) and Sidebar/TopBar (desktop) with core tabs: Feed, Add, Profile, Explore.",
+      "Quick Add Flow: location context, place search, optional enrichment, visibility control, save to Supabase.",
+      "Experience visibility control (public/friends_only).",
       "Experience detail view with bookmark functionality.",
+      "Edit and delete own experiences.",
       "Profile with experiences and bookmarks tabs.",
+      "Follow/unfollow other users.",
+      "Explore/browse by tag, city, or recent experiences.",
+      "Search experiences and users.",
       "Basic error/loading/empty states.",
       "Internationalization (i18n) with next-intl (pt-BR and en-US).",
-      "Image upload to Supabase Storage.",
-      "Direct integration with Supabase for all data operations."
+      "Image upload to Supabase Storage with compression.",
+      "Direct integration with Supabase for all data operations.",
+      "Database-backed tags system with i18n support.",
+      "Place deduplication to enable recommendation counts.",
+      "Other recommenders display on experience detail."
     ],
     "out_of_scope_mvp": [
       "Native mobile apps.",
+      "Google OAuth (stub exists, not fully implemented).",
       "Offline-first complex PWA (basic PWA-friendly structure allowed).",
       "Likes, comments, DMs, complex social/explore algorithms.",
       "Complex theming system beyond provided design_tokens.",
       "Email verification flow (can be enabled post-MVP).",
       "Password reset flow (can be added post-MVP).",
-      "Supabase Realtime subscriptions (not needed for MVP)."
+      "Supabase Realtime subscriptions (not needed for MVP).",
+      "User blocking/reporting.",
+      "Notifications (email or push).",
+      "Dark mode toggle."
     ]
   },
   "success_criteria": {
@@ -52,7 +70,10 @@
       "User can add a place (Quick Add Flow) in ~15 seconds or less under normal network conditions.",
       "Navigation between tabs is obvious and requires minimal taps.",
       "Experience cards are readable and scannable on small screens.",
-      "Empty states clearly guide the user to next actions (e.g., follow friends, add a place)."
+      "Empty states clearly guide the user to next actions (e.g., follow friends, add a place).",
+      "User can follow/unfollow other users easily.",
+      "User can browse and discover new experiences via explore.",
+      "User can search for experiences and users."
     ],
     "technical": [
       "Frontend uses typed Supabase queries with TypeScript interfaces matching database schema.",
@@ -60,13 +81,18 @@
       "Basic accessibility is respected (focus management, touch targets, contrast).",
       "Layout works well on common mobile breakpoints and desktop within 1760px max width.",
       "RLS policies properly protect user data at the database level.",
-      "Auth session is securely managed via httpOnly cookies (@supabase/ssr)."
+      "Auth session is securely managed via httpOnly cookies (@supabase/ssr).",
+      "Visibility system respects follow relationships.",
+      "Tags system provides i18n-aware display names.",
+      "Image compression reduces upload sizes."
     ],
     "security": [
       "SUPABASE_SECRET_KEY is never exposed to the client (server-side only).",
       "All database tables have RLS enabled with appropriate policies.",
       "User input is validated on both client and server.",
-      "Protected routes redirect unauthenticated users to sign-in."
+      "Protected routes redirect unauthenticated users to sign-in.",
+      "Users can only edit/delete their own experiences.",
+      "Visibility restrictions enforced at database level."
     ]
   },
   "key_decisions": {
@@ -78,13 +104,67 @@
         "Mitigation: Business logic can be added via Supabase Edge Functions or API routes if needed"
       ]
     },
-    "nextauth_to_supabase_auth": {
-      "rationale": "Supabase Auth integrates seamlessly with Supabase Database, allowing automatic user profile creation via triggers and consistent session management.",
-      "migration_impact": [
-        "Replace NextAuth with @supabase/ssr for session handling",
-        "Update middleware for Supabase session refresh",
-        "Update auth components to use Supabase auth methods"
+    "email_auth_only": {
+      "rationale": "Google OAuth stub exists but is not fully implemented. Email/password provides a working auth flow for MVP.",
+      "future": "Google OAuth can be fully implemented post-MVP by completing the OAuth callback flow."
+    },
+    "database_backed_tags": {
+      "rationale": "Tags stored in database allow for recommendation aggregation, i18n support, and user-created custom tags.",
+      "implementation": [
+        "System tags are seeded with Portuguese translations",
+        "Custom tags preserve user input via display_name field",
+        "Slugs normalized for deduplication"
+      ]
+    },
+    "visibility_with_follows": {
+      "rationale": "Users want control over who sees their recommendations. Friends_only visibility creates value in following users.",
+      "implementation": [
+        "Default is public for maximum discoverability",
+        "friends_only visible to followers only",
+        "Enforced via RLS policies in database"
+      ]
+    },
+    "place_deduplication": {
+      "rationale": "Multiple users recommending the same place should contribute to a shared recommendation count.",
+      "implementation": [
+        "Google Places matched by google_place_id",
+        "Manual places matched by name+city+country",
+        "Coordinate proximity matching as fallback"
       ]
     }
+  },
+  "implemented_features": {
+    "description": "Features that have been fully implemented in the MVP",
+    "core": [
+      "Email/password authentication with Supabase Auth",
+      "User profiles (display_name, username, avatar)",
+      "Create/edit/delete experiences",
+      "Place search (Google Places API + local DB)",
+      "Custom place creation with deduplication",
+      "Price range selection ($-$$$$)",
+      "Database-backed tag system with i18n",
+      "Image upload with compression (up to 5 per experience)",
+      "Experience visibility (public/friends_only)",
+      "Bookmarks/saved experiences",
+      "User follow system",
+      "Personalized feed (my/friends/community/nearby sections)",
+      "Explore hub (browse by tag, city, recent)",
+      "Experience detail with map link",
+      "Other recommenders display",
+      "User profiles (own + others)",
+      "Profile editing",
+      "Search (experiences and users)",
+      "Multi-language support (pt-BR, en-US)"
+    ],
+    "technical": [
+      "Feature-first folder architecture",
+      "React Query for data fetching/caching",
+      "Supabase RLS for security",
+      "Responsive design (mobile-first)",
+      "Toast notifications",
+      "Loading/error/empty states",
+      "GPS location detection",
+      "Image compression before upload"
+    ]
   }
 }

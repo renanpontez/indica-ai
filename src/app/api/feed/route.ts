@@ -3,11 +3,20 @@ import { createClient } from '@/lib/supabase/server';
 import { formatTimeAgo, generateExperienceSlug } from '@/lib/utils/format';
 import { geolocation } from '@vercel/functions';
 
+// Helper to format slug to display name (capitalize first letter, replace hyphens with spaces)
+function formatSlugToDisplayName(slug: string): string {
+  return slug
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
 // Helper function to transform experience data
 function transformExperience(
   exp: any,
   recommendationCounts: Map<string, number>,
-  userBookmarks: Map<string, string>
+  userBookmarks: Map<string, string>,
+  tagDisplayNames: Map<string, string>
 ) {
   const placeName = exp.places?.name || 'Unknown Place';
   const placeCity = exp.places?.city || '';
@@ -19,6 +28,12 @@ function transformExperience(
 
   const placeId = exp.places?.id || exp.place_id;
   const bookmarkId = userBookmarks.get(exp.id);
+
+  // Transform tags from slugs to TagInfo objects
+  const tags = (exp.tags || []).map((tagSlug: string) => ({
+    slug: tagSlug,
+    display_name: tagDisplayNames.get(tagSlug) || formatSlugToDisplayName(tagSlug),
+  }));
 
   return {
     id: exp.id,
@@ -39,7 +54,7 @@ function transformExperience(
       recommendation_count: recommendationCounts.get(placeId) ?? 1,
     },
     price_range: exp.price_range || '$$',
-    tags: exp.tags || [],
+    tags,
     time_ago: formatTimeAgo(exp.created_at),
     description: exp.brief_description,
     visibility: exp.visibility,
@@ -287,11 +302,29 @@ export async function GET(request: NextRequest) {
   // Fetch recommendation counts for all places in one query
   const recommendationCounts = await getRecommendationCounts(supabase, placeIds);
 
-  // Transform experiences with recommendation counts and bookmark data
-  const mySuggestions = myExperiencesData.map(exp => transformExperience(exp, recommendationCounts, userBookmarks));
-  const friendsSuggestions = friendsExperiencesData.map(exp => transformExperience(exp, recommendationCounts, userBookmarks));
-  const communitySuggestions = filteredCommunityExperiences.map(exp => transformExperience(exp, recommendationCounts, userBookmarks));
-  const nearbyPlaces = filteredNearbyExperiences.map(exp => transformExperience(exp, recommendationCounts, userBookmarks));
+  // Collect all unique tag slugs from all experiences
+  const allTagSlugs = [...new Set(allExperiences.flatMap((exp: any) => exp.tags || []))];
+
+  // Fetch tag display names
+  const tagDisplayNames = new Map<string, string>();
+  if (allTagSlugs.length > 0) {
+    const { data: tagDetails } = await supabase
+      .from('tags')
+      .select('slug, display_name')
+      .in('slug', allTagSlugs);
+
+    (tagDetails || []).forEach((t: any) => {
+      if (t.display_name) {
+        tagDisplayNames.set(t.slug, t.display_name);
+      }
+    });
+  }
+
+  // Transform experiences with recommendation counts, bookmark data, and tag display names
+  const mySuggestions = myExperiencesData.map(exp => transformExperience(exp, recommendationCounts, userBookmarks, tagDisplayNames));
+  const friendsSuggestions = friendsExperiencesData.map(exp => transformExperience(exp, recommendationCounts, userBookmarks, tagDisplayNames));
+  const communitySuggestions = filteredCommunityExperiences.map(exp => transformExperience(exp, recommendationCounts, userBookmarks, tagDisplayNames));
+  const nearbyPlaces = filteredNearbyExperiences.map(exp => transformExperience(exp, recommendationCounts, userBookmarks, tagDisplayNames));
 
   return NextResponse.json({
     mySuggestions,

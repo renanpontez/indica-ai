@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from 'react';
 import { Avatar } from '@/components/Avatar';
 import { PlaceholderImage } from '@/components/PlaceholderImage';
 import { VisibilityBadge } from '@/components/VisibilityBadge';
-import { useTagLabel } from '@/hooks/useTagLabel';
 import { useTranslations } from 'next-intl';
 import type { ExperienceFeedItem } from '@/lib/models';
 
@@ -24,7 +23,6 @@ export function ExperienceCard({
   onDelete,
 }: ExperienceCardProps) {
   const { user, place, price_range, tags, time_ago, description } = experience;
-  const { getTagLabel } = useTagLabel();
   const t = useTranslations('place');
   const tExperience = useTranslations('experience');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -233,7 +231,7 @@ export function ExperienceCard({
                 key={index}
                 className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-primary border border-primary"
               >
-                {getTagLabel(tag)}
+                {tag.display_name}
               </span>
             ))}
           </div>

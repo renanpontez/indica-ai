@@ -15,17 +15,23 @@ export function FloatingActionButton() {
   const { user } = useAuth();
 
   const isActive = (item: (typeof navItems)[number]) => {
-    const localePath = `/${locale}${item.path}`;
-    if (item.isActiveCheck) {
-      return item.isActiveCheck(pathname, localePath);
+    const pathWithoutLocale = pathname.replace(`/${locale}`, '');
+    switch (item.key) {
+      case 'explore':
+        return pathWithoutLocale.startsWith('/app/explore');
+      case 'feed':
+        return pathWithoutLocale.startsWith('/app/feed') || pathWithoutLocale === '/app';
+      case 'profile':
+        return pathWithoutLocale.startsWith('/app/profile');
+      default:
+        return pathWithoutLocale.startsWith(item.path);
     }
-    return pathname.startsWith(localePath);
   };
 
   const linkStyles = (active: boolean) =>
     cn(
       'relative flex flex-col items-center justify-center p-2 transition-all duration-200 group',
-      active ? 'text-dark-grey' : 'text-medium-grey hover:text-dark-grey'
+      active ? 'text-primary' : 'text-medium-grey hover:text-dark-grey'
     );
 
   const iconStyles = (active: boolean) =>

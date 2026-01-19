@@ -1,16 +1,17 @@
 {
   "meta": {
-    "project_name": "Indica Aí – Social Recommendations MVP",
+    "project_name": "Indica Ai - Social Recommendations MVP",
     "project_type": "frontend",
     "phase": "experience",
-    "version": "0.2.0",
-    "last_updated": "2026-01-18"
+    "version": "0.3.0",
+    "last_updated": "2026-01-19",
+    "status": "MVP implemented"
   },
   "ux_reference": {
     "language": "pt-BR (default), en-US",
     "mobile_first": true,
     "platform": "Responsive Web App, PWA-considerate",
-    "i18n": "next-intl with locale prefix in URLs"
+    "i18n": "next-intl with locale prefix in URLs (as-needed for default)"
   },
   "navigation_model": {
     "mobile": {
@@ -21,31 +22,39 @@
         "add": "Add",
         "profile": "Profile",
         "explore": "Explore"
-      }
+      },
+      "component": "BottomNav"
     },
     "desktop": {
-      "pattern": "Top/Left navigation bar",
-      "elements": ["logo", "nav_links", "user_menu"],
+      "pattern": "Sidebar + Top bar",
+      "elements": ["Sidebar with nav links", "TopBar with user menu"],
       "user_menu": {
-        "authenticated": ["profile_link", "sign_out"],
+        "authenticated": ["profile_link", "language_switcher", "sign_out"],
         "unauthenticated": ["sign_in", "sign_up"]
-      }
+      },
+      "components": ["Sidebar", "TopBar", "UserDropdown"]
     },
     "primary_actions": {
-      "add_experience": "Central Tab (mobile) or prominent button (desktop)",
+      "add_experience": "Central Tab (mobile) or sidebar item (desktop)",
       "open_place": "Tap on Experience Card",
-      "sign_in": "NavBar user menu or dedicated page"
+      "sign_in": "TopBar user menu or dedicated page"
     }
   },
   "core_screens": [
     "Sign In",
     "Sign Up",
-    "Feed",
+    "Auth Error",
+    "Feed (with sections)",
     "Quick Add Flow",
     "Experience Detail",
-    "Profile",
-    "Explore/Browse",
-    "Auth Error"
+    "Experience Edit",
+    "Profile (own)",
+    "Profile (other user)",
+    "Bookmarks",
+    "Explore Hub",
+    "Explore All",
+    "Explore by City",
+    "Explore by Tag"
   ],
   "screen_specs": {
     "auth_signin": {
@@ -53,15 +62,10 @@
       "path": "/[locale]/auth/signin",
       "components": [
         "page_header",
-        "google_oauth_button",
         "email_password_form",
         "signup_link",
         "error_display"
       ],
-      "google_oauth_button": {
-        "label": "Continue with Google",
-        "action": "Initiate Supabase Google OAuth flow"
-      },
       "email_password_form": {
         "fields": ["email", "password"],
         "submit_label": "Sign In",
@@ -75,14 +79,14 @@
         "subheader": "Welcome back! Sign in to continue.",
         "signup_prompt": "Don't have an account? Sign up",
         "error_invalid_credentials": "Invalid email or password."
-      }
+      },
+      "note": "Google OAuth button exists but is not fully functional"
     },
     "auth_signup": {
       "purpose": "Allow new users to create an account.",
       "path": "/[locale]/auth/signup",
       "components": [
         "page_header",
-        "google_oauth_button",
         "signup_form",
         "signin_link",
         "error_display"
@@ -120,13 +124,21 @@
       }
     },
     "feed": {
-      "purpose": "Show experiences from followed users in reverse chronological order.",
-      "path": "/[locale]",
-      "access": "Public (auth optional for full features)",
+      "purpose": "Show experiences organized by relationship to user.",
+      "path": "/[locale]/app",
+      "access": "Protected (requires authentication)",
+      "sections": {
+        "mySuggestions": "User's own experiences",
+        "friendsSuggestions": "Experiences from followed users",
+        "communitySuggestions": "Public experiences from others",
+        "nearbyPlaces": "Experiences near user's location"
+      },
       "components": [
-        "header",
-        "experience_card_list",
-        "empty_state"
+        "Stories",
+        "SectionHeader",
+        "ExperienceCard",
+        "ExperienceList",
+        "FeedEmptyState"
       ],
       "experience_card": {
         "elements": [
@@ -137,8 +149,9 @@
           "price_range",
           "tags",
           "city_short",
-          "instagram_handle_optional",
-          "thumbnail_image_optional"
+          "recommendation_count",
+          "thumbnail_image_optional",
+          "visibility_badge"
         ],
         "constraints": {
           "image_optional": true,
@@ -149,8 +162,8 @@
       "empty_state_copy": "Follow friends to discover places they love."
     },
     "quick_add_flow": {
-      "purpose": "Fastest possible save → under ~15 seconds target.",
-      "path": "/[locale]/add",
+      "purpose": "Fastest possible save - under ~15 seconds target.",
+      "path": "/[locale]/app/add",
       "access": "Protected (requires authentication)",
       "steps": [
         "Location Context & Search",
@@ -164,15 +177,16 @@
         "tags"
       ],
       "optional_fields": [
-        "instagram_handle",
+        "visibility",
         "brief_description",
-        "phone_number",
         "images",
+        "instagram_handle",
+        "phone_number",
         "visit_date"
       ],
       "location_behaviors": {
         "gps_allowed": "Use browser GPS for nearest search context.",
-        "gps_denied": "Fallback to IP-based city via API route.",
+        "gps_denied": "Fallback to Vercel geolocation headers.",
         "both_fail": "Ask user to select city manually via CitySelector."
       },
       "places_api_failure": {
@@ -180,72 +194,143 @@
         "fields": [
           "place_name",
           "city",
+          "country",
           "optional_address"
         ],
         "restrictions": [
           "manual_google_maps_url_not_allowed"
         ]
       },
+      "existing_place": {
+        "description": "When selecting a place that already has recommendations",
+        "modal": "ExistingPlaceModal shows recommendation_count and top_tags",
+        "options": ["Add to existing place", "Create new entry"]
+      },
+      "visibility_selector": {
+        "options": ["public", "friends_only"],
+        "default": "public",
+        "component": "VisibilitySelector"
+      },
       "image_upload": {
         "destination": "Supabase Storage (experience-images bucket)",
         "max_images": 5,
-        "max_size": "5MB per image"
-      }
+        "max_size": "5MB per image",
+        "compression": "Applied before upload"
+      },
+      "components": [
+        "PlaceSearchInput",
+        "PlaceSuggestionList",
+        "CustomPlaceForm",
+        "PriceRangeSelector",
+        "TagSelector",
+        "ImagePicker",
+        "VisibilitySelector",
+        "ExistingPlaceModal",
+        "SaveExperienceButton"
+      ]
     },
     "experience_detail": {
-      "purpose": "View an experience with more rich info.",
-      "path": "/[locale]/app/experience/[id]",
-      "access": "Public",
+      "purpose": "View an experience with rich info.",
+      "path": "/[locale]/app/experience/[id]/[slug]",
+      "access": "Public (with visibility restrictions)",
       "components": [
         "place_name",
-        "user_info",
+        "user_info (with follow button for other users)",
         "price_range",
         "tags",
+        "recommendation_count",
         "instagram_handle_optional",
         "brief_description_optional",
         "images_gallery_optional",
         "city_country",
         "google_maps_link_auto",
-        "bookmark_button"
+        "bookmark_button",
+        "other_recommenders",
+        "more_from_user",
+        "experience_actions (for owner)"
       ],
       "bookmark_button": {
         "authenticated": "Toggle bookmark on/off",
         "unauthenticated": "Redirect to sign-in with callback"
+      },
+      "experience_actions": {
+        "visible_to": "Owner only",
+        "actions": ["Edit", "Delete"],
+        "delete_confirmation": "DeleteExperienceModal"
+      },
+      "other_recommenders": {
+        "description": "Shows other users who recommended the same place",
+        "displays": "Avatar, name, link to their experience"
       }
     },
+    "experience_edit": {
+      "purpose": "Edit own experience.",
+      "path": "/[locale]/app/experience/[id]/edit",
+      "access": "Protected (owner only)",
+      "editable_fields": [
+        "price_range",
+        "tags",
+        "brief_description",
+        "images",
+        "visibility"
+      ],
+      "non_editable": ["place (cannot change after creation)"]
+    },
     "profile": {
-      "purpose": "View user's own experiences and bookmarks.",
-      "path_own": "/[locale]/app/profile",
+      "purpose": "View user's experiences and bookmarks.",
+      "path_own": "/[locale]/app/profile/me",
       "path_other": "/[locale]/app/profile/[userId]",
       "access_own": "Protected",
       "access_other": "Public",
       "components": [
-        "header_user",
-        "edit_profile_entrypoint",
-        "tab_experiences",
-        "tab_bookmarks"
+        "UserHeader (with stats)",
+        "FollowButton (for other profiles)",
+        "EditProfileModal (for own profile)",
+        "ProfileTabs",
+        "ProfileExperienceList",
+        "ProfileBookmarksList"
       ],
       "tabs": {
         "experiences": "List of user's experiences",
         "bookmarks": "List of bookmarked experiences (own profile only)"
       },
+      "stats": {
+        "experience_count": "Number of experiences",
+        "followers_count": "Number of followers",
+        "following_count": "Number of users following"
+      },
       "empty_state_copy": "Save places to build your profile."
     },
     "explore": {
-      "purpose": "Browse and discover experiences beyond friend graph.",
-      "path": "/[locale]/explore",
+      "purpose": "Discover experiences beyond friend graph.",
+      "paths": {
+        "hub": "/[locale]/app/explore",
+        "all": "/[locale]/app/explore/all",
+        "cities": "/[locale]/app/explore/cities",
+        "by_tag": "/[locale]/app/explore/tag/[slug]"
+      },
       "access": "Public",
-      "status": "Basic implementation for MVP",
+      "hub_sections": {
+        "tags": "Popular tags with experience counts",
+        "cities": "Cities with experience counts",
+        "recent": "Recent public experiences"
+      },
+      "filtering": {
+        "by_tag": "Filter experiences by tag slug",
+        "by_city": "Filter experiences by city name"
+      },
       "components": [
-        "search_input",
-        "experience_list",
-        "filter_options"
+        "TagChips",
+        "CityList",
+        "ExperienceGrid",
+        "Breadcrumb"
       ]
     }
   },
   "components_inventory": {
     "global": [
       "BottomNav",
+      "Sidebar",
       "DesktopNav",
       "TopBar",
       "Avatar",
@@ -254,56 +339,74 @@
       "Input",
       "TextArea",
       "IconButton",
+      "SearchBar",
+      "Breadcrumb",
+      "LanguageSwitcher",
       "CitySelector",
       "ImageUploader",
       "PriceRangeSelector",
       "TagSelector",
       "LoadingSpinner",
-      "ErrorMessage"
+      "ErrorMessage",
+      "PlaceholderImage",
+      "VisibilityBadge",
+      "FollowButton",
+      "Toast",
+      "ToastContainer",
+      "FloatingActionButton",
+      "Stories"
     ],
     "auth": [
       "SignInForm",
       "SignUpForm",
       "SocialSignInButtons",
       "UserMenu",
+      "UserDropdown",
       "AuthGuard"
     ],
     "feed": [
       "ExperienceCard",
       "ExperienceList",
+      "SectionHeader",
       "FeedEmptyState"
     ],
     "quick_add": [
-      "QuickAddLayout",
       "PlaceSearchInput",
       "PlaceSuggestionList",
       "CustomPlaceForm",
-      "AdditionalFieldsPanel",
+      "ImagePicker",
+      "VisibilitySelector",
+      "ExistingPlaceModal",
       "SaveExperienceButton"
     ],
     "experience_detail": [
       "ExperienceDetailLayout",
       "ImageGallery",
+      "LocationMap",
       "MapLinkButton",
-      "BookmarkButton"
+      "BookmarkButton",
+      "MoreFromUser",
+      "OtherRecommenders",
+      "ExperienceActions",
+      "DeleteExperienceModal"
     ],
     "profile": [
       "UserHeader",
       "ProfileTabs",
       "ProfileExperienceList",
-      "ProfileBookmarksList"
+      "ProfileBookmarksList",
+      "EditProfileModal"
+    ],
+    "explore": [
+      "TagChips",
+      "CityList",
+      "ExperienceGrid"
     ]
   },
   "design_tokens": {
+    "description": "Design tokens matching tailwind.config.ts",
     "color": {
-      "primary": "#111111",
-      "background": "#FFFFFF",
-      "surface": "#F6F7F9",
-      "chip_bg": "#EDEEF1",
-      "text_primary": "#111111",
-      "text_secondary": "#555555",
-      "divider": "#E4E6EA",
-      "accent": {
+      "primary": {
         "100": "#FFEBE6",
         "200": "#FFC9BA",
         "300": "#FEA68E",
@@ -315,21 +418,28 @@
         "900": "#8A1507",
         "DEFAULT": "#FD512E"
       },
+      "background": "#FFFFFF",
+      "surface": "#F6F7F9",
+      "chip_bg": "#EDEEF1",
+      "dark_grey": "#111111",
+      "medium_grey": "#555555",
+      "divider": "#E4E6EA",
+      "white": "#FFFFFF",
       "error": "#DC2626",
       "success": "#16A34A"
     },
     "typography": {
       "font_family": "Inter, system-ui, sans-serif",
       "scale": {
-        "title_l": "1.4rem",
-        "title_m": "1.2rem",
-        "body": "1rem",
-        "small": "0.85rem"
+        "title_l": "1.125rem",
+        "title_m": "1rem",
+        "body": "0.875rem",
+        "small": "0.75rem"
       }
     },
     "radius": {
-      "chip": "12px",
-      "surface": "14px",
+      "chip": "8px",
+      "surface": "10px",
       "button": "8px",
       "input": "8px"
     },
@@ -337,15 +447,28 @@
       "xs": "4px",
       "sm": "8px",
       "md": "16px",
-      "lg": "24px",
-      "xl": "32px"
+      "lg": "24px"
+    },
+    "animation": {
+      "float": "4s ease-in-out infinite",
+      "float_slow": "5s ease-in-out infinite",
+      "float_delayed": "4.5s ease-in-out infinite 0.5s"
+    },
+    "tailwind_usage": {
+      "colors": "text-primary, bg-surface, text-dark-grey, text-medium-grey, border-divider",
+      "spacing": "p-xs, m-sm, gap-md, p-lg",
+      "radius": "rounded-chip, rounded-surface",
+      "fonts": "text-title-l, text-title-m, text-body, text-small"
     }
   },
   "interaction_rules": {
-    "image_upload": "0–5 images via native upload; stored in Supabase Storage.",
-    "maps_link": "Auto-only, never manual.",
+    "image_upload": "0-5 images via native upload; stored in Supabase Storage with compression.",
+    "maps_link": "Auto-generated from Google Places API, never manual.",
     "gps_permission": "Request on-demand when user enters Quick Add; show short explanatory copy.",
-    "auth_redirect": "Protected routes redirect to sign-in with callbackUrl to return after auth."
+    "auth_redirect": "Protected routes redirect to sign-in with callbackUrl to return after auth.",
+    "bookmark_action": "If not authenticated, redirect to sign-in then return.",
+    "follow_action": "Toggle follow/unfollow with immediate UI feedback.",
+    "visibility_toggle": "Can be changed during add or edit."
   },
   "copy_system": {
     "tone": [
@@ -353,6 +476,8 @@
       "Social",
       "Trust-based"
     ],
+    "languages": ["pt-BR (default)", "en-US"],
+    "translation_location": "src/locales/",
     "examples": {
       "add_place_cta": "Save a place",
       "feed_empty": "Follow friends to discover places they love.",
@@ -371,13 +496,38 @@
       "error_invalid_credentials": "Invalid email or password.",
       "error_email_taken": "An account with this email already exists.",
       "error_generic": "Something went wrong. Please try again."
+    },
+    "visibility_copy": {
+      "public": "Public",
+      "friends_only": "Friends only",
+      "public_description": "Anyone can see this",
+      "friends_only_description": "Only your followers can see this"
+    },
+    "follow_copy": {
+      "follow": "Follow",
+      "following": "Following",
+      "unfollow": "Unfollow"
+    },
+    "experience_actions_copy": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "delete_title": "Delete Experience",
+      "delete_confirm": "Are you sure you want to delete this experience? This action cannot be undone."
+    },
+    "explore_copy": {
+      "explore": "Explore",
+      "all_experiences": "All Experiences",
+      "browse_by_city": "Browse by City",
+      "browse_by_tag": "Browse by Tag"
     }
   },
   "a11y_logic": {
-    "focus_order": "Top→Bottom, logical tab sequence",
+    "focus_order": "Top->Bottom, logical tab sequence",
     "min_touch_target": "44px",
     "color_contrast": "AA (4.5:1 for normal text)",
     "aria_labels": "All interactive elements must have accessible names",
-    "keyboard_navigation": "All features accessible via keyboard"
+    "keyboard_navigation": "All features accessible via keyboard",
+    "skip_links": "Skip to main content link for screen readers",
+    "focus_visible": "Visible focus ring on all interactive elements"
   }
 }

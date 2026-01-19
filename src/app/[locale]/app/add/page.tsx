@@ -242,36 +242,37 @@ export default function AddPage() {
     <div className="min-h-screen bg-white pb-24">
       <Breadcrumb items={breadcrumbItems} />
 
-      <div className="space-y-md 2xl:max-w-[1400px] max-w-[1000px] mx-auto py-6 px-4 md:px-2">
-        {/* Input Mode Toggle */}
-        <div className="flex gap-2 p-1 bg-surface rounded-surface">
-          <button
-            onClick={() => {
-              setInputMode('search');
-              clearPlaceSelection();
-            }}
-            className={`flex-1 py-2 px-4 rounded-lg text-body font-medium transition-colors ${inputMode === 'search'
-              ? 'bg-white text-dark-grey shadow-sm'
-              : 'text-medium-grey hover:text-dark-grey'
-              }`}
-          >
-            {t('add.inputMode.search')}
-          </button>
-          <button
-            onClick={() => {
-              setInputMode('manual');
-              clearPlaceSelection();
-            }}
-            className={`flex-1 py-2 px-4 rounded-lg text-body font-medium transition-colors ${inputMode === 'manual'
-              ? 'bg-white text-dark-grey shadow-sm'
-              : 'text-medium-grey hover:text-dark-grey'
-              }`}
-          >
-            {t('add.inputMode.manual')}
-          </button>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="space-y-md 2xl:max-w-[1400px] max-w-[1000px] mx-auto py-4 px-4 md:px-2">
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 py-2">
           <div className="flex gap-4 flex-col">
+            {/* Input Mode Toggle */}
+            <div className="flex gap-2 p-1 bg-surface rounded-surface">
+              <button
+                onClick={() => {
+                  setInputMode('search');
+                  clearPlaceSelection();
+                }}
+                className={`flex-1 py-2 px-4 rounded-lg text-body font-medium transition-colors ${inputMode === 'search'
+                  ? 'bg-white text-dark-grey shadow-sm'
+                  : 'text-medium-grey hover:text-dark-grey'
+                  }`}
+              >
+                {t('add.inputMode.search')}
+              </button>
+              <button
+                onClick={() => {
+                  setInputMode('manual');
+                  clearPlaceSelection();
+                }}
+                className={`flex-1 py-2 px-4 rounded-lg text-body font-medium transition-colors ${inputMode === 'manual'
+                  ? 'bg-white text-dark-grey shadow-sm'
+                  : 'text-medium-grey hover:text-dark-grey'
+                  }`}
+              >
+                {t('add.inputMode.manual')}
+              </button>
+            </div>
             {/* Search Mode */}
             {inputMode === 'search' && (
               <>
@@ -436,47 +437,6 @@ export default function AddPage() {
                 error={errors.priceRange}
               />
             </div>
-
-            {/* Required: Tags */}
-            <div>
-              <label className="block text-title-m font-medium text-dark-grey mb-md">
-                {t('add.tags')} <span className="text-red-500">*</span>
-              </label>
-              <TagSelector
-                value={tags}
-                onChange={(value) => {
-                  setTags(value);
-                  setErrors({ ...errors, tags: '' });
-                }}
-                error={errors.tags}
-              />
-            </div>
-          </div>
-          <div className="flex gap-4 flex-col">
-
-            {/* Images */}
-            <div>
-              <label className="block text-title-m font-medium text-dark-grey mb-md">
-                {t('add.images.title')}
-              </label>
-              <ImagePicker
-                images={images}
-                onChange={setImages}
-                maxImages={5}
-              />
-            </div>
-
-            {/* Visibility */}
-            <div>
-              <label className="block text-title-m font-medium text-dark-grey mb-md">
-                {t('add.visibility.title')}
-              </label>
-              <VisibilitySelector
-                value={visibility}
-                onChange={setVisibility}
-              />
-            </div>
-
             <div>
               {/* Divider */}
               <div className="border-t border-divider my-xs" />
@@ -522,7 +482,6 @@ export default function AddPage() {
                       className="min-h-[88px]"
                     />
                   </div>
-
                   <div>
                     <label className="block text-small text-dark-grey mb-2">
                       {t('add.optional.phoneNumber')}
@@ -538,6 +497,46 @@ export default function AddPage() {
                 </div>
               )}
             </div>
+          </div>
+          <div className="flex gap-4 flex-col">
+            {/* Required: Tags */}
+            <div>
+              <label className="block text-title-m font-medium text-dark-grey mb-md">
+                {t('add.tags')} <span className="text-red-500">*</span>
+              </label>
+              <TagSelector
+                value={tags}
+                onChange={(value) => {
+                  setTags(value);
+                  setErrors({ ...errors, tags: '' });
+                }}
+                error={errors.tags}
+              />
+            </div>
+            {/* Images */}
+            <div>
+              <label className="block text-title-m font-medium text-dark-grey mb-md">
+                {t('add.images.title')}
+              </label>
+              <ImagePicker
+                images={images}
+                onChange={setImages}
+                maxImages={5}
+              />
+            </div>
+
+            {/* Visibility */}
+            <div>
+              <label className="block text-title-m font-medium text-dark-grey mb-md">
+                {t('add.visibility.title')}
+              </label>
+              <VisibilitySelector
+                value={visibility}
+                onChange={setVisibility}
+              />
+            </div>
+
+
           </div>
 
         </div>

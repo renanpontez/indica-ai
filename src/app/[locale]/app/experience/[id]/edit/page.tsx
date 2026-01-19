@@ -55,7 +55,8 @@ export default function EditExperiencePage() {
   useEffect(() => {
     if (experience && !initialized) {
       setPriceRange(experience.price_range);
-      setTags(experience.tags || []);
+      // Extract slugs from TagInfo objects
+      setTags((experience.tags || []).map(tag => tag.slug));
       setDescription(experience.brief_description || '');
       setPhoneNumber(experience.phone_number || '');
       setExistingImages(experience.images || []);

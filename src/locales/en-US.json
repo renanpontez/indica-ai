@@ -154,7 +154,7 @@
   },
   "add": {
     "inputMode": {
-      "search": "Search",
+      "search": "Search with GPS",
       "manual": "Manual Entry"
     },
     "location": {

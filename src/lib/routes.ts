@@ -14,8 +14,6 @@ export type NavItem = {
   };
   // Whether to use avatar instead of icon (for profile)
   useAvatar?: boolean;
-  // Custom active check (e.g., for home excluding other routes)
-  isActiveCheck?: (pathname: string, localePath: string) => boolean;
 };
 
 // Bottom navigation items
@@ -28,12 +26,6 @@ export const navItems: NavItem[] = [
       viewBox: '0 0 24 24',
       path: 'M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25',
     },
-    isActiveCheck: (pathname, localePath) =>
-      pathname === localePath ||
-      (pathname.startsWith(localePath) &&
-        !pathname.includes('/add') &&
-        !pathname.includes('/explore') &&
-        !pathname.includes('/profile')),
   },
   {
     key: 'explore',
@@ -62,8 +54,6 @@ export const navItems: NavItem[] = [
       path: '',
     },
     useAvatar: true,
-    isActiveCheck: (pathname, localePath) =>
-      pathname.startsWith(localePath.replace('/me', '')),
   },
 ];
 

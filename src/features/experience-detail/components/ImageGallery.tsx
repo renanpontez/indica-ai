@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils/cn';
 import type { PriceRange } from '@/lib/models';
+import { PlaceholderImage } from '@/components/PlaceholderImage';
 
 interface ImageGalleryProps {
   images: string[];
@@ -30,15 +31,14 @@ export function ImageGallery({ images, placeName, priceRange }: ImageGalleryProp
   if (!hasImages) {
     return (
       <div className="relative w-full">
-        <div className="aspect-[16/9] md:aspect-[21/9] rounded-xl overflow-hidden bg-gradient-to-br from-surface to-divider flex items-center justify-center">
+        <div className="aspect-[16/9] md:aspect-[21/5] rounded-xl overflow-hidden bg-gradient-to-br from-surface to-divider flex items-center justify-center">
           <div className="text-center p-8">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/50 flex items-center justify-center">
-              <svg className="w-8 h-8 text-medium-grey" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            </div>
+            <PlaceholderImage
+              size="sm"
+              className="w-full h-full group-hover:scale-105 transition-transform duration-300 mb-2"
+            />
             <p className="text-medium-grey text-body font-medium">{placeName}</p>
-            <p className="text-medium-grey/70 text-small mt-1">No photos available</p>
+            <p className="text-medium-grey/70 text-small">Imagem não disponível</p>
           </div>
           {/* Price Badge */}
           {priceRange && (

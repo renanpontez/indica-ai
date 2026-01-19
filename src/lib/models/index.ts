@@ -10,6 +10,12 @@ export interface Tag {
   created_at: string;
 }
 
+// Lightweight tag info returned with experiences
+export interface TagInfo {
+  slug: string;
+  display_name: string;
+}
+
 // For UI display - combines tag with resolved label
 export interface TagWithLabel extends Tag {
   label: string; // Resolved from i18n for system tags, or slug for custom tags
@@ -65,7 +71,7 @@ export interface Experience {
   user_id: string;
   place_id: string;
   price_range: '$' | '$$' | '$$$' | '$$$$';
-  tags: string[];
+  tags: TagInfo[];
   brief_description: string | null;
   phone_number: string | null;
   images: string[] | null;
@@ -107,7 +113,7 @@ export interface ExperienceDetail {
     recommendation_count?: number;
   };
   price_range: PriceRange;
-  tags: string[];
+  tags: TagInfo[];
   brief_description: string | null;
   phone_number: string | null;
   images: string[];
@@ -137,7 +143,7 @@ export interface ExperienceFeedItem {
     recommendation_count?: number;
   };
   price_range: '$' | '$$' | '$$$' | '$$$$';
-  tags: string[];
+  tags: TagInfo[];
   time_ago: string;
   description?: string | null;
   visibility?: ExperienceVisibility;
