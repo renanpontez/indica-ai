@@ -151,22 +151,22 @@ export default function AddPage() {
       try {
         const placeData = inputMode === 'manual'
           ? {
-              name: manualName.trim(),
-              city: manualCity.trim(),
-              country: manualCountry.trim(),
-              address: manualAddress.trim() || undefined,
-              instagram_handle: instagramHandle.trim() || undefined,
-            }
+            name: manualName.trim(),
+            city: manualCity.trim(),
+            country: manualCountry.trim(),
+            address: manualAddress.trim() || undefined,
+            instagram_handle: instagramHandle.trim() || undefined,
+          }
           : {
-              name: selectedPlace!.name,
-              city: selectedPlace!.city,
-              country: selectedPlace!.country,
-              address: selectedPlace!.address || undefined,
-              lat: selectedPlace!.lat || undefined,
-              lng: selectedPlace!.lng || undefined,
-              google_place_id: selectedPlace!.google_place_id || undefined,
-              google_maps_url: selectedPlace!.google_maps_url || undefined,
-            };
+            name: selectedPlace!.name,
+            city: selectedPlace!.city,
+            country: selectedPlace!.country,
+            address: selectedPlace!.address || undefined,
+            lat: selectedPlace!.lat || undefined,
+            lng: selectedPlace!.lng || undefined,
+            google_place_id: selectedPlace!.google_place_id || undefined,
+            google_maps_url: selectedPlace!.google_maps_url || undefined,
+          };
         const newPlace = await api.createPlace(placeData);
         placeId = newPlace.id;
       } catch (error) {
@@ -242,7 +242,7 @@ export default function AddPage() {
     <div className="min-h-screen bg-white pb-24">
       <Breadcrumb items={breadcrumbItems} />
 
-      <div className="p-md space-y-md max-w-[600px] mx-auto">
+      <div className="space-y-md 2xl:max-w-[1400px] max-w-[1000px] mx-auto py-6 px-4 md:px-2">
         {/* Input Mode Toggle */}
         <div className="flex gap-2 p-1 bg-surface rounded-surface">
           <button
@@ -250,11 +250,10 @@ export default function AddPage() {
               setInputMode('search');
               clearPlaceSelection();
             }}
-            className={`flex-1 py-2 px-4 rounded-lg text-body font-medium transition-colors ${
-              inputMode === 'search'
-                ? 'bg-white text-dark-grey shadow-sm'
-                : 'text-medium-grey hover:text-dark-grey'
-            }`}
+            className={`flex-1 py-2 px-4 rounded-lg text-body font-medium transition-colors ${inputMode === 'search'
+              ? 'bg-white text-dark-grey shadow-sm'
+              : 'text-medium-grey hover:text-dark-grey'
+              }`}
           >
             {t('add.inputMode.search')}
           </button>
@@ -263,280 +262,284 @@ export default function AddPage() {
               setInputMode('manual');
               clearPlaceSelection();
             }}
-            className={`flex-1 py-2 px-4 rounded-lg text-body font-medium transition-colors ${
-              inputMode === 'manual'
-                ? 'bg-white text-dark-grey shadow-sm'
-                : 'text-medium-grey hover:text-dark-grey'
-            }`}
+            className={`flex-1 py-2 px-4 rounded-lg text-body font-medium transition-colors ${inputMode === 'manual'
+              ? 'bg-white text-dark-grey shadow-sm'
+              : 'text-medium-grey hover:text-dark-grey'
+              }`}
           >
             {t('add.inputMode.manual')}
           </button>
         </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="flex gap-4 flex-col">
+            {/* Search Mode */}
+            {inputMode === 'search' && (
+              <>
+                {/* Location Context - Info Card */}
+                {locationState.status === 'idle' && (
+                  <div className="bg-surface p-md rounded-surface">
+                    <h3 className="text-title-m font-bold text-dark-grey mb-sm">
+                      {t('add.location.enableTitle')}
+                    </h3>
+                    <p className="text-body text-medium-grey mb-md">
+                      {t('add.location.enableDescription')}
+                    </p>
+                    <Button onClick={requestGPS} className="w-full h-[52px] bg-primary text-white">
+                      {t('add.location.enableButton')}
+                    </Button>
+                  </div>
+                )}
 
-        {/* Search Mode */}
-        {inputMode === 'search' && (
-          <>
-            {/* Location Context - Info Card */}
-            {locationState.status === 'idle' && (
-              <div className="bg-surface p-md rounded-surface">
-                <h3 className="text-title-m font-bold text-dark-grey mb-sm">
-                  {t('add.location.enableTitle')}
-                </h3>
-                <p className="text-body text-medium-grey mb-md">
-                  {t('add.location.enableDescription')}
-                </p>
-                <Button onClick={requestGPS} className="w-full h-[52px] bg-primary text-white">
-                  {t('add.location.enableButton')}
-                </Button>
-              </div>
-            )}
+                {locationState.status === 'requesting' && (
+                  <div className="bg-surface p-md rounded-surface">
+                    <p className="text-small text-medium-grey">{t('add.location.requesting')}</p>
+                  </div>
+                )}
 
-            {locationState.status === 'requesting' && (
-              <div className="bg-surface p-md rounded-surface">
-                <p className="text-small text-medium-grey">{t('add.location.requesting')}</p>
-              </div>
-            )}
+                {locationState.status === 'success' && (
+                  <div className="bg-surface p-md rounded-surface">
+                    <p className="text-small text-primary font-medium">
+                      {t('add.location.enabled')} {locationState.city && `(${locationState.city})`}
+                    </p>
+                  </div>
+                )}
 
-            {locationState.status === 'success' && (
-              <div className="bg-surface p-md rounded-surface">
-                <p className="text-small text-primary font-medium">
-                  {t('add.location.enabled')} {locationState.city && `(${locationState.city})`}
-                </p>
-              </div>
-            )}
+                {(locationState.status === 'gps_denied' || locationState.status === 'ip_failed') && (
+                  <div className="bg-yellow-50 p-md rounded-surface border border-yellow-200">
+                    <p className="text-small text-yellow-800">
+                      {t('add.location.unavailable')}
+                    </p>
+                  </div>
+                )}
 
-            {(locationState.status === 'gps_denied' || locationState.status === 'ip_failed') && (
-              <div className="bg-yellow-50 p-md rounded-surface border border-yellow-200">
-                <p className="text-small text-yellow-800">
-                  {t('add.location.unavailable')}
-                </p>
-              </div>
-            )}
-
-            {/* Place Search */}
-            <div>
-              <label className="block text-small font-medium text-dark-grey mb-2">
-                {t('add.search.label')} <span className="text-red-500">*</span>
-              </label>
-              <PlaceSearchInput
-                value={searchQuery}
-                onChange={setSearchQuery}
-                onPlaceSelect={handlePlaceSelect}
-                lat={locationState.status === 'success' ? locationState.lat : undefined}
-                lng={locationState.status === 'success' ? locationState.lng : undefined}
-              />
-              {errors.place && (
-                <p className="mt-1.5 text-small text-red-500">{errors.place}</p>
-              )}
-            </div>
-
-            {/* Selected Place Card */}
-            {selectedPlace && (
-              <div className="bg-surface p-3 rounded-surface flex justify-between items-start">
+                {/* Place Search */}
                 <div>
-                  <p className="text-title-m font-bold text-dark-grey">
-                    {selectedPlace.name}
-                  </p>
-                  <p className="text-small text-medium-grey">
-                    {selectedPlace.city}, {selectedPlace.country}
-                  </p>
+                  <label className="block text-small font-medium text-dark-grey mb-2">
+                    {t('add.search.label')} <span className="text-red-500">*</span>
+                  </label>
+                  <PlaceSearchInput
+                    value={searchQuery}
+                    onChange={setSearchQuery}
+                    onPlaceSelect={handlePlaceSelect}
+                    lat={locationState.status === 'success' ? locationState.lat : undefined}
+                    lng={locationState.status === 'success' ? locationState.lng : undefined}
+                  />
+                  {errors.place && (
+                    <p className="mt-1.5 text-small text-red-500">{errors.place}</p>
+                  )}
                 </div>
-                <button
-                  onClick={clearPlaceSelection}
-                  className="text-medium-grey hover:text-dark-grey p-1"
-                >
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
+
+                {/* Selected Place Card */}
+                {selectedPlace && (
+                  <div className="bg-surface p-3 rounded-surface flex justify-between items-start">
+                    <div>
+                      <p className="text-title-m font-bold text-dark-grey">
+                        {selectedPlace.name}
+                      </p>
+                      <p className="text-small text-medium-grey">
+                        {selectedPlace.city}, {selectedPlace.country}
+                      </p>
+                    </div>
+                    <button
+                      onClick={clearPlaceSelection}
+                      className="text-medium-grey hover:text-dark-grey p-1"
+                    >
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* Manual Entry Mode */}
+            {inputMode === 'manual' && (
+              <div className="space-y-md">
+                <div>
+                  <label className="block text-small font-medium text-dark-grey mb-2">
+                    {t('add.manual.placeName')} <span className="text-red-500">*</span>
+                  </label>
+                  <Input
+                    placeholder={t('add.manual.placeNamePlaceholder')}
+                    value={manualName}
+                    onChange={(e) => {
+                      setManualName(e.target.value);
+                      setErrors({ ...errors, name: '' });
+                    }}
+                  />
+                  {errors.name && (
+                    <p className="mt-1.5 text-small text-red-500">{errors.name}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-small font-medium text-dark-grey mb-2">
+                    {t('add.manual.address')}
+                  </label>
+                  <Input
+                    placeholder={t('add.manual.addressPlaceholder')}
+                    value={manualAddress}
+                    onChange={(e) => setManualAddress(e.target.value)}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-md">
+                  <div>
+                    <label className="block text-small font-medium text-dark-grey mb-2">
+                      {t('add.manual.city')} <span className="text-red-500">*</span>
+                    </label>
+                    <Input
+                      placeholder={t('add.manual.cityPlaceholder')}
+                      value={manualCity}
+                      onChange={(e) => {
+                        setManualCity(e.target.value);
+                        setErrors({ ...errors, city: '' });
+                      }}
+                    />
+                    {errors.city && (
+                      <p className="mt-1.5 text-small text-red-500">{errors.city}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-small font-medium text-dark-grey mb-2">
+                      {t('add.manual.country')} <span className="text-red-500">*</span>
+                    </label>
+                    <Input
+                      placeholder={t('add.manual.countryPlaceholder')}
+                      value={manualCountry}
+                      onChange={(e) => {
+                        setManualCountry(e.target.value);
+                        setErrors({ ...errors, country: '' });
+                      }}
+                    />
+                    {errors.country && (
+                      <p className="mt-1.5 text-small text-red-500">{errors.country}</p>
+                    )}
+                  </div>
+                </div>
               </div>
             )}
-          </>
-        )}
 
-        {/* Manual Entry Mode */}
-        {inputMode === 'manual' && (
-          <div className="space-y-md">
+            {/* Required: Price Range */}
             <div>
-              <label className="block text-small font-medium text-dark-grey mb-2">
-                {t('add.manual.placeName')} <span className="text-red-500">*</span>
+              <label className="block text-title-m font-medium text-dark-grey mb-md">
+                {t('add.priceRange')} <span className="text-red-500">*</span>
               </label>
-              <Input
-                placeholder={t('add.manual.placeNamePlaceholder')}
-                value={manualName}
-                onChange={(e) => {
-                  setManualName(e.target.value);
-                  setErrors({ ...errors, name: '' });
+              <PriceRangeSelector
+                value={priceRange}
+                onChange={(value) => {
+                  setPriceRange(value);
+                  setErrors({ ...errors, priceRange: '' });
                 }}
+                error={errors.priceRange}
               />
-              {errors.name && (
-                <p className="mt-1.5 text-small text-red-500">{errors.name}</p>
-              )}
             </div>
 
+            {/* Required: Tags */}
             <div>
-              <label className="block text-small font-medium text-dark-grey mb-2">
-                {t('add.manual.address')}
+              <label className="block text-title-m font-medium text-dark-grey mb-md">
+                {t('add.tags')} <span className="text-red-500">*</span>
               </label>
-              <Input
-                placeholder={t('add.manual.addressPlaceholder')}
-                value={manualAddress}
-                onChange={(e) => setManualAddress(e.target.value)}
+              <TagSelector
+                value={tags}
+                onChange={(value) => {
+                  setTags(value);
+                  setErrors({ ...errors, tags: '' });
+                }}
+                error={errors.tags}
               />
-            </div>
-
-            <div className="grid grid-cols-2 gap-md">
-              <div>
-                <label className="block text-small font-medium text-dark-grey mb-2">
-                  {t('add.manual.city')} <span className="text-red-500">*</span>
-                </label>
-                <Input
-                  placeholder={t('add.manual.cityPlaceholder')}
-                  value={manualCity}
-                  onChange={(e) => {
-                    setManualCity(e.target.value);
-                    setErrors({ ...errors, city: '' });
-                  }}
-                />
-                {errors.city && (
-                  <p className="mt-1.5 text-small text-red-500">{errors.city}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-small font-medium text-dark-grey mb-2">
-                  {t('add.manual.country')} <span className="text-red-500">*</span>
-                </label>
-                <Input
-                  placeholder={t('add.manual.countryPlaceholder')}
-                  value={manualCountry}
-                  onChange={(e) => {
-                    setManualCountry(e.target.value);
-                    setErrors({ ...errors, country: '' });
-                  }}
-                />
-                {errors.country && (
-                  <p className="mt-1.5 text-small text-red-500">{errors.country}</p>
-                )}
-              </div>
             </div>
           </div>
-        )}
+          <div className="flex gap-4 flex-col">
 
-        {/* Required: Price Range */}
-        <div>
-          <label className="block text-title-m font-medium text-dark-grey mb-md">
-            {t('add.priceRange')} <span className="text-red-500">*</span>
-          </label>
-          <PriceRangeSelector
-            value={priceRange}
-            onChange={(value) => {
-              setPriceRange(value);
-              setErrors({ ...errors, priceRange: '' });
-            }}
-            error={errors.priceRange}
-          />
-        </div>
-
-        {/* Required: Tags */}
-        <div>
-          <label className="block text-title-m font-medium text-dark-grey mb-md">
-            {t('add.tags')} <span className="text-red-500">*</span>
-          </label>
-          <TagSelector
-            value={tags}
-            onChange={(value) => {
-              setTags(value);
-              setErrors({ ...errors, tags: '' });
-            }}
-            error={errors.tags}
-          />
-        </div>
-
-        {/* Images */}
-        <div>
-          <label className="block text-title-m font-medium text-dark-grey mb-md">
-            {t('add.images.title')}
-          </label>
-          <ImagePicker
-            images={images}
-            onChange={setImages}
-            maxImages={5}
-          />
-        </div>
-
-        {/* Visibility */}
-        <div>
-          <label className="block text-title-m font-medium text-dark-grey mb-md">
-            {t('add.visibility.title')}
-          </label>
-          <VisibilitySelector
-            value={visibility}
-            onChange={setVisibility}
-          />
-        </div>
-
-        {/* Divider */}
-        <div className="border-t border-divider my-lg" />
-
-        {/* Optional Fields - Collapsible */}
-        <div>
-          <button
-            onClick={() => setShowOptional(!showOptional)}
-            className="flex items-center gap-2 text-medium-grey hover:text-dark-grey transition-colors min-h-[44px]"
-          >
-            <span className="text-body">{t('add.optional.title')}</span>
-            <svg
-              className={`h-4 w-4 transition-transform ${showOptional ? 'rotate-180' : ''}`}
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-
-          {showOptional && (
-            <div className="mt-md space-y-md">
-              <div>
-                <label className="block text-small text-dark-grey mb-2">
-                  {t('add.optional.instagramHandle')}
-                </label>
-                <Input
-                  placeholder={t('add.optional.instagramPlaceholder')}
-                  value={instagramHandle}
-                  onChange={(e) => setInstagramHandle(e.target.value)}
-                  className="min-h-[44px]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-small text-dark-grey mb-2">
-                  {t('add.optional.description')}
-                </label>
-                <TextArea
-                  placeholder={t('add.optional.descriptionPlaceholder')}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  rows={3}
-                  className="min-h-[88px]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-small text-dark-grey mb-2">
-                  {t('add.optional.phoneNumber')}
-                </label>
-                <Input
-                  type="tel"
-                  placeholder={t('add.optional.phonePlaceholder')}
-                  value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="min-h-[44px]"
-                />
-              </div>
+            {/* Images */}
+            <div>
+              <label className="block text-title-m font-medium text-dark-grey mb-md">
+                {t('add.images.title')}
+              </label>
+              <ImagePicker
+                images={images}
+                onChange={setImages}
+                maxImages={5}
+              />
             </div>
-          )}
+
+            {/* Visibility */}
+            <div>
+              <label className="block text-title-m font-medium text-dark-grey mb-md">
+                {t('add.visibility.title')}
+              </label>
+              <VisibilitySelector
+                value={visibility}
+                onChange={setVisibility}
+              />
+            </div>
+
+            <div>
+              {/* Divider */}
+              <div className="border-t border-divider my-xs" />
+              {/* Optional Fields - Collapsible */}
+              <button
+                onClick={() => setShowOptional(!showOptional)}
+                className="flex items-center gap-2 text-medium-grey hover:text-dark-grey transition-colors min-h-[44px]"
+              >
+                <span className="text-body">{t('add.optional.title')}</span>
+                <svg
+                  className={`h-4 w-4 transition-transform ${showOptional ? 'rotate-180' : ''}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {showOptional && (
+                <div className="mt-md space-y-md">
+                  <div>
+                    <label className="block text-small text-dark-grey mb-2">
+                      {t('add.optional.instagramHandle')}
+                    </label>
+                    <Input
+                      placeholder={t('add.optional.instagramPlaceholder')}
+                      value={instagramHandle}
+                      onChange={(e) => setInstagramHandle(e.target.value)}
+                      className="min-h-[44px]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-small text-dark-grey mb-2">
+                      {t('add.optional.description')}
+                    </label>
+                    <TextArea
+                      placeholder={t('add.optional.descriptionPlaceholder')}
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      rows={3}
+                      className="min-h-[88px]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-small text-dark-grey mb-2">
+                      {t('add.optional.phoneNumber')}
+                    </label>
+                    <Input
+                      type="tel"
+                      placeholder={t('add.optional.phonePlaceholder')}
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      className="min-h-[44px]"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
         </div>
 
         {/* Submit Button */}
@@ -544,13 +547,14 @@ export default function AddPage() {
           onClick={handleSubmit}
           loading={isPending || isCreatingPlace || isUploadingImages}
           disabled={isSubmitDisabled}
-          className="w-full h-[52px] bg-primary text-white rounded-surface disabled:bg-surface disabled:text-medium-grey"
+          variant="primary"
+          className="w-full"
         >
           {isUploadingImages
             ? t('add.images.uploading')
             : isCreatingPlace
-            ? t('add.creatingPlace')
-            : t('add.savePlace')}
+              ? t('add.creatingPlace')
+              : t('add.savePlace')}
         </Button>
       </div>
 
@@ -569,6 +573,6 @@ export default function AddPage() {
           setPlaceStats(null);
         }}
       />
-    </div>
+    </div >
   );
 }

@@ -177,7 +177,13 @@
     "tags": "Tags",
     "tagsInput": {
       "addCustom": "Adicionar tag",
-      "customPlaceholder": "ex: rooftop"
+      "customPlaceholder": "ex: rooftop",
+      "searchPlaceholder": "Buscar ou adicionar tags...",
+      "popularTags": "Tags Populares",
+      "yourTags": "Suas Tags",
+      "createTag": "Criar \"{tag}\"",
+      "noResults": "Nenhuma tag encontrada",
+      "allSelected": "Todas as tags selecionadas"
     },
     "optional": {
       "title": "Detalhes Opcionais",
