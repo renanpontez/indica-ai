@@ -20,17 +20,15 @@ export function TagSelector({ value, onChange, error }: TagSelectorProps) {
   const [isAddingCustom, setIsAddingCustom] = useState(false);
   const [customTagInput, setCustomTagInput] = useState('');
 
-  // Resolve labels for tags
+  // Resolve labels for tags - use display_name if available, otherwise format slug
   const tagsWithLabels = useMemo((): TagWithLabel[] => {
     if (!tags) return [];
 
     return tags.map((tag: Tag) => ({
       ...tag,
-      label: tag.is_system
-        ? t(`tags.${tag.slug}`, { defaultValue: tag.slug })
-        : tag.slug.charAt(0).toUpperCase() + tag.slug.slice(1).replace(/-/g, ' '),
+      label: tag.display_name || tag.slug.charAt(0).toUpperCase() + tag.slug.slice(1).replace(/-/g, ' '),
     }));
-  }, [tags, t]);
+  }, [tags]);
 
   // Separate system and custom tags for display
   const systemTags = tagsWithLabels.filter((tag) => tag.is_system);
@@ -55,20 +53,20 @@ export function TagSelector({ value, onChange, error }: TagSelectorProps) {
 
     if (!normalizedSlug) return;
 
-    // Check if already exists in current tags
-    const exists = tags?.some((tag: Tag) => tag.slug === normalizedSlug);
-    if (exists) {
+    // Check if already exists in current tags (case-insensitive via slug)
+    const existingTag = tags?.find((tag: Tag) => tag.slug === normalizedSlug);
+    if (existingTag) {
       // Just select it if it exists
-      if (!value.includes(normalizedSlug)) {
-        onChange([...value, normalizedSlug]);
+      if (!value.includes(existingTag.slug)) {
+        onChange([...value, existingTag.slug]);
       }
       setCustomTagInput('');
       setIsAddingCustom(false);
       return;
     }
 
-    // Create new tag
-    createTag(normalizedSlug, {
+    // Create new tag - pass original input to preserve display_name
+    createTag(trimmed, {
       onSuccess: (newTag: Tag) => {
         onChange([...value, newTag.slug]);
         setCustomTagInput('');

@@ -1,29 +1,26 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
 import { useCallback } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import type { Tag } from '@/lib/models';
 
 export function useTagLabel() {
-  const t = useTranslations();
+  const queryClient = useQueryClient();
 
   const getTagLabel = useCallback(
     (slug: string): string => {
-      // Try to get translation for system tags
-      // For custom tags, the slug is returned as-is (formatted nicely)
-      try {
-        const translated = t(`tags.${slug}`);
-        // If translation returns the key path, it means it wasn't found
-        if (translated && !translated.startsWith('tags.')) {
-          return translated;
-        }
-      } catch {
-        // Translation not found, fall through to default formatting
+      // Try to get display_name from cached tags
+      const cachedTags = queryClient.getQueryData<Tag[]>(['tags']);
+      const tag = cachedTags?.find((t) => t.slug === slug);
+
+      if (tag?.display_name) {
+        return tag.display_name;
       }
 
-      // Return slug as-is for custom tags (capitalize first letter for display)
+      // Fallback: format slug nicely (capitalize first letter, replace hyphens)
       return slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' ');
     },
-    [t]
+    [queryClient]
   );
 
   return { getTagLabel };

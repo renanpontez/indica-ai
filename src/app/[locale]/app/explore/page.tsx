@@ -5,11 +5,13 @@ import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { useExplore } from '@/features/explore/hooks/useExplore';
 import { ExperienceCard } from '@/features/feed/components/ExperienceCard';
+import { useTagLabel } from '@/hooks/useTagLabel';
 
 export default function ExplorePage() {
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations();
+  const { getTagLabel } = useTagLabel();
   const { experiences, cities, tags, isLoading, error } = useExplore({ limit: 6 });
 
   if (error) {
@@ -52,7 +54,7 @@ export default function ExplorePage() {
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-medium text-dark-grey group-hover:text-primary transition-colors">
-                      {t(`tags.${tagItem.tag}`, { defaultValue: tagItem.tag.charAt(0).toUpperCase() + tagItem.tag.slice(1).replace(/-/g, ' ') })}
+                      {getTagLabel(tagItem.tag)}
                     </span>
                     <span className="text-sm text-medium-grey">{tagItem.count}</span>
                   </div>
@@ -112,7 +114,7 @@ export default function ExplorePage() {
           </div>
 
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {[...Array(6)].map((_, i) => (
                 <div
                   key={i}
@@ -141,7 +143,7 @@ export default function ExplorePage() {
               <p className="text-medium-grey">{t('explore.empty')}</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {experiences.map((experience) => (
                 <ExperienceCard
                   key={experience.id}

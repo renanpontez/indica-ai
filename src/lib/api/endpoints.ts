@@ -232,11 +232,11 @@ export const api = {
     return response.json();
   },
 
-  createTag: async (slug: string): Promise<Tag> => {
+  createTag: async (name: string): Promise<Tag> => {
     const response = await fetch('/api/tags', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ slug }),
+      body: JSON.stringify({ name }),
     });
     if (!response.ok) {
       const error = await response.json().catch(() => ({}));

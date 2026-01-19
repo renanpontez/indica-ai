@@ -6,6 +6,7 @@ import { Link } from '@/i18n/routing';
 import { useExplore } from '@/features/explore/hooks/useExplore';
 import { ExperienceCard } from '@/features/feed/components/ExperienceCard';
 import { Breadcrumb } from '@/components/Breadcrumb';
+import { useTagLabel } from '@/hooks/useTagLabel';
 
 export default function ExploreTagPage() {
   const params = useParams();
@@ -14,6 +15,7 @@ export default function ExploreTagPage() {
   const t = useTranslations();
 
   const slug = params.slug as string;
+  const { getTagLabel } = useTagLabel();
 
   // Use slug directly for filtering (tags are stored as slugs)
   const { experiences, total, isLoading, error, loadMore, hasMore } = useExplore({
@@ -21,7 +23,7 @@ export default function ExploreTagPage() {
     limit: 20,
   });
 
-  const tagLabel = t(`tags.${slug}`, { defaultValue: slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' ') });
+  const tagLabel = getTagLabel(slug);
 
   const breadcrumbItems = [
     { label: t('nav.explore'), href: '/explore' },

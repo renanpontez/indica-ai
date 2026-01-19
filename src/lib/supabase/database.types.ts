@@ -217,6 +217,7 @@ export type Database = {
         Row: {
           id: string
           slug: string
+          display_name: string | null
           is_system: boolean
           created_by: string | null
           created_at: string | null
@@ -224,6 +225,7 @@ export type Database = {
         Insert: {
           id?: string
           slug: string
+          display_name?: string | null
           is_system?: boolean
           created_by?: string | null
           created_at?: string | null
@@ -231,6 +233,7 @@ export type Database = {
         Update: {
           id?: string
           slug?: string
+          display_name?: string | null
           is_system?: boolean
           created_by?: string | null
           created_at?: string | null

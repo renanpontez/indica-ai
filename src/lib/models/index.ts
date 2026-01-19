@@ -4,6 +4,7 @@
 export interface Tag {
   id: string;
   slug: string;
+  display_name: string | null; // Original user input for custom tags
   is_system: boolean;
   created_by: string | null;
   created_at: string;

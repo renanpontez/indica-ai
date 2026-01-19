@@ -46,42 +46,48 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { slug } = body;
+  const { name } = body; // Accept name (user's original input)
 
-  // Validate slug
-  if (!slug || typeof slug !== 'string') {
-    return NextResponse.json({ error: 'slug is required' }, { status: 400 });
+  // Validate name
+  if (!name || typeof name !== 'string') {
+    return NextResponse.json({ error: 'name is required' }, { status: 400 });
+  }
+
+  const trimmedName = name.trim();
+  if (!trimmedName) {
+    return NextResponse.json({ error: 'Invalid name' }, { status: 400 });
   }
 
   // Normalize slug: lowercase, trim, replace spaces with hyphens
-  const normalizedSlug = slug
+  const normalizedSlug = trimmedName
     .toLowerCase()
-    .trim()
     .replace(/\s+/g, '-')
     .replace(/[^a-z0-9-]/g, ''); // Remove special characters
 
   if (!normalizedSlug) {
-    return NextResponse.json({ error: 'Invalid slug' }, { status: 400 });
+    return NextResponse.json({ error: 'Invalid name' }, { status: 400 });
   }
 
-  // Check if tag already exists (system or user's own)
+  // Check if tag already exists (case-insensitive via slug matching)
+  // This covers system tags and any user's custom tag with the same slug
   const { data: existingTag } = await supabase
     .from('tags')
     .select('*')
     .eq('slug', normalizedSlug)
-    .or(`is_system.eq.true,created_by.eq.${user.id}`)
+    .limit(1)
     .single();
 
   if (existingTag) {
-    // Return existing tag instead of error (idempotent)
+    // Return existing tag instead of creating duplicate
     return NextResponse.json(existingTag);
   }
 
-  // Create new custom tag
+  // Create new custom tag with display_name preserving original input
   const { data: tag, error } = await supabase
     .from('tags')
     .insert({
       slug: normalizedSlug,
+      display_name: trimmedName, // Preserve original user input
       is_system: false,
       created_by: user.id,
     })
