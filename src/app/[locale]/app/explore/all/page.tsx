@@ -20,7 +20,7 @@ export default function ExploreAllPage() {
   });
 
   const breadcrumbItems = [
-    { label: t('nav.explore'), href: '/explore' },
+    { label: t('nav.explore'), href: '/app/explore' },
     { label: city || t('explore.all.title') },
   ];
 
@@ -35,9 +35,8 @@ export default function ExploreAllPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-6xl mx-auto px-6 py-8">
-        <Breadcrumb items={breadcrumbItems} />
-
+      <Breadcrumb items={breadcrumbItems} />
+      <div className="max-w-5xl mx-auto px-6 py-6">
         <div className="mb-8">
           <h1 className="text-2xl md:text-3xl font-bold text-dark-grey mb-2">
             {city ? t('explore.all.cityTitle', { city }) : t('explore.all.title')}
@@ -76,7 +75,7 @@ export default function ExploreAllPage() {
           <div className="text-center py-12 bg-white rounded-xl border border-divider">
             <p className="text-medium-grey">{t('explore.empty')}</p>
             <Link
-              href="/explore"
+              href="/app/explore"
               className="mt-4 inline-block text-primary hover:underline"
             >
               {t('explore.backToExplore')}

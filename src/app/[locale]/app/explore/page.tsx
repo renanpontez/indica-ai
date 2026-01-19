@@ -26,7 +26,7 @@ export default function ExplorePage() {
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <div className="bg-gradient-to-br from-primary/10 to-primary/5 py-12 px-6">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-5xl mx-auto px-6">
           <h1 className="text-3xl md:text-4xl font-bold text-dark-grey mb-3">
             {t('explore.title')}
           </h1>
@@ -36,7 +36,7 @@ export default function ExplorePage() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 py-8 space-y-12">
+      <div className="max-w-5xl mx-auto px-6 py-8 space-y-12">
         {/* Tags Section */}
         {tags.length > 0 && (
           <section>
@@ -49,7 +49,7 @@ export default function ExplorePage() {
               {tags.slice(0, 8).map((tagItem) => (
                 <Link
                   key={tagItem.tag}
-                  href={`/explore/tag/${tagItem.tag}`}
+                  href={`/app/explore/tag/${tagItem.tag}`}
                   className="group p-4 bg-white rounded-xl border border-divider hover:border-primary hover:shadow-md transition-all"
                 >
                   <div className="flex items-center justify-between">
@@ -72,7 +72,7 @@ export default function ExplorePage() {
                 {t('explore.sections.cities')}
               </h2>
               <Link
-                href="/explore/cities"
+                href="/app/explore/cities"
                 className="text-sm text-primary hover:underline"
               >
                 {t('explore.viewAll')}
@@ -82,7 +82,7 @@ export default function ExplorePage() {
               {cities.slice(0, 8).map((city) => (
                 <Link
                   key={`${city.city}-${city.country}`}
-                  href={`/explore/all?city=${encodeURIComponent(city.city)}`}
+                  href={`/app/explore/all?city=${encodeURIComponent(city.city)}`}
                   className="group p-4 bg-white rounded-xl border border-divider hover:border-primary hover:shadow-md transition-all"
                 >
                   <div className="flex flex-col">
@@ -106,7 +106,7 @@ export default function ExplorePage() {
               {t('explore.sections.recent')}
             </h2>
             <Link
-              href="/explore/all"
+              href="/app/explore/all"
               className="text-sm text-primary hover:underline"
             >
               {t('explore.viewAll')}
