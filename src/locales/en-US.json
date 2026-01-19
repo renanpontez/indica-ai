@@ -288,6 +288,9 @@
       "cancel": "Cancel",
       "confirm": "Delete",
       "deleting": "Deleting..."
+    },
+    "otherRecommenders": {
+      "title": "{count, plural, one {# other person} other {# others}} also recommended this"
     }
   },
   "profile": {

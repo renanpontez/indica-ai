@@ -73,6 +73,15 @@ export interface Experience {
   created_at: string;
 }
 
+// User who also recommended the same place publicly
+export interface OtherRecommender {
+  id: string;
+  display_name: string;
+  avatar_url: string | null;
+  username: string | null;
+  experience_id: string;
+}
+
 // Detailed experience returned from API with nested user and place data
 export interface ExperienceDetail {
   id: string;
@@ -105,6 +114,7 @@ export interface ExperienceDetail {
   visibility: ExperienceVisibility;
   time_ago: string;
   created_at: string | null;
+  other_recommenders?: OtherRecommender[];
 }
 
 export interface ExperienceFeedItem {
@@ -129,6 +139,7 @@ export interface ExperienceFeedItem {
   tags: string[];
   time_ago: string;
   description?: string | null;
+  visibility?: ExperienceVisibility;
 }
 
 export interface Bookmark {

@@ -4,18 +4,20 @@ import { getInitials } from '@/lib/utils/format';
 interface AvatarProps {
   src: string | null;
   alt: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg';
   className?: string;
 }
 
 export function Avatar({ src, alt, size = 'md', className }: AvatarProps) {
   const sizeClasses = {
+    xs: 'h-6 w-6 text-xs',
     sm: 'h-8 w-8 text-small',
     md: 'h-12 w-12 text-body',
     lg: 'h-20 w-20 text-title-m',
   };
 
   const iconSizeClasses = {
+    xs: 'h-3 w-3',
     sm: 'h-4 w-4',
     md: 'h-6 w-6',
     lg: 'h-10 w-10',

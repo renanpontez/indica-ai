@@ -8,7 +8,9 @@ import { LocationMap } from './LocationMap';
 import { MapLinkButton } from './MapLinkButton';
 import { BookmarkButton } from './BookmarkButton';
 import { MoreFromUser } from './MoreFromUser';
+import { OtherRecommenders } from './OtherRecommenders';
 import { ExperienceActions } from './ExperienceActions';
+import { VisibilityBadge } from '@/components/VisibilityBadge';
 import { useTagLabel } from '@/hooks/useTagLabel';
 import type { ExperienceDetail, ExperienceFeedItem } from '@/lib/models';
 import { formatTimeAgo } from '@/lib/utils/format';
@@ -76,14 +78,14 @@ export function ExperienceDetailLayout({
           />
         </div>
 
-        {/* Tags and Share */}
+        {/* Tags and Visibility */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2 flex-wrap">
             {experience.tags.map((tag, index) => (
               <Chip key={index} label={getTagLabel(tag)} variant="outlined" />
             ))}
           </div>
-
+          <VisibilityBadge visibility={experience.visibility} />
         </div>
 
         {/* Price Range */}
@@ -164,6 +166,18 @@ export function ExperienceDetailLayout({
           <p className="text-text-primary mb-8 leading-relaxed">
             "{experience.brief_description}"
           </p>
+        )}
+
+        {/* Other Recommenders Section */}
+        {experience.other_recommenders && experience.other_recommenders.length > 0 && (
+          <>
+            <hr className="border-divider mb-6" />
+            <OtherRecommenders
+              recommenders={experience.other_recommenders}
+              placeName={place.name}
+              placeCity={place.city}
+            />
+          </>
         )}
 
         {/* More From User Section */}

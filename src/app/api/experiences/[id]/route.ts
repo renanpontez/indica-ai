@@ -2,7 +2,19 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { formatTimeAgo, generateExperienceSlug } from '@/lib/utils/format';
 
-function formatAndReturnExperience(experience: any, recommendationCount: number) {
+interface OtherRecommender {
+  id: string;
+  display_name: string;
+  avatar_url: string | null;
+  username: string | null;
+  experience_id: string;
+}
+
+function formatAndReturnExperience(
+  experience: any,
+  recommendationCount: number,
+  otherRecommenders: OtherRecommender[] = []
+) {
   const placeName = (experience.places as any)?.name || 'Unknown Place';
   const placeCity = (experience.places as any)?.city || '';
 
@@ -41,6 +53,7 @@ function formatAndReturnExperience(experience: any, recommendationCount: number)
     visibility: experience.visibility || 'friends_only',
     time_ago: experience.created_at ? formatTimeAgo(experience.created_at) : 'Unknown',
     created_at: experience.created_at,
+    other_recommenders: otherRecommenders,
   };
 
   return NextResponse.json(detailedExperience);
@@ -162,7 +175,34 @@ export async function PATCH(
       .select('*', { count: 'exact', head: true })
       .eq('place_id', placeId);
 
-    return formatAndReturnExperience(updatedExperience, count ?? 1);
+    // Get other public recommenders for the same place
+    const { data: otherExperiences } = await supabase
+      .from('experiences')
+      .select(`
+        id,
+        user_id,
+        users:user_id (
+          id,
+          display_name,
+          avatar_url,
+          username
+        )
+      `)
+      .eq('place_id', placeId)
+      .eq('visibility', 'public')
+      .neq('user_id', updatedExperience.user_id)
+      .order('created_at', { ascending: false })
+      .limit(10);
+
+    const otherRecommenders: OtherRecommender[] = (otherExperiences || []).map((exp: any) => ({
+      id: exp.users?.id || exp.user_id,
+      display_name: exp.users?.display_name || 'Unknown User',
+      avatar_url: exp.users?.avatar_url || null,
+      username: exp.users?.username || null,
+      experience_id: exp.id,
+    }));
+
+    return formatAndReturnExperience(updatedExperience, count ?? 1, otherRecommenders);
   } catch {
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
   }
@@ -252,5 +292,32 @@ export async function GET(
     .select('*', { count: 'exact', head: true })
     .eq('place_id', placeId);
 
-  return formatAndReturnExperience(experience, count ?? 1);
+  // Get other public recommenders for the same place (excluding current experience's user)
+  const { data: otherExperiences } = await supabase
+    .from('experiences')
+    .select(`
+      id,
+      user_id,
+      users:user_id (
+        id,
+        display_name,
+        avatar_url,
+        username
+      )
+    `)
+    .eq('place_id', placeId)
+    .eq('visibility', 'public')
+    .neq('user_id', experience.user_id)
+    .order('created_at', { ascending: false })
+    .limit(10);
+
+  const otherRecommenders: OtherRecommender[] = (otherExperiences || []).map((exp: any) => ({
+    id: exp.users?.id || exp.user_id,
+    display_name: exp.users?.display_name || 'Unknown User',
+    avatar_url: exp.users?.avatar_url || null,
+    username: exp.users?.username || null,
+    experience_id: exp.id,
+  }));
+
+  return formatAndReturnExperience(experience, count ?? 1, otherRecommenders);
 }
