@@ -139,6 +139,45 @@ export async function GET(request: NextRequest) {
     myExperiencesData = myExperiences || [];
   }
 
+  // Fetch friends' suggestions (experiences from users the current user follows)
+  let friendsExperiencesData: any[] = [];
+  if (currentUserId && followingIds.length > 0) {
+    const { data: friendsExperiences } = await supabase
+      .from('experiences')
+      .select(`
+        id,
+        price_range,
+        tags,
+        brief_description,
+        images,
+        created_at,
+        user_id,
+        place_id,
+        visibility,
+        users:user_id (
+          id,
+          display_name,
+          avatar_url
+        ),
+        places:place_id (
+          id,
+          name,
+          city,
+          country,
+          instagram_handle
+        )
+      `)
+      .in('user_id', followingIds)
+      .order('created_at', { ascending: false })
+      .limit(30);
+
+    // Filter based on visibility (friends can see friends_only and public)
+    friendsExperiencesData = (friendsExperiences || []).filter((exp: any) => {
+      const visibility = exp.visibility || 'public';
+      return visibility === 'public' || visibility === 'friends_only';
+    });
+  }
+
   // Fetch community suggestions (other users' experiences)
   // We need to filter based on visibility:
   // - public: visible to everyone
@@ -242,7 +281,7 @@ export async function GET(request: NextRequest) {
   }
 
   // Collect all unique place IDs from all experiences
-  const allExperiences = [...myExperiencesData, ...filteredCommunityExperiences, ...filteredNearbyExperiences];
+  const allExperiences = [...myExperiencesData, ...friendsExperiencesData, ...filteredCommunityExperiences, ...filteredNearbyExperiences];
   const placeIds = [...new Set(allExperiences.map((exp: any) => exp.places?.id || exp.place_id).filter(Boolean))];
 
   // Fetch recommendation counts for all places in one query
@@ -250,11 +289,13 @@ export async function GET(request: NextRequest) {
 
   // Transform experiences with recommendation counts and bookmark data
   const mySuggestions = myExperiencesData.map(exp => transformExperience(exp, recommendationCounts, userBookmarks));
+  const friendsSuggestions = friendsExperiencesData.map(exp => transformExperience(exp, recommendationCounts, userBookmarks));
   const communitySuggestions = filteredCommunityExperiences.map(exp => transformExperience(exp, recommendationCounts, userBookmarks));
   const nearbyPlaces = filteredNearbyExperiences.map(exp => transformExperience(exp, recommendationCounts, userBookmarks));
 
   return NextResponse.json({
     mySuggestions,
+    friendsSuggestions,
     communitySuggestions,
     nearbyPlaces,
     userCity,

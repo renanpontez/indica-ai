@@ -11,7 +11,7 @@ import { useAuth } from '@/lib/hooks/useAuth';
 import type { ExperienceFeedItem } from '@/lib/models';
 
 interface SectionHeaderProps {
-  icon: 'bookmark' | 'location' | 'users';
+  icon: 'bookmark' | 'location' | 'users' | 'friends';
   title: string;
   subtitle: string;
 }
@@ -32,6 +32,20 @@ function SectionHeader({ icon, title, subtitle }: SectionHeaderProps) {
               strokeLinecap="round"
               strokeLinejoin="round"
               d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
+            />
+          </svg>
+        ) : icon === 'friends' ? (
+          <svg
+            className="h-5 w-5 text-primary"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
             />
           </svg>
         ) : icon === 'users' ? (
@@ -77,8 +91,40 @@ function SectionHeader({ icon, title, subtitle }: SectionHeaderProps) {
   );
 }
 
+interface SeeMoreButtonProps {
+  href: string;
+  label: string;
+}
+
+function SeeMoreButton({ href, label }: SeeMoreButtonProps) {
+  return (
+    <div className="mt-6 text-center">
+      <a
+        href={href}
+        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+      >
+        {label}
+        <svg
+          className="h-4 w-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+      </a>
+    </div>
+  );
+}
+
 interface ExperienceListProps {
   mySuggestions: ExperienceFeedItem[];
+  friendsSuggestions: ExperienceFeedItem[];
   communitySuggestions: ExperienceFeedItem[];
   nearbyPlaces: ExperienceFeedItem[];
   userCity: string | null;
@@ -86,6 +132,7 @@ interface ExperienceListProps {
 
 export function ExperienceList({
   mySuggestions,
+  friendsSuggestions,
   communitySuggestions,
   nearbyPlaces,
   userCity,
@@ -135,24 +182,30 @@ export function ExperienceList({
     );
   };
 
-  const isEmpty = mySuggestions.length === 0 && communitySuggestions.length === 0 && nearbyPlaces.length === 0;
+  const isEmpty = mySuggestions.length === 0 && friendsSuggestions.length === 0 && communitySuggestions.length === 0 && nearbyPlaces.length === 0;
 
   if (isEmpty) {
     return <FeedEmptyState />;
   }
 
+  // Limit display counts
+  const displayedMySuggestions = mySuggestions.slice(0, 3);
+  const displayedCommunitySuggestions = communitySuggestions.slice(0, 3);
+  const hasMoreMySuggestions = mySuggestions.length > 3;
+  const hasMoreCommunitySuggestions = communitySuggestions.length > 3;
+
   return (
     <div className="space-y-12">
-      {/* Community Suggestions Section */}
-      {communitySuggestions.length > 0 && (
-        <section>
-          <SectionHeader
-            icon="users"
-            title={t('home.sections.communitySuggestions')}
-            subtitle={t('home.sections.communitySuggestionsSubtitle')}
-          />
+      {/* 1. Friends' Suggestions Section (always shown) */}
+      <section>
+        <SectionHeader
+          icon="friends"
+          title={t('home.sections.friendsSuggestions')}
+          subtitle={t('home.sections.friendsSuggestionsSubtitle')}
+        />
+        {friendsSuggestions.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
-            {communitySuggestions.map((experience) => (
+            {friendsSuggestions.map((experience) => (
               <ExperienceCard
                 key={experience.id}
                 experience={experience}
@@ -161,10 +214,14 @@ export function ExperienceList({
               />
             ))}
           </div>
-        </section>
-      )}
+        ) : (
+          <div className="bg-surface rounded-lg p-6 text-center">
+            <p className="text-medium-grey">{t('home.sections.friendsEmpty')}</p>
+          </div>
+        )}
+      </section>
 
-      {/* Nearby Places Section */}
+      {/* 2. Nearby Places Section */}
       {nearbyPlaces.length > 0 && (
         <section>
           <SectionHeader
@@ -185,7 +242,7 @@ export function ExperienceList({
         </section>
       )}
 
-      {/* My Suggestions Section */}
+      {/* 3. My Suggestions Section (max 3, with see more) */}
       {mySuggestions.length > 0 && (
         <section>
           <SectionHeader
@@ -194,7 +251,7 @@ export function ExperienceList({
             subtitle={t('home.sections.mySuggestionsSubtitle')}
           />
           <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
-            {mySuggestions.map((experience) => (
+            {displayedMySuggestions.map((experience) => (
               <ExperienceCard
                 key={experience.id}
                 experience={experience}
@@ -204,6 +261,39 @@ export function ExperienceList({
               />
             ))}
           </div>
+          {hasMoreMySuggestions && (
+            <SeeMoreButton
+              href={`/${locale}/app/profile/me`}
+              label={t('home.sections.seeAllMySuggestions')}
+            />
+          )}
+        </section>
+      )}
+
+      {/* 4. Community Suggestions Section (max 3, with see more) */}
+      {communitySuggestions.length > 0 && (
+        <section>
+          <SectionHeader
+            icon="users"
+            title={t('home.sections.communitySuggestions')}
+            subtitle={t('home.sections.communitySuggestionsSubtitle')}
+          />
+          <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
+            {displayedCommunitySuggestions.map((experience) => (
+              <ExperienceCard
+                key={experience.id}
+                experience={experience}
+                onClick={() => router.push(`/${locale}/app/experience/${experience.experience_id}/${experience.slug}`)}
+                onBookmarkToggle={() => handleBookmarkToggle(experience)}
+              />
+            ))}
+          </div>
+          {hasMoreCommunitySuggestions && (
+            <SeeMoreButton
+              href={`/${locale}/app/explore`}
+              label={t('home.sections.seeAllCommunity')}
+            />
+          )}
         </section>
       )}
     </div>

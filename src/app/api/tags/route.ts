@@ -1,27 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 
-// GET /api/tags - Fetch system tags + user's custom tags
+// GET /api/tags - Fetch all tags (system + custom)
 export async function GET() {
   const supabase = await createClient();
 
-  // Get current user (optional - for fetching custom tags)
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  // Build query: system tags OR user's custom tags
-  let query = supabase.from('tags').select('*').order('slug');
-
-  if (user) {
-    // Fetch system tags + user's custom tags
-    query = query.or(`is_system.eq.true,created_by.eq.${user.id}`);
-  } else {
-    // Only system tags for unauthenticated users
-    query = query.eq('is_system', true);
-  }
-
-  const { data: tags, error } = await query;
+  // Fetch all tags (system tags + all custom tags for display purposes)
+  const { data: tags, error } = await supabase
+    .from('tags')
+    .select('*')
+    .order('slug');
 
   if (error) {
     console.error('Fetch tags error:', error);

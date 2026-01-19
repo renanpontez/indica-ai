@@ -10,6 +10,45 @@ async function getRecommendationCount(supabase: ReturnType<typeof createClient> 
   return count ?? 0;
 }
 
+// Normalize country names to a consistent format
+function normalizeCountry(country: string): string {
+  const normalized = country.trim().toLowerCase();
+  // Map common variations to a standard format
+  const countryMap: Record<string, string> = {
+    'brasil': 'Brazil',
+    'brazil': 'Brazil',
+    'estados unidos': 'United States',
+    'eua': 'United States',
+    'usa': 'United States',
+    'united states': 'United States',
+    'united states of america': 'United States',
+  };
+  return countryMap[normalized] || country.trim();
+}
+
+// Normalize city names
+function normalizeCity(city: string): string {
+  return city.trim();
+}
+
+// Format place response
+function formatPlaceResponse(place: any, recommendation_count: number) {
+  return {
+    id: place.id,
+    google_place_id: place.google_place_id,
+    name: place.name,
+    city: place.city,
+    country: place.country,
+    address: place.address,
+    lat: place.lat,
+    lng: place.lng,
+    instagram_handle: place.instagram_handle,
+    google_maps_url: place.google_maps_url,
+    custom: place.custom ?? !place.google_place_id,
+    recommendation_count,
+  };
+}
+
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
 
@@ -31,7 +70,11 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Check if place with same google_place_id already exists
+  // Normalize city and country for consistency
+  const normalizedCity = normalizeCity(city);
+  const normalizedCountry = normalizeCountry(country);
+
+  // 1. Check if place with same google_place_id already exists
   if (google_place_id) {
     const { data: existingPlace } = await supabase
       .from('places')
@@ -41,69 +84,77 @@ export async function POST(request: NextRequest) {
 
     if (existingPlace) {
       const recommendation_count = await getRecommendationCount(supabase, existingPlace.id);
-      // Return existing place instead of creating a duplicate
-      return NextResponse.json({
-        id: existingPlace.id,
-        google_place_id: existingPlace.google_place_id,
-        name: existingPlace.name,
-        city: existingPlace.city,
-        country: existingPlace.country,
-        address: existingPlace.address,
-        lat: existingPlace.lat,
-        lng: existingPlace.lng,
-        instagram_handle: existingPlace.instagram_handle,
-        google_maps_url: existingPlace.google_maps_url,
-        custom: existingPlace.custom ?? false,
-        recommendation_count,
-      });
+      return NextResponse.json(formatPlaceResponse(existingPlace, recommendation_count));
     }
   }
 
-  // For manual places (no google_place_id), check for existing match by name/city/country
-  if (!google_place_id) {
-    const { data: existingPlace } = await supabase
+  // 2. Check for existing place by name (case-insensitive) regardless of custom flag
+  // This catches duplicates even when google_place_id differs
+  const { data: existingByName } = await supabase
+    .from('places')
+    .select('*')
+    .ilike('name', name.trim());
+
+  if (existingByName && existingByName.length > 0) {
+    // Find a match with similar location (same city or same country)
+    const matchingPlace = existingByName.find(place => {
+      const sameCity = place.city.toLowerCase() === normalizedCity.toLowerCase();
+      const sameCountry = place.country.toLowerCase() === normalizedCountry.toLowerCase() ||
+                          normalizeCountry(place.country).toLowerCase() === normalizedCountry.toLowerCase();
+      return sameCity || sameCountry;
+    });
+
+    if (matchingPlace) {
+      const recommendation_count = await getRecommendationCount(supabase, matchingPlace.id);
+      return NextResponse.json(formatPlaceResponse(matchingPlace, recommendation_count));
+    }
+  }
+
+  // 3. If we have coordinates, check for nearby places with similar names
+  if (lat && lng) {
+    const { data: nearbyPlaces } = await supabase
       .from('places')
       .select('*')
-      .ilike('name', name.trim())
-      .ilike('city', city.trim())
-      .ilike('country', country.trim())
-      .eq('custom', true)
-      .single();
+      .not('lat', 'is', null)
+      .not('lng', 'is', null);
 
-    if (existingPlace) {
-      const recommendation_count = await getRecommendationCount(supabase, existingPlace.id);
-      // Return existing manual place instead of creating a duplicate
-      return NextResponse.json({
-        id: existingPlace.id,
-        google_place_id: existingPlace.google_place_id,
-        name: existingPlace.name,
-        city: existingPlace.city,
-        country: existingPlace.country,
-        address: existingPlace.address,
-        lat: existingPlace.lat,
-        lng: existingPlace.lng,
-        instagram_handle: existingPlace.instagram_handle,
-        google_maps_url: existingPlace.google_maps_url,
-        custom: existingPlace.custom ?? true,
-        recommendation_count,
+    if (nearbyPlaces && nearbyPlaces.length > 0) {
+      // Find places within ~500m with similar names
+      const matchingNearby = nearbyPlaces.find(place => {
+        if (!place.lat || !place.lng) return false;
+
+        // Calculate approximate distance (simplified, not accurate for large distances)
+        const latDiff = Math.abs(place.lat - lat);
+        const lngDiff = Math.abs(place.lng - lng);
+        const isNearby = latDiff < 0.005 && lngDiff < 0.005; // ~500m
+
+        // Check if names are similar (case-insensitive)
+        const nameSimilar = place.name.toLowerCase() === name.trim().toLowerCase();
+
+        return isNearby && nameSimilar;
       });
+
+      if (matchingNearby) {
+        const recommendation_count = await getRecommendationCount(supabase, matchingNearby.id);
+        return NextResponse.json(formatPlaceResponse(matchingNearby, recommendation_count));
+      }
     }
   }
 
-  // Create the place
+  // 4. No existing place found, create a new one with normalized data
   const { data: place, error } = await supabase
     .from('places')
     .insert({
-      name,
-      city,
-      country,
+      name: name.trim(),
+      city: normalizedCity,
+      country: normalizedCountry,
       address: address || null,
       lat: lat || null,
       lng: lng || null,
       instagram_handle: instagram_handle || null,
       google_place_id: google_place_id || null,
       google_maps_url: google_maps_url || null,
-      custom: !google_place_id, // custom is false if from Google Places
+      custom: !google_place_id,
     })
     .select()
     .single();

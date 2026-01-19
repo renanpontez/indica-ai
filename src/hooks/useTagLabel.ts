@@ -17,8 +17,11 @@ export function useTagLabel() {
         return tag.display_name;
       }
 
-      // Fallback: format slug nicely (capitalize first letter, replace hyphens)
-      return slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' ');
+      // Fallback: format slug nicely (capitalize first letter, replace hyphens with spaces)
+      return slug
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
     },
     [queryClient]
   );

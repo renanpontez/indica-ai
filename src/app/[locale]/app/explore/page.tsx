@@ -5,13 +5,19 @@ import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { useExplore } from '@/features/explore/hooks/useExplore';
 import { ExperienceCard } from '@/features/feed/components/ExperienceCard';
-import { useTagLabel } from '@/hooks/useTagLabel';
+
+// Helper to format tag slug as fallback display name
+function formatTagSlug(slug: string): string {
+  return slug
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
 
 export default function ExplorePage() {
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations();
-  const { getTagLabel } = useTagLabel();
   const { experiences, cities, tags, isLoading, error } = useExplore({ limit: 6 });
 
   if (error) {
@@ -26,7 +32,7 @@ export default function ExplorePage() {
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <div className="bg-gradient-to-br from-primary/10 to-primary/5 py-12 px-6">
-        <div className="max-w-5xl mx-auto px-6">
+        <div className="2xl:max-w-[1400px] md:max-w-[1000px] max-w-full mx-auto px-4 lg:px-2">
           <h1 className="text-3xl md:text-4xl font-bold text-dark-grey mb-3">
             {t('explore.title')}
           </h1>
@@ -36,7 +42,7 @@ export default function ExplorePage() {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-6 py-8 space-y-12">
+      <div className="2xl:max-w-[1400px] md:max-w-[1000px] max-w-full mx-auto px-4 lg:px-2 py-8 space-y-12">
         {/* Tags Section */}
         {tags.length > 0 && (
           <section>
@@ -54,7 +60,7 @@ export default function ExplorePage() {
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-medium text-dark-grey group-hover:text-primary transition-colors">
-                      {getTagLabel(tagItem.tag)}
+                      {tagItem.displayName || formatTagSlug(tagItem.tag)}
                     </span>
                     <span className="text-sm text-medium-grey">{tagItem.count}</span>
                   </div>

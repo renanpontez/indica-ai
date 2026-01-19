@@ -13,13 +13,14 @@ import type {
 export interface ExploreResponse {
   experiences: ExperienceFeedItem[];
   cities: { city: string; country: string; count: number }[];
-  tags: { tag: string; count: number }[];
+  tags: { tag: string; count: number; displayName: string | null }[];
   total: number;
 }
 
 // Feed response type
 export interface FeedResponse {
   mySuggestions: ExperienceFeedItem[];
+  friendsSuggestions: ExperienceFeedItem[];
   communitySuggestions: ExperienceFeedItem[];
   nearbyPlaces: ExperienceFeedItem[];
   userCity: string | null;

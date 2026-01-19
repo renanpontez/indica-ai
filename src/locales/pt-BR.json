@@ -71,13 +71,19 @@
     "title": "Experiências que seus amigos amam",
     "subtitle": "Descubra e explore recomendações da sua rede",
     "sections": {
+      "friendsSuggestions": "Indicações de Amigos",
+      "friendsSuggestionsSubtitle": "Lugares indicados por quem você segue",
       "mySuggestions": "Minhas Indicações",
       "mySuggestionsSubtitle": "Experiências que você indicou",
       "communitySuggestions": "Indicações da Comunidade",
       "communitySuggestionsSubtitle": "Descubra lugares da comunidade",
       "nearbyPlaces": "Próximo a sua localização",
       "nearbyPlacesCity": "Lugares em {city}",
-      "nearbyPlacesSubtitle": "Lugares perto de você"
+      "nearbyPlacesSubtitle": "Lugares perto de você",
+      "seeAll": "Ver todas",
+      "seeAllMySuggestions": "Ver todas minhas indicações",
+      "seeAllCommunity": "Ver todas da comunidade",
+      "friendsEmpty": "Comece a seguir seus amigos para ver as indicações deles aqui!"
     }
   },
   "card": {
@@ -284,30 +290,30 @@
   },
   "explore": {
     "title": "Explorar Sugestões Públicas",
-    "subtitle": "Descubra lugares incríveis compartilhados pela comunidade",
+    "subtitle": "Descubra experiências incríveis compartilhados pela comunidade",
     "sections": {
       "tags": "Explorar por Tag",
       "cities": "Cidades Populares",
       "recent": "Sugestões Recentes"
     },
     "viewAll": "Ver todas",
-    "places": "lugares",
+    "places": "experiências",
     "place": "lugar",
     "loadMore": "Carregar mais",
     "empty": "Nenhuma sugestão pública ainda. Seja o primeiro a compartilhar um lugar!",
     "backToExplore": "Voltar para Explorar",
     "all": {
       "title": "Todas as Sugestões",
-      "cityTitle": "Lugares em {city}",
+      "cityTitle": "Experiências em {city}",
       "subtitle": "{count} sugestões públicas"
     },
     "cities": {
       "title": "Explorar por Cidade",
-      "subtitle": "Encontre lugares em cidades ao redor do mundo",
+      "subtitle": "Encontre experiências em cidades ao redor do mundo",
       "empty": "Nenhuma cidade com sugestões públicas ainda."
     },
     "tag": {
-      "subtitle": "{count} lugares em {tag}",
+      "subtitle": "{count} experiências em {tag}",
       "empty": "Nenhuma sugestão pública em {tag} ainda."
     }
   },
@@ -319,7 +325,7 @@
     },
     "edit": {
       "title": "Editar Indicação",
-      "placeNotEditable": "As informações do local não podem ser alteradas",
+      "placeNotEditable": "As informações da experiência não podem ser alteradas",
       "save": "Salvar Alterações"
     },
     "deleteModal": {

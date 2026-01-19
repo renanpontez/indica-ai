@@ -40,6 +40,7 @@ export default function FeedPage() {
         {feedData && (
           <ExperienceList
             mySuggestions={feedData.mySuggestions}
+            friendsSuggestions={feedData.friendsSuggestions}
             communitySuggestions={feedData.communitySuggestions}
             nearbyPlaces={feedData.nearbyPlaces}
             userCity={feedData.userCity}

@@ -72,13 +72,19 @@
     "title": "Places your friends love",
     "subtitle": "Discover and explore recommendations from your network",
     "sections": {
+      "friendsSuggestions": "Friends' Suggestions",
+      "friendsSuggestionsSubtitle": "Places recommended by people you follow",
       "mySuggestions": "My Suggestions",
       "mySuggestionsSubtitle": "Places you've recommended",
       "communitySuggestions": "Community Suggestions",
       "communitySuggestionsSubtitle": "Discover places from the community",
       "nearbyPlaces": "Near your location",
       "nearbyPlacesCity": "Places in {city}",
-      "nearbyPlacesSubtitle": "Places close to you"
+      "nearbyPlacesSubtitle": "Places close to you",
+      "seeAll": "See all",
+      "seeAllMySuggestions": "See all my suggestions",
+      "seeAllCommunity": "See all community suggestions",
+      "friendsEmpty": "Start following your friends to see their suggestions here!"
     }
   },
   "card": {
@@ -230,7 +236,7 @@
       "oftenTaggedAs": "Often tagged as:",
       "noExistingRecommendations": "Be the first to recommend this place!",
       "addMyExperience": "Add My Experience",
-      "differentPlace": "This is a Different Place"
+      "differentPlace": "This is a Different Experience"
     }
   },
   "place": {
@@ -285,30 +291,30 @@
   },
   "explore": {
     "title": "Explore Public Suggestions",
-    "subtitle": "Discover amazing places shared by the community",
+    "subtitle": "Discover amazing experiences shared by the community",
     "sections": {
       "tags": "Browse by Tag",
       "cities": "Popular Cities",
       "recent": "Recent Suggestions"
     },
     "viewAll": "View all",
-    "places": "places",
-    "place": "place",
+    "places": "experiences",
+    "place": "experience",
     "loadMore": "Load more",
     "empty": "No public suggestions yet. Be the first to share a place!",
     "backToExplore": "Back to Explore",
     "all": {
       "title": "All Suggestions",
-      "cityTitle": "Places in {city}",
+      "cityTitle": "Experiences in {city}",
       "subtitle": "{count} public suggestions"
     },
     "cities": {
       "title": "Explore by City",
-      "subtitle": "Find places in cities around the world",
+      "subtitle": "Find experiences in cities around the world",
       "empty": "No cities with public suggestions yet."
     },
     "tag": {
-      "subtitle": "{count} places in {tag}",
+      "subtitle": "{count} experiences in {tag}",
       "empty": "No public suggestions in {tag} yet."
     }
   },

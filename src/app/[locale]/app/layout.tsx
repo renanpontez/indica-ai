@@ -10,10 +10,10 @@ export default async function AppLayout({
   const user = await getServerUser();
 
   return (
-    <>
+    <div className="pb-20">
       <DesktopNav user={user} />
       <main className="pb-20">{children}</main>
       <FloatingActionButton />
-    </>
+    </div>
   );
 }

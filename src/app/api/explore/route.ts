@@ -35,7 +35,7 @@ function transformExperience(exp: any) {
 export interface ExploreResponse {
   experiences: ReturnType<typeof transformExperience>[];
   cities: { city: string; country: string; count: number }[];
-  tags: { tag: string; count: number }[];
+  tags: { tag: string; count: number; displayName: string | null }[];
   total: number;
 }
 
@@ -145,8 +145,27 @@ export async function GET(request: NextRequest) {
       tagMap.set(t, (tagMap.get(t) || 0) + 1);
     });
   });
+
+  // Fetch tag display names from the tags table
+  const tagSlugs = Array.from(tagMap.keys());
+  const { data: tagDetails } = await supabase
+    .from('tags')
+    .select('slug, display_name')
+    .in('slug', tagSlugs);
+
+  const tagDisplayNames = new Map<string, string>();
+  (tagDetails || []).forEach((t: any) => {
+    if (t.display_name) {
+      tagDisplayNames.set(t.slug, t.display_name);
+    }
+  });
+
   const tags = Array.from(tagMap.entries())
-    .map(([tag, count]) => ({ tag, count }))
+    .map(([tag, count]) => ({
+      tag,
+      count,
+      displayName: tagDisplayNames.get(tag) || null,
+    }))
     .sort((a, b) => b.count - a.count);
 
   // Get total count for pagination
