@@ -157,8 +157,8 @@ export default async function LandingPage({ params }: LandingPageProps) {
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
               <div className="w-24 h-24 lg:w-32 lg:h-32 rounded-3xl bg-gradient-to-br from-primary to-primary/80 shadow-xl flex items-center justify-center">
                 <Image
-                  src="/assets/indica-ai.svg"
-                  alt="Indica Aí"
+                  src="/assets/circle-picks.svg"
+                  alt="Circle Picks"
                   width={64}
                   height={64}
                   className="w-12 h-12 lg:w-16 lg:h-16 brightness-0 invert"
@@ -416,27 +416,27 @@ export default async function LandingPage({ params }: LandingPageProps) {
           <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-2">
               <Image
-                src="/assets/indica-ai.svg"
-                alt="Indica Aí logo"
+                src="/assets/circle-picks.svg"
+                alt="Circle Picks logo"
                 width={24}
                 height={24}
                 className="h-6 w-6"
               />
-              <span className="font-bold text-primary">Indica Aí</span>
+              <span className="font-bold text-primary">Circle Picks</span>
             </div>
             <div className="flex items-center gap-6 text-sm text-medium-grey">
-              <Link href="#" className="hover:text-dark-grey transition-colors">
+              <Link href={`/${locale}/legal/terms`} className="hover:text-dark-grey transition-colors">
                 {t('footer.terms')}
               </Link>
-              <Link href="#" className="hover:text-dark-grey transition-colors">
+              <Link href={`/${locale}/legal/privacy`} className="hover:text-dark-grey transition-colors">
                 {t('footer.privacy')}
               </Link>
-              <Link href="#" className="hover:text-dark-grey transition-colors">
+              <Link href="mailto:contact@circlepicks.app" className="hover:text-dark-grey transition-colors">
                 {t('footer.contact')}
               </Link>
             </div>
             <p className="text-sm text-medium-grey">
-              © 2026 Indica Aí. {t('footer.rights')}
+              © 2026 Circle Picks. {t('footer.rights')}
             </p>
           </div>
         </div>

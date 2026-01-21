@@ -33,8 +33,8 @@ export function PlaceholderImage({ className, size = 'md' }: PlaceholderImagePro
       {/* Logo with subtle backdrop */}
       <div className="relative z-10 rounded-full bg-primary p-4 backdrop-blur-sm ">
         <img
-          src="/assets/indica-ai-icon-white.svg"
-          alt="Indica AI"
+          src="/assets/circle-picks-icon-white.svg"
+          alt="Circle Picks"
           className={cn(logoSizeClasses[size], 'text-white fill-white')}
         />
       </div>

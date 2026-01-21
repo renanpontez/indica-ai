@@ -22,8 +22,8 @@ export async function DesktopNav({ user }: DesktopNavProps) {
           {/* Logo */}
           <Link href={`/${locale}/app`} className="flex items-center gap-2 flex-shrink-0">
             <Image
-              src="/assets/indica-ai.svg"
-              alt="Indica Aí logo"
+              src="/assets/circle-picks.svg"
+              alt="Circle Picks logo"
               width={32}
               height={32}
               className="h-8 w-8"

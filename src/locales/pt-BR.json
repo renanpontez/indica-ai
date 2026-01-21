@@ -19,7 +19,7 @@
     },
     "about": {
       "title": "Explore experiências que seus amigos amam",
-      "description": "O Indica Aí conecta você às melhores recomendações da sua rede de amigos. Descubra restaurantes escondidos, cafés aconchegantes e experiências únicas através de quem você confia.",
+      "description": "O Circle Picks conecta você às melhores recomendações da sua rede de amigos. Descubra restaurantes escondidos, cafés aconchegantes e experiências únicas através de quem você confia.",
       "cta": "Explorar agora",
       "feature1": "Cultura & História",
       "feature2": "Eventos",
@@ -43,7 +43,7 @@
     }
   },
   "nav": {
-    "logo": "Indica Aí",
+    "logo": "Circle Picks",
     "search": {
       "where": "Onde",
       "whereSubtext": "Buscar destinos",
@@ -177,7 +177,10 @@
       "city": "Cidade",
       "cityPlaceholder": "ex: São Paulo",
       "country": "País",
-      "countryPlaceholder": "ex: Brasil"
+      "countryPlaceholder": "ex: Brasil",
+      "addressSearchPlaceholder": "Digite o endereço...",
+      "noAddressFound": "Nenhum endereço encontrado. Tente outra busca.",
+      "locationAutoFilled": "Cidade e país preenchidos automaticamente"
     },
     "priceRange": "Faixa de Preço",
     "tags": "Tags",

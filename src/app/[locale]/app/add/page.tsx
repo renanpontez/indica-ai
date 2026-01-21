@@ -8,6 +8,7 @@ import { useTranslations } from 'next-intl';
 import { Input } from '@/components/Input';
 import { TextArea } from '@/components/TextArea';
 import { PlaceSearchInput } from '@/features/add/components/PlaceSearchInput';
+import { AddressAutocomplete } from '@/features/add/components/CityAutocomplete';
 import { PriceRangeSelector } from '@/features/add/components/PriceRangeSelector';
 import { TagSelector } from '@/features/add/components/TagSelector';
 import { ImagePicker } from '@/features/add/components/ImagePicker';
@@ -378,10 +379,17 @@ export default function AddPage() {
                   <label className="block text-small font-medium text-dark-grey mb-2">
                     {t('add.manual.address')}
                   </label>
-                  <Input
-                    placeholder={t('add.manual.addressPlaceholder')}
+                  <AddressAutocomplete
                     value={manualAddress}
-                    onChange={(e) => setManualAddress(e.target.value)}
+                    onChange={(value) => {
+                      setManualAddress(value);
+                    }}
+                    onAddressSelect={(data) => {
+                      setManualAddress(data.description);
+                      setManualCity(data.city);
+                      setManualCountry(data.country);
+                      setErrors({ ...errors, city: '', country: '' });
+                    }}
                   />
                 </div>
 
@@ -393,10 +401,8 @@ export default function AddPage() {
                     <Input
                       placeholder={t('add.manual.cityPlaceholder')}
                       value={manualCity}
-                      onChange={(e) => {
-                        setManualCity(e.target.value);
-                        setErrors({ ...errors, city: '' });
-                      }}
+                      readOnly
+                      className={manualCity ? 'border-green-300 bg-green-50 cursor-not-allowed' : ''}
                     />
                     {errors.city && (
                       <p className="mt-1.5 text-small text-red-500">{errors.city}</p>
@@ -410,16 +416,20 @@ export default function AddPage() {
                     <Input
                       placeholder={t('add.manual.countryPlaceholder')}
                       value={manualCountry}
-                      onChange={(e) => {
-                        setManualCountry(e.target.value);
-                        setErrors({ ...errors, country: '' });
-                      }}
+                      readOnly
+                      className={manualCountry ? 'border-green-300 bg-green-50 cursor-not-allowed' : ''}
                     />
                     {errors.country && (
                       <p className="mt-1.5 text-small text-red-500">{errors.country}</p>
                     )}
                   </div>
                 </div>
+
+                {(manualCity || manualCountry) && !errors.city && !errors.country && (
+                  <p className="text-xs text-green-600">
+                    {t('add.manual.locationAutoFilled')}
+                  </p>
+                )}
               </div>
             )}
 

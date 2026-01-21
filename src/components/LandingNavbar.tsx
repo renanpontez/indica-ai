@@ -20,14 +20,14 @@ export default function LandingNavbar({ locale, showActions = true }: LandingNav
           {/* Logo */}
           <Link href={`/${locale}`} className="flex items-center gap-2 flex-shrink-0">
             <Image
-              src="/assets/indica-ai.svg"
-              alt="Indica Aí logo"
+              src="/assets/circle-picks.svg"
+              alt="Circle Picks logo"
               width={32}
               height={32}
               className="h-8 w-8"
             />
             <span className="text-xl font-bold text-primary">
-              Indica Aí
+              Circle Picks
             </span>
           </Link>
 

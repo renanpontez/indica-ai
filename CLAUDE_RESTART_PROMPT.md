@@ -1,7 +1,7 @@
 # Claude Code Session Prompt - Indica AI + Figma MCP
 
 ## Project Context
-I'm working on the **indica-ai** project located at `/Users/renan/desktop/_dev/indica-ai`
+I'm working on the **circle-picks** project located at `/Users/renan/desktop/_dev/circle-picks`
 
 This is a Next.js + TypeScript app for a social recommendations platform called "Friends Places MVP".
 
@@ -12,7 +12,7 @@ I want you to use the Figma MCP server to fetch design specifications from this 
 
 ## Important Guidelines
 
-1. **Read the context files first** - Located in `/Users/renan/desktop/_dev/indica-ai/context/`:
+1. **Read the context files first** - Located in `/Users/renan/desktop/_dev/circle-picks/context/`:
    - `index.json` - Navigation guide to all context
    - `front.strategy.json` - Product strategy and scope
    - `front.tech.json` - Technical architecture and domain models

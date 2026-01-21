@@ -1,15 +1,17 @@
 {
   "meta": {
-    "name": "Indica Ai - Context Navigation Index",
-    "version": "0.3.0",
+    "name": "Circle Picks - Context Navigation Index",
+    "version": "0.4.0",
     "purpose": "Master index for navigating all context documentation files",
-    "last_updated": "2026-01-19",
+    "last_updated": "2026-01-20",
     "architecture": "Next.js 16.1.1 + Supabase (Auth, Database, Storage)",
-    "status": "MVP implemented - full-stack social recommendations platform"
+    "status": "MVP implemented - full-stack social recommendations platform",
+    "rebrand_note": "App rebranded to 'Circle Picks' (January 2026) - see context/REBRAND_GUIDE.md for reference"
   },
   "navigation": {
     "description": "This file serves as the entry point for all project context. Use breadcrumbs to navigate to specific sections.",
-    "structure": "frontend -> [strategy|tech|ux|setup-plan]"
+    "structure": "frontend -> [strategy|tech|ux|setup-plan]",
+    "rebrand_guide": "context/REBRAND_GUIDE.md - Rebrand reference documentation (completed January 2026)"
   },
   "files": {
     "frontend": {

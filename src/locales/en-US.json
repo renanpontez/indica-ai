@@ -19,7 +19,7 @@
     },
     "about": {
       "title": "Explore places your friends love",
-      "description": "Indica Aí connects you to the best recommendations from your network of friends. Discover hidden restaurants, cozy cafes, and unique experiences through people you trust.",
+      "description": "Circle Picks connects you to the best recommendations from your network of friends. Discover hidden restaurants, cozy cafes, and unique experiences through people you trust.",
       "cta": "Explore now",
       "feature1": "Culture & History",
       "feature2": "Events",
@@ -43,7 +43,7 @@
     }
   },
   "nav": {
-    "logo": "Indica Aí",
+    "logo": "Circle Picks",
     "search": {
       "where": "Where",
       "whereSubtext": "Search destinations",
@@ -178,7 +178,10 @@
       "city": "City",
       "cityPlaceholder": "e.g., San Francisco",
       "country": "Country",
-      "countryPlaceholder": "e.g., USA"
+      "countryPlaceholder": "e.g., USA",
+      "addressSearchPlaceholder": "Start typing an address...",
+      "noAddressFound": "No address found. Try a different search.",
+      "locationAutoFilled": "City and country auto-filled from address"
     },
     "priceRange": "Price Range",
     "tags": "Tags",
