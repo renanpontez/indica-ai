@@ -64,7 +64,6 @@ export const publicRoutes = [
   '/auth/signup',
   '/auth/error',
   '/auth/callback',
-  '/explore',
   '/legal/terms',
   '/legal/privacy',
   '/contact',

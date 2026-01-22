@@ -34,7 +34,7 @@ export default function ExploreTagPage() {
   const tagLabel = tagFromApi?.displayName || formatSlugToDisplayName(slug);
 
   const breadcrumbItems = [
-    { label: t('nav.explore'), href: '/explore' },
+    { label: t('nav.explore'), href: '/app/explore' },
     { label: tagLabel },
   ];
 
@@ -92,7 +92,7 @@ export default function ExploreTagPage() {
               {t('explore.tag.empty', { tag: tagLabel })}
             </p>
             <Link
-              href="/explore"
+              href="/app/explore"
               className="mt-4 inline-block text-primary hover:underline"
             >
               {t('explore.backToExplore')}

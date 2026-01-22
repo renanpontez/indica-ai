@@ -359,7 +359,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
               {t('featured.title')}
             </h2>
             <Link
-              href={`/${locale}/explore`}
+              href={`/${locale}/app/explore`}
               className="px-4 py-2 bg-dark-grey text-white rounded-full text-sm font-semibold hover:bg-dark-grey/90 transition-colors"
             >
               {t('featured.exploreAll')}
@@ -369,7 +369,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
             {featuredPlaces.map((place) => (
               <Link
                 key={place.id}
-                href={`/${locale}/explore?city=${place.name}`}
+                href={`/${locale}/app/explore?city=${place.name}`}
                 className="group"
               >
                 <div className="relative aspect-[4/3] rounded-2xl overflow-hidden">

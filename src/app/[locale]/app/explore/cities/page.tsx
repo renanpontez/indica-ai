@@ -10,7 +10,7 @@ export default function ExploreCitiesPage() {
   const { cities, isLoading, error } = useExplore();
 
   const breadcrumbItems = [
-    { label: t('nav.explore'), href: '/explore' },
+    { label: t('nav.explore'), href: '/app/explore' },
     { label: t('explore.cities.title') },
   ];
 
@@ -53,7 +53,7 @@ export default function ExploreCitiesPage() {
           <div className="text-center py-12 bg-white rounded-xl border border-divider">
             <p className="text-medium-grey">{t('explore.cities.empty')}</p>
             <Link
-              href="/explore"
+              href="/app/explore"
               className="mt-4 inline-block text-primary hover:underline"
             >
               {t('explore.backToExplore')}
@@ -64,7 +64,7 @@ export default function ExploreCitiesPage() {
             {cities.map((city) => (
               <Link
                 key={`${city.city}-${city.country}`}
-                href={`/explore/all?city=${encodeURIComponent(city.city)}`}
+                href={`/app/explore/all?city=${encodeURIComponent(city.city)}`}
                 className="group p-6 bg-white rounded-xl border border-divider hover:border-primary hover:shadow-md transition-all"
               >
                 <div className="flex flex-col">

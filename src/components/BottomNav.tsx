@@ -77,7 +77,7 @@ const navItems: NavItem[] = [
   {
     id: 'explore',
     label: 'Explore',
-    href: '/explore',
+    href: '/app/explore',
     icon: (
       <svg
         className="h-6 w-6"
