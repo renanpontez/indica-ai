@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import Script from 'next/script';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -19,7 +20,14 @@ export default function RootLayout({
 }>) {
   return (
     <html suppressHydrationWarning>
-      <body className={inter.className}>{children}</body>
+
+      <body className={inter.className}>
+        {children}
+        <Script
+          src="http://localhost:3001/widget.js?projectId=3607f5f9-35bb-4581-98fd-ef8e33cb9fd0"
+          strategy="afterInteractive"
+        />
+      </body>
     </html>
   );
 }
