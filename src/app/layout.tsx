@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 
+const ZAPBOLT_URL = process.env.NEXT_PUBLIC_ZAPBOLT_URL;
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -20,13 +21,14 @@ export default function RootLayout({
 }>) {
   return (
     <html suppressHydrationWarning>
-
       <body className={inter.className}>
         {children}
-        <Script
-          src="http://localhost:3001/widget.js?projectId=3607f5f9-35bb-4581-98fd-ef8e33cb9fd0"
-          strategy="afterInteractive"
-        />
+        {ZAPBOLT_URL && (
+          <Script
+            src={ZAPBOLT_URL}
+            strategy="afterInteractive"
+          />
+        )}
       </body>
     </html>
   );
