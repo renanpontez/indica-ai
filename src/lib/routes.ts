@@ -65,6 +65,9 @@ export const publicRoutes = [
   '/auth/error',
   '/auth/callback',
   '/explore',
+  '/legal/terms',
+  '/legal/privacy',
+  '/contact',
 ] as const;
 
 // Routes that require authentication (all under /app)
