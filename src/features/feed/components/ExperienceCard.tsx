@@ -176,9 +176,9 @@ export function ExperienceCard({
       </div>
 
       {/* Horizontal Content */}
-      <div className="flex px-4 pb-4 gap-4">
+      <div className="flex flex-col px-4 pb-4 gap-4">
         {/* Image with Price Badge */}
-        <div className="relative w-40 h-40 flex-shrink-0 rounded-xl overflow-hidden bg-surface">
+        <div className="relative w-full aspect-[16/9] flex-shrink-0 rounded-xl overflow-hidden bg-surface">
           {place.thumbnail_image_url ? (
             <img
               src={place.thumbnail_image_url}

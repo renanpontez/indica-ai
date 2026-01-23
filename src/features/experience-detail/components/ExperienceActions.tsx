@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useDeleteExperience } from '../hooks/useExperienceMutations';
 import { DeleteExperienceModal } from './DeleteExperienceModal';
+import { routes, type Locale } from '@/lib/routes';
 
 interface ExperienceActionsProps {
   experienceId: string;
@@ -29,12 +30,12 @@ export function ExperienceActions({
 
   const handleEdit = () => {
     setShowDropdown(false);
-    router.push(`/${locale}/app/experience/${experienceId}/edit`);
+    router.push(routes.app.experience.edit(locale as Locale, experienceId));
   };
 
   const handleDelete = async () => {
     await deleteExperience(experienceId);
-    router.push(`/${locale}/app`);
+    router.push(routes.app.feed(locale as Locale));
   };
 
   return (

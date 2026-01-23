@@ -4,13 +4,14 @@ import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { useExplore } from '@/features/explore/hooks/useExplore';
 import { Breadcrumb } from '@/components/Breadcrumb';
+import { routePaths } from '@/lib/routes';
 
 export default function ExploreCitiesPage() {
   const t = useTranslations();
   const { cities, isLoading, error } = useExplore();
 
   const breadcrumbItems = [
-    { label: t('nav.explore'), href: '/app/explore' },
+    { label: t('nav.explore'), href: routePaths.app.explore.index() },
     { label: t('explore.cities.title') },
   ];
 
@@ -53,7 +54,7 @@ export default function ExploreCitiesPage() {
           <div className="text-center py-12 bg-white rounded-xl border border-divider">
             <p className="text-medium-grey">{t('explore.cities.empty')}</p>
             <Link
-              href="/app/explore"
+              href={routePaths.app.explore.index()}
               className="mt-4 inline-block text-primary hover:underline"
             >
               {t('explore.backToExplore')}
@@ -64,7 +65,7 @@ export default function ExploreCitiesPage() {
             {cities.map((city) => (
               <Link
                 key={`${city.city}-${city.country}`}
-                href={`/app/explore/all?city=${encodeURIComponent(city.city)}`}
+                href={routePaths.app.explore.all({ city: city.city })}
                 className="group p-6 bg-white rounded-xl border border-divider hover:border-primary hover:shadow-md transition-all"
               >
                 <div className="flex flex-col">

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { Avatar } from './Avatar';
+import { routes, type Locale } from '@/lib/routes';
 
 export function UserMenu() {
   const { user } = useAuth();
@@ -34,7 +35,7 @@ export function UserMenu() {
     try {
       const response = await fetch('/api/auth/signout', { method: 'POST' });
       if (response.ok) {
-        router.push(`/${locale}/auth/signin`);
+        router.push(routes.auth.signin(locale as Locale));
         router.refresh();
       }
     } catch (error) {

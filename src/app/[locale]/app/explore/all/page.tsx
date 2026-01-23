@@ -6,6 +6,7 @@ import { Link } from '@/i18n/routing';
 import { useExplore } from '@/features/explore/hooks/useExplore';
 import { ExperienceCard } from '@/features/feed/components/ExperienceCard';
 import { Breadcrumb } from '@/components/Breadcrumb';
+import { routes, routePaths, type Locale } from '@/lib/routes';
 
 export default function ExploreAllPage() {
   const router = useRouter();
@@ -20,7 +21,7 @@ export default function ExploreAllPage() {
   });
 
   const breadcrumbItems = [
-    { label: t('nav.explore'), href: '/app/explore' },
+    { label: t('nav.explore'), href: routePaths.app.explore.index() },
     { label: city || t('explore.all.title') },
   ];
 
@@ -75,7 +76,7 @@ export default function ExploreAllPage() {
           <div className="text-center py-12 bg-white rounded-xl border border-divider">
             <p className="text-medium-grey">{t('explore.empty')}</p>
             <Link
-              href="/app/explore"
+              href={routePaths.app.explore.index()}
               className="mt-4 inline-block text-primary hover:underline"
             >
               {t('explore.backToExplore')}
@@ -90,7 +91,7 @@ export default function ExploreAllPage() {
                   experience={experience}
                   onClick={() =>
                     router.push(
-                      `/${locale}/app/experience/${experience.experience_id}/${experience.slug}`
+                      routes.app.experience.detail(locale as Locale, experience.experience_id, experience.slug || '')
                     )
                   }
                 />

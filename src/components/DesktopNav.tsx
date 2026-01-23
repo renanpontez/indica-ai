@@ -5,6 +5,7 @@ import { LanguageSwitcher } from './LanguageSwitcher';
 import { SearchBar } from './SearchBar';
 import { Avatar } from './Avatar';
 import type { AuthUser } from '@/lib/auth/AuthContext';
+import { routes, type Locale } from '@/lib/routes';
 
 interface DesktopNavProps {
   user: AuthUser | null;
@@ -12,7 +13,7 @@ interface DesktopNavProps {
 
 export async function DesktopNav({ user }: DesktopNavProps) {
   const t = await getTranslations();
-  const locale = await getLocale();
+  const locale = await getLocale() as Locale;
   const isAuthenticated = !!user;
 
   return (
@@ -20,7 +21,7 @@ export async function DesktopNav({ user }: DesktopNavProps) {
       <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-4">
         <div className="flex items-center justify-between py-5">
           {/* Logo */}
-          <Link href={`/${locale}/app`} className="flex items-center gap-2 flex-shrink-0">
+          <Link href={routes.app.feed(locale)} className="flex items-center gap-2 flex-shrink-0">
             <Image
               src="/assets/circle-picks.svg"
               alt="Circle Picks logo"
@@ -41,12 +42,12 @@ export async function DesktopNav({ user }: DesktopNavProps) {
             <LanguageSwitcher />
 
             {isAuthenticated ? (
-              <Link href={`/${locale}/app/profile/me`}>
+              <Link href={routes.app.profile.me(locale)}>
                 <Avatar src={user.avatar_url} alt={user.display_name} size="sm" />
               </Link>
             ) : (
               <Link
-                href={`/${locale}/auth/signup`}
+                href={routes.auth.signup(locale)}
                 className="px-4 py-2 text-sm font-semibold text-white bg-primary hover:bg-primary/90 rounded-full transition-colors"
               >
                 {t('nav.signUp')}

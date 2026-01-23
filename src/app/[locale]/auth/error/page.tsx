@@ -1,8 +1,9 @@
 import Link from 'next/link';
 import { Button } from '@/components/Button';
+import { routes, type Locale } from '@/lib/routes';
 
 interface AuthErrorPageProps {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
   searchParams: Promise<{ error?: string }>;
 }
 
@@ -48,12 +49,12 @@ export default async function AuthErrorPage({ params, searchParams }: AuthErrorP
           </p>
 
           <div className="space-y-3">
-            <Link href={`/${locale}/auth/signin`} className="block">
+            <Link href={routes.auth.signin(locale)} className="block">
               <Button className="w-full">
                 Back to Sign In
               </Button>
             </Link>
-            <Link href={`/${locale}`} className="block">
+            <Link href={routes.home(locale)} className="block">
               <button className="w-full text-primary text-[0.85rem] font-medium hover:underline">
                 Go to Home
               </button>

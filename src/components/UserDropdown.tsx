@@ -5,10 +5,11 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { Avatar } from './Avatar';
 import type { AuthUser } from '@/lib/auth/AuthContext';
+import { routes, type Locale } from '@/lib/routes';
 
 interface UserDropdownProps {
   user: AuthUser;
-  locale: string;
+  locale: Locale;
 }
 
 export function UserDropdown({ user, locale }: UserDropdownProps) {
@@ -38,7 +39,7 @@ export function UserDropdown({ user, locale }: UserDropdownProps) {
       {isOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-divider py-1 z-50">
           <Link
-            href={`/${locale}/app/profile/me`}
+            href={routes.app.profile.me(locale)}
             className="block px-4 py-2 text-sm text-dark-grey hover:bg-surface transition-colors"
             onClick={() => setIsOpen(false)}
           >

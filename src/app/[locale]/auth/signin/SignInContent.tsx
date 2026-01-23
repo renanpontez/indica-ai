@@ -3,9 +3,10 @@
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import SignInForm from './SignInForm';
+import { routes, type Locale } from '@/lib/routes';
 
 interface SignInContentProps {
-  locale: string;
+  locale: Locale;
 }
 
 export default function SignInContent({ locale }: SignInContentProps) {
@@ -27,7 +28,7 @@ export default function SignInContent({ locale }: SignInContentProps) {
       <p className="text-center text-[0.85rem] text-medium-grey">
         {t('noAccount')}{' '}
         <Link
-          href={`/${locale}/auth/signup`}
+          href={routes.auth.signup(locale)}
           className="text-primary font-medium hover:underline"
         >
           {t('createAccount')}

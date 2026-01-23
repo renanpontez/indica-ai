@@ -6,6 +6,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { cn } from '@/lib/utils/cn';
 import { Avatar } from './Avatar';
 import { LoadingSpinner } from './LoadingSpinner';
+import { routes, type Locale } from '@/lib/routes';
 
 interface SearchResult {
   experiences: Array<{
@@ -88,13 +89,13 @@ export function SearchBar() {
   const handleExperienceClick = (experienceId: string, slug: string) => {
     setIsOpen(false);
     setQuery('');
-    router.push(`/${locale}/app/experience/${experienceId}/${slug}`);
+    router.push(routes.app.experience.detail(locale as Locale, experienceId, slug));
   };
 
   const handleUserClick = (userId: string) => {
     setIsOpen(false);
     setQuery('');
-    router.push(`/${locale}/app/profile/${userId}`);
+    router.push(routes.app.profile.view(locale as Locale, userId));
   };
 
   const hasResults = results.experiences.length > 0 || results.users.length > 0;

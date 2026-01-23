@@ -6,6 +6,7 @@ import { Link } from '@/i18n/routing';
 import { useExplore } from '@/features/explore/hooks/useExplore';
 import { ExperienceCard } from '@/features/feed/components/ExperienceCard';
 import { Breadcrumb } from '@/components/Breadcrumb';
+import { routes, routePaths, type Locale } from '@/lib/routes';
 
 // Helper to format slug to display name (capitalize first letter, replace hyphens with spaces)
 function formatSlugToDisplayName(slug: string): string {
@@ -34,7 +35,7 @@ export default function ExploreTagPage() {
   const tagLabel = tagFromApi?.displayName || formatSlugToDisplayName(slug);
 
   const breadcrumbItems = [
-    { label: t('nav.explore'), href: '/app/explore' },
+    { label: t('nav.explore'), href: routePaths.app.explore.index() },
     { label: tagLabel },
   ];
 
@@ -92,7 +93,7 @@ export default function ExploreTagPage() {
               {t('explore.tag.empty', { tag: tagLabel })}
             </p>
             <Link
-              href="/app/explore"
+              href={routePaths.app.explore.index()}
               className="mt-4 inline-block text-primary hover:underline"
             >
               {t('explore.backToExplore')}
@@ -107,7 +108,7 @@ export default function ExploreTagPage() {
                   experience={experience}
                   onClick={() =>
                     router.push(
-                      `/${locale}/app/experience/${experience.experience_id}/${experience.slug}`
+                      routes.app.experience.detail(locale as Locale, experience.experience_id, experience.slug || '')
                     )
                   }
                 />

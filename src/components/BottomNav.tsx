@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils/cn';
+import { ROUTE_PATHS } from '@/lib/routes';
 
 type Tab = 'feed' | 'add' | 'profile' | 'explore';
 
@@ -17,7 +18,7 @@ const navItems: NavItem[] = [
   {
     id: 'feed',
     label: 'Feed',
-    href: '/',
+    href: ROUTE_PATHS.app.feed,
     icon: (
       <svg
         className="h-6 w-6"
@@ -37,7 +38,7 @@ const navItems: NavItem[] = [
   {
     id: 'add',
     label: 'Add',
-    href: '/app/add',
+    href: ROUTE_PATHS.app.add,
     icon: (
       <svg
         className="h-6 w-6"
@@ -57,7 +58,7 @@ const navItems: NavItem[] = [
   {
     id: 'profile',
     label: 'Profile',
-    href: '/app/profile/me',
+    href: ROUTE_PATHS.app.profile.me,
     icon: (
       <svg
         className="h-6 w-6"
@@ -77,7 +78,7 @@ const navItems: NavItem[] = [
   {
     id: 'explore',
     label: 'Explore',
-    href: '/app/explore',
+    href: ROUTE_PATHS.app.explore.index,
     icon: (
       <svg
         className="h-6 w-6"

@@ -2,9 +2,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import LandingNavbar from '@/components/LandingNavbar';
+import { routes, type Locale } from '@/lib/routes';
+import { createClient } from '@/lib/supabase/server';
 
 interface LandingPageProps {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }
 
 // Activity cards with icons and colors
@@ -80,50 +82,94 @@ const people = [
   },
 ];
 
+// FAQ Accordion Client Component
+function FAQAccordion({ questions }: { questions: { question: string; answer: string }[] }) {
+  return (
+    <div className="space-y-4">
+      {questions.map((item, index) => (
+        <details
+          key={index}
+          className="group bg-white rounded-2xl border border-divider overflow-hidden"
+        >
+          <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
+            <span className="font-semibold text-dark-grey pr-4">{item.question}</span>
+            <svg
+              className="w-5 h-5 text-medium-grey transition-transform group-open:rotate-180 flex-shrink-0"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
+          <div className="px-6 pb-6 text-medium-grey leading-relaxed">
+            {item.answer}
+          </div>
+        </details>
+      ))}
+    </div>
+  );
+}
+
 export default async function LandingPage({ params }: LandingPageProps) {
   const { locale } = await params;
   const t = await getTranslations('landing');
+  const supabase = await createClient();
+
+  // Fetch real stats from DB
+  const [placesCountResult, citiesResult] = await Promise.all([
+    supabase.from('places').select('*', { count: 'exact', head: true }),
+    supabase.from('places').select('city'),
+  ]);
+
+  const placesCount = placesCountResult.count || 0;
+  const uniqueCities = new Set(citiesResult.data?.map((p) => p.city) || []);
+  const citiesCount = uniqueCities.size;
 
   const featuredPlaces = [
     {
       id: 1,
       name: 'São Paulo',
       image: 'https://images.unsplash.com/photo-1543059080-f9b1272213d5?w=800&q=80',
+      count: 0,
     },
     {
       id: 2,
       name: 'Rio de Janeiro',
       image: 'https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=800&q=80',
+      count: 0,
     },
     {
       id: 3,
       name: 'Lisboa',
       image: 'https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=800&q=80',
+      count: 0,
     },
     {
       id: 4,
       name: 'Buenos Aires',
       image: 'https://images.unsplash.com/photo-1612294037637-ec328d0e075e?w=800&q=80',
+      count: 0,
     },
   ];
 
-  const aboutFeatures = [
-    {
-      key: 'feature1',
-      image: 'https://images.unsplash.com/photo-1533929736458-ca588d08c8be?w=600&q=80',
-    },
-    {
-      key: 'feature2',
-      image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&q=80',
-    },
-    {
-      key: 'feature3',
-      image: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=600&q=80',
-    },
-    {
-      key: 'feature4',
-      image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600&q=80',
-    },
+  // Get counts for featured cities
+  const cityCountsPromises = featuredPlaces.map(async (place) => {
+    const { count } = await supabase
+      .from('places')
+      .select('*', { count: 'exact', head: true })
+      .eq('city', place.name);
+    return { ...place, count: count || 0 };
+  });
+  const featuredPlacesWithCounts = await Promise.all(cityCountsPromises);
+
+  const faqQuestions = [
+    { question: t('faq.q1.question'), answer: t('faq.q1.answer') },
+    { question: t('faq.q2.question'), answer: t('faq.q2.answer') },
+    { question: t('faq.q3.question'), answer: t('faq.q3.answer') },
+    { question: t('faq.q4.question'), answer: t('faq.q4.answer') },
+    { question: t('faq.q5.question'), answer: t('faq.q5.answer') },
   ];
 
   return (
@@ -267,7 +313,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
 
             {/* CTA Button */}
             <Link
-              href={`/${locale}/auth/signup`}
+              href={routes.auth.signup(locale)}
               className="inline-flex items-center px-8 py-4 bg-primary text-white rounded-full font-semibold text-lg hover:bg-primary/90 transition-all hover:shadow-lg hover:scale-105"
             >
               {t('nav.signUp')}
@@ -276,82 +322,210 @@ export default async function LandingPage({ params }: LandingPageProps) {
         </div>
       </section>
 
-      {/* About Section */}
-      <section className="py-16 lg:py-24">
+      {/* Trust Indicators Bar */}
+      <section className="py-6 bg-white border-y border-divider">
         <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl lg:text-4xl font-bold text-dark-grey mb-4">
-                {t('about.title')}
-              </h2>
-              <p className="text-medium-grey mb-6 leading-relaxed">
-                {t('about.description')}
-              </p>
-              <Link
-                href={`/${locale}/auth/signup`}
-                className="inline-flex items-center px-6 py-3 bg-primary text-white rounded-full font-semibold hover:bg-primary/90 transition-colors"
-              >
-                {t('about.cta')}
-              </Link>
+          <div className="flex flex-wrap items-center justify-center gap-6 lg:gap-12 text-sm">
+            <div className="flex items-center gap-2 text-medium-grey">
+              <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <span className="font-medium">{t('trustBar.placesShared', { count: placesCount })}</span>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-4">
-                <div className="relative aspect-square rounded-2xl overflow-hidden">
-                  <Image
-                    src={aboutFeatures[0].image}
-                    alt={t(`about.${aboutFeatures[0].key}`)}
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <span className="absolute bottom-4 left-4 text-white font-semibold">
-                    {t(`about.${aboutFeatures[0].key}`)}
-                  </span>
-                </div>
-                <div className="relative aspect-[4/3] rounded-2xl overflow-hidden">
-                  <Image
-                    src={aboutFeatures[1].image}
-                    alt={t(`about.${aboutFeatures[1].key}`)}
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <span className="absolute bottom-4 left-4 text-white font-semibold">
-                    {t(`about.${aboutFeatures[1].key}`)}
-                  </span>
-                </div>
-              </div>
-              <div className="space-y-4 pt-8">
-                <div className="relative aspect-[4/3] rounded-2xl overflow-hidden">
-                  <Image
-                    src={aboutFeatures[2].image}
-                    alt={t(`about.${aboutFeatures[2].key}`)}
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <span className="absolute bottom-4 left-4 text-white font-semibold">
-                    {t(`about.${aboutFeatures[2].key}`)}
-                  </span>
-                </div>
-                <div className="relative aspect-square rounded-2xl overflow-hidden">
-                  <Image
-                    src={aboutFeatures[3].image}
-                    alt={t(`about.${aboutFeatures[3].key}`)}
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <span className="absolute bottom-4 left-4 text-white font-semibold">
-                    {t(`about.${aboutFeatures[3].key}`)}
-                  </span>
-                </div>
-              </div>
+            <div className="flex items-center gap-2 text-medium-grey">
+              <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="font-medium">{t('trustBar.inCities', { count: citiesCount })}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="px-3 py-1 bg-primary/10 text-primary rounded-full font-medium text-xs">
+                {t('trustBar.privateBeta')}
+              </span>
             </div>
           </div>
         </div>
       </section>
-      {/* Featured Places Section */}
+
+      {/* Problem-Agitation Section */}
+      <section className="py-16 lg:py-24 bg-gray-50">
+        <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10">
+          <h2 className="text-2xl lg:text-3xl font-bold text-dark-grey text-center mb-12">
+            {t('problems.title')}
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Problem 1 */}
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-divider text-center">
+              <div className="w-14 h-14 mx-auto mb-6 rounded-full bg-red-100 flex items-center justify-center">
+                <svg className="w-7 h-7 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="font-bold text-dark-grey mb-2">{t('problems.problem1.title')}</h3>
+              <p className="text-medium-grey text-sm">{t('problems.problem1.description')}</p>
+            </div>
+            {/* Problem 2 */}
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-divider text-center">
+              <div className="w-14 h-14 mx-auto mb-6 rounded-full bg-orange-100 flex items-center justify-center">
+                <svg className="w-7 h-7 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="font-bold text-dark-grey mb-2">{t('problems.problem2.title')}</h3>
+              <p className="text-medium-grey text-sm">{t('problems.problem2.description')}</p>
+            </div>
+            {/* Problem 3 */}
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-divider text-center">
+              <div className="w-14 h-14 mx-auto mb-6 rounded-full bg-purple-100 flex items-center justify-center">
+                <svg className="w-7 h-7 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+              </div>
+              <h3 className="font-bold text-dark-grey mb-2">{t('problems.problem3.title')}</h3>
+              <p className="text-medium-grey text-sm">{t('problems.problem3.description')}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className="py-16 lg:py-24 bg-white">
+        <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl lg:text-3xl font-bold text-dark-grey mb-2">
+              {t('howItWorks.title')}
+            </h2>
+            <p className="text-medium-grey">{t('howItWorks.subtitle')}</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
+            {/* Step 1 */}
+            <div className="text-center">
+              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-primary/10 flex items-center justify-center">
+                <span className="text-2xl font-bold text-primary">1</span>
+              </div>
+              <div className="mb-4">
+                <svg className="w-12 h-12 mx-auto text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+                </svg>
+              </div>
+              <h3 className="font-bold text-dark-grey mb-2">{t('howItWorks.step1.title')}</h3>
+              <p className="text-medium-grey text-sm">{t('howItWorks.step1.description')}</p>
+            </div>
+            {/* Step 2 */}
+            <div className="text-center">
+              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-primary/10 flex items-center justify-center">
+                <span className="text-2xl font-bold text-primary">2</span>
+              </div>
+              <div className="mb-4">
+                <svg className="w-12 h-12 mx-auto text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                </svg>
+              </div>
+              <h3 className="font-bold text-dark-grey mb-2">{t('howItWorks.step2.title')}</h3>
+              <p className="text-medium-grey text-sm">{t('howItWorks.step2.description')}</p>
+            </div>
+            {/* Step 3 */}
+            <div className="text-center">
+              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-primary/10 flex items-center justify-center">
+                <span className="text-2xl font-bold text-primary">3</span>
+              </div>
+              <div className="mb-4">
+                <svg className="w-12 h-12 mx-auto text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
+                </svg>
+              </div>
+              <h3 className="font-bold text-dark-grey mb-2">{t('howItWorks.step3.title')}</h3>
+              <p className="text-medium-grey text-sm">{t('howItWorks.step3.description')}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Benefits Section (Improved About) */}
+      <section className="py-16 lg:py-24 bg-surface">
+        <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10">
+          <h2 className="text-2xl lg:text-3xl font-bold text-dark-grey text-center mb-12">
+            {t('benefits.title')}
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Benefit 1 */}
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-divider">
+              <div className="w-12 h-12 mb-6 rounded-xl bg-green-100 flex items-center justify-center">
+                <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="font-bold text-dark-grey mb-2">{t('benefits.benefit1.title')}</h3>
+              <p className="text-medium-grey text-sm leading-relaxed">{t('benefits.benefit1.description')}</p>
+            </div>
+            {/* Benefit 2 */}
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-divider">
+              <div className="w-12 h-12 mb-6 rounded-xl bg-blue-100 flex items-center justify-center">
+                <svg className="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                </svg>
+              </div>
+              <h3 className="font-bold text-dark-grey mb-2">{t('benefits.benefit2.title')}</h3>
+              <p className="text-medium-grey text-sm leading-relaxed">{t('benefits.benefit2.description')}</p>
+            </div>
+            {/* Benefit 3 */}
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-divider">
+              <div className="w-12 h-12 mb-6 rounded-xl bg-amber-100 flex items-center justify-center">
+                <svg className="w-6 h-6 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                </svg>
+              </div>
+              <h3 className="font-bold text-dark-grey mb-2">{t('benefits.benefit3.title')}</h3>
+              <p className="text-medium-grey text-sm leading-relaxed">{t('benefits.benefit3.description')}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Social Proof / Use Cases Section */}
+      <section className="py-16 lg:py-24 bg-white">
+        <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10">
+          <h2 className="text-2xl lg:text-3xl font-bold text-dark-grey text-center mb-12">
+            {t('socialProof.title')}
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Persona 1 - The Foodie */}
+            <div className="relative bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-8 border border-orange-200">
+              <div className="w-16 h-16 mb-6 rounded-full bg-orange-500 flex items-center justify-center shadow-lg">
+                <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+              </div>
+              <h3 className="font-bold text-dark-grey text-xl mb-2">{t('socialProof.persona1.title')}</h3>
+              <p className="text-medium-grey">{t('socialProof.persona1.description')}</p>
+            </div>
+            {/* Persona 2 - The Traveler */}
+            <div className="relative bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-8 border border-blue-200">
+              <div className="w-16 h-16 mb-6 rounded-full bg-blue-500 flex items-center justify-center shadow-lg">
+                <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="font-bold text-dark-grey text-xl mb-2">{t('socialProof.persona2.title')}</h3>
+              <p className="text-medium-grey">{t('socialProof.persona2.description')}</p>
+            </div>
+            {/* Persona 3 - The Social Butterfly */}
+            <div className="relative bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-8 border border-purple-200">
+              <div className="w-16 h-16 mb-6 rounded-full bg-purple-500 flex items-center justify-center shadow-lg">
+                <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                </svg>
+              </div>
+              <h3 className="font-bold text-dark-grey text-xl mb-2">{t('socialProof.persona3.title')}</h3>
+              <p className="text-medium-grey">{t('socialProof.persona3.description')}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Places Section (Improved) */}
       <section className="py-16 lg:py-24 bg-surface">
         <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10">
           <div className="flex items-center justify-between mb-8">
@@ -359,30 +533,37 @@ export default async function LandingPage({ params }: LandingPageProps) {
               {t('featured.title')}
             </h2>
             <Link
-              href={`/${locale}/app/explore`}
+              href={routes.app.explore.index(locale)}
               className="px-4 py-2 bg-dark-grey text-white rounded-full text-sm font-semibold hover:bg-dark-grey/90 transition-colors"
             >
               {t('featured.exploreAll')}
             </Link>
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {featuredPlaces.map((place) => (
+            {featuredPlacesWithCounts.map((place) => (
               <Link
                 key={place.id}
-                href={`/${locale}/app/explore?city=${place.name}`}
+                href={routes.app.explore.index(locale, { city: place.name })}
                 className="group"
               >
-                <div className="relative aspect-[4/3] rounded-2xl overflow-hidden">
+                <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow">
                   <Image
                     src={place.image}
                     alt={place.name}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                  <span className="absolute bottom-4 left-4 text-white font-semibold text-lg">
-                    {place.name}
-                  </span>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <span className="text-white font-semibold text-lg block">
+                      {place.name}
+                    </span>
+                    {place.count > 0 && (
+                      <span className="text-white/80 text-sm">
+                        {place.count} {place.count === 1 ? t('explore.place') : t('explore.places')}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </Link>
             ))}
@@ -390,22 +571,58 @@ export default async function LandingPage({ params }: LandingPageProps) {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* FAQ Section */}
+      <section className="py-16 lg:py-24 bg-white">
+        <div className="2xl:max-w-[1440px] max-w-[800px] mx-auto px-6 lg:px-10">
+          <h2 className="text-2xl lg:text-3xl font-bold text-dark-grey text-center mb-12">
+            {t('faq.title')}
+          </h2>
+          <FAQAccordion questions={faqQuestions} />
+        </div>
+      </section>
+
+      {/* Final CTA Section (Improved) */}
       <section className="py-16 lg:py-24 bg-primary text-white">
         <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10">
           <div className="text-center max-w-2xl mx-auto">
             <h2 className="text-3xl lg:text-4xl font-bold mb-4">
-              {t('cta.title')}
+              {t('finalCta.title')}
             </h2>
             <p className="text-white/80 mb-8 leading-relaxed">
-              {t('cta.description')}
+              {t('finalCta.description')}
             </p>
-            <Link
-              href={`/${locale}/auth/signup`}
-              className="inline-flex items-center px-8 py-4 bg-white text-primary rounded-full font-semibold text-lg hover:bg-white/90 transition-all hover:shadow-lg"
-            >
-              {t('cta.button')}
-            </Link>
+
+            {/* Trust Signals */}
+            <div className="flex items-center justify-center gap-6 mb-8 text-sm text-white/70">
+              <div className="flex items-center gap-2">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>{t('finalCta.noCreditCard')}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>{t('finalCta.freeForever')}</span>
+              </div>
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link
+                href={routes.auth.signup(locale)}
+                className="inline-flex items-center px-8 py-4 bg-white text-primary rounded-full font-semibold text-lg hover:bg-white/90 transition-all hover:shadow-lg"
+              >
+                {t('finalCta.button')}
+              </Link>
+              <Link
+                href={routes.app.explore.index(locale)}
+                className="inline-flex items-center px-8 py-4 bg-white/10 text-white rounded-full font-semibold text-lg hover:bg-white/20 transition-all border border-white/30"
+              >
+                {t('finalCta.secondaryButton')}
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -425,10 +642,10 @@ export default async function LandingPage({ params }: LandingPageProps) {
               <span className="font-bold text-primary">Circle Picks</span>
             </div>
             <div className="flex items-center gap-6 text-sm text-medium-grey">
-              <Link href={`/${locale}/legal/terms`} className="hover:text-dark-grey transition-colors">
+              <Link href={routes.legal.terms(locale)} className="hover:text-dark-grey transition-colors">
                 {t('footer.terms')}
               </Link>
-              <Link href={`/${locale}/legal/privacy`} className="hover:text-dark-grey transition-colors">
+              <Link href={routes.legal.privacy(locale)} className="hover:text-dark-grey transition-colors">
                 {t('footer.privacy')}
               </Link>
               <Link href="mailto:contact@circlepicks.app" className="hover:text-dark-grey transition-colors">

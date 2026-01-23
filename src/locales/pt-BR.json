@@ -40,6 +40,103 @@
       "privacy": "Privacidade",
       "contact": "Contato",
       "rights": "Todos os direitos reservados."
+    },
+    "trustBar": {
+      "placesShared": "{count} lugares compartilhados",
+      "inCities": "Em {count} cidades",
+      "privateBeta": "Beta Privado"
+    },
+    "problems": {
+      "title": "Parece familiar?",
+      "problem1": {
+        "title": "Rolar infinitamente por reviews falsas",
+        "description": "Você não sabe quais avaliações são reais ou pagas"
+      },
+      "problem2": {
+        "title": "Não sabe qual amigo foi aonde",
+        "description": "Ótimas indicações se perdem nas conversas de grupo"
+      },
+      "problem3": {
+        "title": "Esquece seus lugares favoritos",
+        "description": "Não lembra daquele lugar incrível da última viagem"
+      }
+    },
+    "howItWorks": {
+      "title": "Como funciona",
+      "subtitle": "Três passos simples para melhores indicações",
+      "step1": {
+        "title": "Conecte-se com amigos",
+        "description": "Siga pessoas cujo gosto você confia"
+      },
+      "step2": {
+        "title": "Veja os lugares favoritos deles",
+        "description": "Explore indicações da sua rede"
+      },
+      "step3": {
+        "title": "Salve e descubra",
+        "description": "Acompanhe lugares que quer conhecer"
+      }
+    },
+    "benefits": {
+      "title": "Por que Circle Picks?",
+      "benefit1": {
+        "title": "Nunca mais gaste dinheiro em refeições decepcionantes",
+        "description": "Confie em indicações de amigos reais, não em avaliadores anônimos"
+      },
+      "benefit2": {
+        "title": "Lembre de todos os lugares que amigos mencionam",
+        "description": "Salve indicações em um só lugar, organizadas e fáceis de encontrar"
+      },
+      "benefit3": {
+        "title": "Descubra joias escondidas antes de ficarem lotadas",
+        "description": "Receba dicas de locais e amigos viajados"
+      }
+    },
+    "socialProof": {
+      "title": "Perfeito para",
+      "persona1": {
+        "title": "O Foodie",
+        "description": "Mantenha todas suas descobertas gastronômicas organizadas"
+      },
+      "persona2": {
+        "title": "O Viajante",
+        "description": "Receba dicas locais de amigos que já estiveram lá"
+      },
+      "persona3": {
+        "title": "O Social",
+        "description": "Compartilhe facilmente seus lugares favoritos com seu círculo"
+      }
+    },
+    "faq": {
+      "title": "Perguntas?",
+      "q1": {
+        "question": "É grátis?",
+        "answer": "Sim! Circle Picks é completamente grátis. Acreditamos que todos devem ter acesso a ótimas indicações de pessoas em quem confiam."
+      },
+      "q2": {
+        "question": "Meus amigos precisam estar no Circle Picks?",
+        "answer": "Não necessariamente! Você pode explorar indicações públicas da comunidade. Mas a experiência fica ainda melhor quando seus amigos entram e compartilham seus lugares favoritos."
+      },
+      "q3": {
+        "question": "Como é diferente do Yelp ou Google Reviews?",
+        "answer": "Em vez de avaliações anônimas de desconhecidos, Circle Picks mostra indicações de pessoas que você realmente conhece e confia. Sem reviews falsas, sem conteúdo patrocinado - apenas indicações reais de amigos reais."
+      },
+      "q4": {
+        "question": "Posso manter minhas indicações privadas?",
+        "answer": "Claro! Você controla quem vê suas indicações. Pode compartilhar publicamente, apenas com seguidores, ou manter lugares privados só para você."
+      },
+      "q5": {
+        "question": "E se eu não tiver muitos amigos no app ainda?",
+        "answer": "Comece explorando indicações públicas da comunidade. Você também pode convidar amigos diretamente do app. Quanto mais amigos conectar, mais personalizada fica sua experiência!"
+      }
+    },
+    "finalCta": {
+      "title": "Pronto para descobrir lugares melhores?",
+      "description": "Entre no beta privado e comece a receber indicações de pessoas em quem você confia.",
+      "button": "Criar conta grátis",
+      "secondaryButton": "Explorar indicações públicas",
+      "noCreditCard": "Sem cartão de crédito",
+      "freeForever": "Grátis para sempre"
     }
   },
   "nav": {

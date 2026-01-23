@@ -20,6 +20,7 @@ import { api } from '@/lib/api/endpoints';
 import { cn } from '@/lib/utils/cn';
 import { useAuth } from '@/lib/hooks/useAuth';
 import type { ExperienceFeedItem } from '@/lib/models';
+import { routes, type Locale } from '@/lib/routes';
 
 export default function ProfilePage({
   params,
@@ -92,7 +93,7 @@ export default function ProfilePage({
             } else {
               showToast(t('bookmark.addedToast'), 'success', {
                 label: t('bookmark.seeNow'),
-                href: `/${locale}/app/profile/me?tab=bookmarks`,
+                href: routes.app.profile.me(locale as Locale, { tab: 'bookmarks' }),
               });
             }
           }
@@ -114,7 +115,7 @@ export default function ProfilePage({
     try {
       const response = await fetch('/api/auth/signout', { method: 'POST' });
       if (response.ok) {
-        router.push(`/${locale}`);
+        router.push(routes.home(locale as Locale));
         router.refresh();
       }
     } catch (error) {
@@ -268,8 +269,8 @@ export default function ProfilePage({
                         <ExperienceCard
                           key={experience.id}
                           experience={experience}
-                          onClick={() => router.push(`/${locale}/app/experience/${experience.experience_id}/${experience.slug}`)}
-                          onEdit={isOwnProfile ? () => router.push(`/${locale}/app/experience/${experience.experience_id}/edit`) : undefined}
+                          onClick={() => router.push(routes.app.experience.detail(locale as Locale, experience.experience_id, experience.slug || ''))}
+                          onEdit={isOwnProfile ? () => router.push(routes.app.experience.edit(locale as Locale, experience.experience_id)) : undefined}
                           onDelete={isOwnProfile ? () => handleDelete(experience.experience_id) : undefined}
                           onBookmarkToggle={!isOwnProfile ? () => handleBookmarkToggle(experience) : undefined}
                         />
@@ -320,7 +321,7 @@ export default function ProfilePage({
                         <ExperienceCard
                           key={experience.id}
                           experience={experience}
-                          onClick={() => router.push(`/${locale}/app/experience/${experience.experience_id}/${experience.slug}`)}
+                          onClick={() => router.push(routes.app.experience.detail(locale as Locale, experience.experience_id, experience.slug || ''))}
                           onBookmarkToggle={() => handleBookmarkToggle(experience)}
                         />
                       ))}

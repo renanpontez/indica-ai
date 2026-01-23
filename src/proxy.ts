@@ -7,6 +7,7 @@ import {
   isPublicRoute,
   extractLocale,
   removeLocalePrefix,
+  routes,
 } from './lib/routes';
 
 const intlMiddleware = createIntlMiddleware(routing);
@@ -40,8 +41,7 @@ export default async function proxy(request: NextRequest) {
   // Redirect to sign in if not authenticated
   if (!user) {
     const locale = extractLocale(pathname);
-    const signInUrl = new URL(`/${locale}/auth/signin`, request.url);
-    signInUrl.searchParams.set('callbackUrl', pathname);
+    const signInUrl = new URL(routes.auth.signin(locale, { callbackUrl: pathname }), request.url);
     return NextResponse.redirect(signInUrl);
   }
 

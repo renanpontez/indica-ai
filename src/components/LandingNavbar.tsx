@@ -4,9 +4,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { routes, type Locale } from '@/lib/routes';
 
 interface LandingNavbarProps {
-  locale: string;
+  locale: Locale;
   showActions?: boolean;
 }
 
@@ -18,7 +19,7 @@ export default function LandingNavbar({ locale, showActions = true }: LandingNav
       <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10">
         <div className="flex items-center justify-between py-4">
           {/* Logo */}
-          <Link href={`/${locale}`} className="flex items-center gap-2 flex-shrink-0">
+          <Link href={routes.home(locale)} className="flex items-center gap-2 flex-shrink-0">
             <Image
               src="/assets/circle-picks.svg"
               alt="Circle Picks logo"
@@ -36,13 +37,13 @@ export default function LandingNavbar({ locale, showActions = true }: LandingNav
             {showActions && (
               <>
                 <Link
-                  href={`/${locale}/auth/signin`}
+                  href={routes.auth.signin(locale)}
                   className="px-4 py-2 text-sm font-semibold text-dark-grey hover:text-primary transition-colors hidden sm:block"
                 >
                   {t('nav.login')}
                 </Link>
                 <Link
-                  href={`/${locale}/auth/signup`}
+                  href={routes.auth.signup(locale)}
                   className="px-4 py-2 text-sm font-semibold text-white bg-primary hover:bg-primary/90 rounded-full transition-colors"
                 >
                   {t('nav.signUp')}
