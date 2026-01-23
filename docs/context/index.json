@@ -1,0 +1,568 @@
+{
+  "meta": {
+    "name": "Circle Picks - Context Navigation Index",
+    "version": "0.4.0",
+    "purpose": "Master index for navigating all context documentation files",
+    "last_updated": "2026-01-20",
+    "architecture": "Next.js 16.1.1 + Supabase (Auth, Database, Storage)",
+    "status": "MVP implemented - full-stack social recommendations platform",
+    "rebrand_note": "App rebranded to 'Circle Picks' (January 2026) - see context/REBRAND_GUIDE.md for reference"
+  },
+  "navigation": {
+    "description": "This file serves as the entry point for all project context. Use breadcrumbs to navigate to specific sections.",
+    "structure": "frontend -> [strategy|tech|ux|setup-plan]",
+    "rebrand_guide": "context/REBRAND_GUIDE.md - Rebrand reference documentation (completed January 2026)"
+  },
+  "files": {
+    "frontend": {
+      "strategy": {
+        "file": "context/front.strategy.json",
+        "breadcrumb": "frontend -> strategy",
+        "purpose": "Product strategy, objectives, scope, and success criteria",
+        "when_to_use": [
+          "Understanding project goals and MVP scope",
+          "Clarifying what's in/out of scope",
+          "Understanding core value proposition",
+          "Defining success criteria for features"
+        ],
+        "key_sections": {
+          "objective": "Main project goal",
+          "core_value_prop": "What makes this product unique",
+          "primary_use_cases": "Key user workflows",
+          "scope_frontend": "What's in/out of MVP scope",
+          "success_criteria": "UX and technical success metrics"
+        },
+        "relates_to": [
+          "front.ux.json -> Implements UX patterns for strategic goals",
+          "front.tech.json -> Technical implementation of strategy"
+        ]
+      },
+      "tech": {
+        "file": "context/front.tech.json",
+        "breadcrumb": "frontend -> tech",
+        "purpose": "Technical architecture, stack, domain models, Supabase integration, and API contracts",
+        "when_to_use": [
+          "Choosing or configuring tech stack",
+          "Defining TypeScript types/interfaces",
+          "Setting up Supabase integration (Auth, Database, Storage)",
+          "Understanding folder structure",
+          "Configuring authentication flows",
+          "Configuring location behaviors (GPS/IP/manual)",
+          "Understanding tags system and visibility",
+          "Implementing follow relationships"
+        ],
+        "key_sections": {
+          "stack": {
+            "path": "frontend -> tech -> stack",
+            "description": "Framework, language, libraries, tooling choices",
+            "critical_fields": [
+              "framework: Next.js 16.1.1 (App Router)",
+              "language: TypeScript 5.9.3",
+              "ui_library: React 19.2.3",
+              "styling: Tailwind CSS 3.4.19",
+              "state_management: TanStack React Query 5.90.16",
+              "forms: React Hook Form 7.71.0",
+              "backend: Supabase (Auth, Database, Storage)",
+              "i18n: next-intl 4.7.0"
+            ]
+          },
+          "supabase": {
+            "path": "frontend -> tech -> supabase",
+            "description": "Supabase configuration and integration",
+            "auth": "Email/Password via Supabase Auth (Google OAuth stub)",
+            "database": "PostgreSQL with Row Level Security (RLS)",
+            "storage": "Image uploads for experiences and avatars",
+            "client": "@supabase/supabase-js 2.90.1 + @supabase/ssr 0.8.0",
+            "tables": ["users", "places", "experiences", "bookmarks", "tags", "follows"]
+          },
+          "architecture": {
+            "path": "frontend -> tech -> architecture",
+            "description": "Folder structure and architectural principles",
+            "structure": {
+              "feature_folders": "features/feed/, features/add/, features/profile/, features/explore/, features/experience-detail/",
+              "api_layer": "lib/api/ (endpoints facade to Supabase)",
+              "supabase": "lib/supabase/ (client, server, middleware utilities)",
+              "models": "lib/models/",
+              "hooks": "lib/hooks/ and hooks/"
+            },
+            "principles": [
+              "Feature-first folders",
+              "Supabase client for all data operations",
+              "Domain types from lib/models",
+              "React Query for data fetching/caching",
+              "RLS policies for data security"
+            ]
+          },
+          "integration": {
+            "path": "frontend -> tech -> integration",
+            "description": "Supabase and API contracts",
+            "env_vars": {
+              "NEXT_PUBLIC_SUPABASE_URL": "Supabase project URL",
+              "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY": "Client-side publishable key",
+              "SUPABASE_SECRET_KEY": "Server-side secret key",
+              "NEXT_PUBLIC_SITE_URL": "Site URL for OAuth redirects",
+              "GOOGLE_PLACES_API_KEY": "Google Places API key"
+            },
+            "location_behaviors": {
+              "path": "frontend -> tech -> integration -> location_behaviors",
+              "gps": "Geolocation API with permission handling",
+              "ip_fallback": "Vercel geolocation headers",
+              "manual_city": "CitySelector component fallback"
+            }
+          },
+          "domain_models_frontend": {
+            "path": "frontend -> tech -> domain_models_frontend",
+            "description": "All TypeScript types/interfaces (CRITICAL for implementation)",
+            "types": {
+              "User": "Basic user info (id, display_name, username, avatar_url)",
+              "AuthUser": "Extended user with auth provider",
+              "Place": "Place entity with google_place_id, coordinates, recommendation_count",
+              "PlaceSearchResult": "Search result that may not exist in DB yet",
+              "PlaceStats": "Aggregated stats (recommendation_count, top_tags)",
+              "Experience": "User recommendation with visibility field",
+              "ExperienceDetail": "Full experience with nested user/place/other_recommenders",
+              "ExperienceFeedItem": "Feed card data with bookmark status",
+              "Bookmark": "Saved experience reference",
+              "Tag": "Database-backed tag with i18n (id, slug, display_name, is_system)",
+              "TagWithLabel": "Tag with resolved i18n label",
+              "Follow": "User follow relationship",
+              "OtherRecommender": "User who also recommended same place"
+            },
+            "view_models": {
+              "ExperienceCardProps": "Props for experience cards",
+              "QuickAddFormState": "State management for Quick Add flow",
+              "ExperienceVisibility": "'public' | 'friends_only'"
+            },
+            "note": "These types MUST match Supabase database schema"
+          },
+          "ui_components": {
+            "path": "frontend -> tech -> ui_components",
+            "description": "Component inventory organized by feature",
+            "global": [
+              "DesktopNav", "Sidebar", "BottomNav", "TopBar",
+              "Avatar", "Chip", "Button", "Input", "TextArea", "IconButton",
+              "SearchBar", "Breadcrumb", "LanguageSwitcher",
+              "LoadingSpinner", "ErrorMessage", "PlaceholderImage",
+              "VisibilityBadge", "FollowButton",
+              "Toast", "ToastContainer",
+              "FloatingActionButton", "Stories",
+              "AuthGuard", "UserDropdown", "UserMenu", "Providers"
+            ],
+            "features": {
+              "auth": ["SignInForm", "SignUpForm", "SocialSignInButtons"],
+              "feed": ["ExperienceCard", "ExperienceList", "SectionHeader", "FeedEmptyState"],
+              "quick_add": [
+                "PlaceSearchInput", "PlaceSuggestionList", "CustomPlaceForm",
+                "PriceRangeSelector", "TagSelector",
+                "ImagePicker", "VisibilitySelector",
+                "ExistingPlaceModal", "SaveExperienceButton"
+              ],
+              "profile": [
+                "UserHeader", "ProfileTabs",
+                "ProfileExperienceList", "ProfileBookmarksList",
+                "EditProfileModal"
+              ],
+              "experience_detail": [
+                "ExperienceDetailLayout", "ImageGallery",
+                "LocationMap", "MapLinkButton", "BookmarkButton",
+                "MoreFromUser", "OtherRecommenders",
+                "ExperienceActions", "DeleteExperienceModal"
+              ],
+              "explore": ["TagChips", "CityList", "ExperienceGrid"]
+            }
+          },
+          "api_routes": {
+            "path": "frontend -> tech -> api_routes",
+            "description": "All API endpoints",
+            "auth": {
+              "POST /api/auth/signup": "Register with email/password",
+              "POST /api/auth/signin": "Login with email/password",
+              "POST /api/auth/signout": "Logout"
+            },
+            "places": {
+              "POST /api/places": "Create place with deduplication",
+              "GET /api/places/search": "Search Google Places + local DB",
+              "GET /api/places/match": "Find matching places",
+              "GET /api/places/[id]/stats": "Get place stats"
+            },
+            "experiences": {
+              "POST /api/experiences": "Create experience",
+              "GET /api/experiences/[id]": "Get experience details",
+              "PATCH /api/experiences/[id]": "Update experience",
+              "DELETE /api/experiences/[id]": "Delete experience"
+            },
+            "feed": {
+              "GET /api/feed": "Get personalized feed (my/friends/community/nearby)"
+            },
+            "explore": {
+              "GET /api/explore": "Get explore data (tags, cities, recent)"
+            },
+            "bookmarks": {
+              "GET /api/bookmarks": "Get user's bookmarks",
+              "POST /api/bookmarks": "Create bookmark",
+              "DELETE /api/bookmarks/[id]": "Remove bookmark"
+            },
+            "profile": {
+              "GET /api/profile/[userId]": "Get user profile",
+              "PATCH /api/profile": "Update own profile"
+            },
+            "tags": {
+              "GET /api/tags": "Fetch all tags",
+              "POST /api/tags": "Create custom tag"
+            },
+            "follow": {
+              "POST /api/follow/[userId]": "Toggle follow/unfollow"
+            },
+            "other": {
+              "POST /api/upload": "Upload image to storage",
+              "GET /api/search": "Global search"
+            }
+          },
+          "tags_system": {
+            "path": "frontend -> tech -> tags_system",
+            "description": "Database-backed tags with i18n support",
+            "system_tags": [
+              "restaurant", "cafe", "bar", "hotel", "breakfast", "lunch", "dinner",
+              "coffee", "japanese", "italian", "brazilian", "mexican", "french",
+              "nightlife", "bakery", "brunch", "seafood", "vegetarian", "vegan",
+              "fast-food", "dessert", "asian-fusion", "american", "chinese", "experience"
+            ],
+            "custom_tags": "Users can create custom tags with preserved display_name",
+            "slug_normalization": "lowercase, hyphens, no special chars",
+            "i18n": "System tags use locales/*.json, custom tags use display_name or slug"
+          },
+          "visibility_system": {
+            "path": "frontend -> tech -> visibility_system",
+            "description": "Experience visibility control",
+            "levels": {
+              "public": "Visible to everyone",
+              "friends_only": "Only visible to followers"
+            },
+            "feed_logic": "Users see: own (any) + public + friends_only from followed users",
+            "enforcement": "RLS policies at database level"
+          },
+          "place_deduplication": {
+            "path": "frontend -> tech -> place_deduplication",
+            "description": "Multi-level matching to prevent duplicate places",
+            "strategy": [
+              "1. Exact match by google_place_id",
+              "2. Case-insensitive name + city + country match",
+              "3. Coordinate proximity (~500m) with name similarity",
+              "4. Country name normalization (Brasil->Brazil, EUA->United States)"
+            ],
+            "existing_place_modal": "Shows recommendation_count and top_tags when selecting existing place"
+          },
+          "non_functional": {
+            "path": "frontend -> tech -> non_functional",
+            "description": "Performance, accessibility, responsiveness requirements",
+            "performance": "React Query caching, image compression, Suspense",
+            "accessibility": "Focus states, 44px touch targets, AA contrast",
+            "responsiveness": "320-414px mobile, ~768px tablet, 1024+ desktop (max 1760px)"
+          }
+        },
+        "relates_to": [
+          "front.ux.json -> UX patterns for components",
+          "front.strategy.json -> Technical implementation of strategy",
+          "front.setup-plan.json -> Step-by-step implementation guide"
+        ]
+      },
+      "ux": {
+        "file": "context/front.ux.json",
+        "breadcrumb": "frontend -> ux",
+        "purpose": "UX patterns, screen specs, navigation, design tokens, and copy system",
+        "when_to_use": [
+          "Designing UI components",
+          "Understanding navigation model",
+          "Implementing screen layouts",
+          "Applying design tokens (colors, typography, spacing)",
+          "Writing user-facing copy",
+          "Ensuring accessibility standards"
+        ],
+        "key_sections": {
+          "navigation_model": {
+            "path": "frontend -> ux -> navigation_model",
+            "description": "Bottom nav tabs and primary actions",
+            "tabs": ["feed", "add", "profile", "explore"],
+            "pattern": "Bottom navigation on mobile, Sidebar + TopBar on desktop"
+          },
+          "core_screens": {
+            "path": "frontend -> ux -> core_screens",
+            "description": "List of all screens in app",
+            "screens": [
+              "Sign In",
+              "Sign Up",
+              "Feed (with sections: my/friends/community/nearby)",
+              "Quick Add Flow",
+              "Experience Detail",
+              "Experience Edit",
+              "Profile (own/other)",
+              "Bookmarks",
+              "Explore Hub",
+              "Explore by Tag",
+              "Explore by City",
+              "Explore All"
+            ]
+          },
+          "screen_specs": {
+            "path": "frontend -> ux -> screen_specs",
+            "description": "Detailed specifications for each screen",
+            "auth": {
+              "sign_in": "/[locale]/auth/signin",
+              "sign_up": "/[locale]/auth/signup",
+              "error": "/[locale]/auth/error",
+              "providers": ["Email/Password"]
+            },
+            "feed": {
+              "path": "/[locale]/app",
+              "sections": ["mySuggestions", "friendsSuggestions", "communitySuggestions", "nearbyPlaces"],
+              "components": ["Stories", "SectionHeader", "ExperienceCard", "FeedEmptyState"]
+            },
+            "quick_add": {
+              "path": "/[locale]/app/add",
+              "required_fields": ["place", "price_range", "tags"],
+              "optional_fields": ["visibility", "brief_description", "images", "instagram_handle", "phone_number", "visit_date"]
+            },
+            "experience_detail": {
+              "path": "/[locale]/app/experience/[id]/[slug]"
+            },
+            "experience_edit": {
+              "path": "/[locale]/app/experience/[id]/edit"
+            },
+            "profile": {
+              "own": "/[locale]/app/profile/me",
+              "other": "/[locale]/app/profile/[userId]",
+              "tabs": ["experiences", "bookmarks (own only)"]
+            },
+            "explore": {
+              "hub": "/[locale]/app/explore",
+              "all": "/[locale]/app/explore/all",
+              "cities": "/[locale]/app/explore/cities",
+              "by_tag": "/[locale]/app/explore/tag/[slug]"
+            }
+          },
+          "design_tokens": {
+            "path": "frontend -> ux -> design_tokens",
+            "description": "Colors, typography, spacing, radius for Tailwind config",
+            "note": "See front.ux.json for exact values matching tailwind.config.ts"
+          },
+          "copy_system": {
+            "path": "frontend -> ux -> copy_system",
+            "description": "Tone and example copy for UI",
+            "tone": ["Lightweight", "Social", "Trust-based"],
+            "languages": ["pt-BR (default)", "en-US"]
+          },
+          "a11y_logic": {
+            "path": "frontend -> ux -> a11y_logic",
+            "description": "Accessibility requirements",
+            "focus_order": "Top->Bottom",
+            "min_touch_target": "44px",
+            "color_contrast": "AA (WCAG)"
+          }
+        },
+        "relates_to": [
+          "front.tech.json -> Technical implementation of UX patterns",
+          "front.strategy.json -> UX supports strategic objectives"
+        ]
+      },
+      "setup_plan": {
+        "file": "context/front.setup-plan.json",
+        "breadcrumb": "frontend -> setup-plan",
+        "purpose": "Step-by-step implementation guide with all phases including Supabase setup",
+        "when_to_use": [
+          "Starting project setup",
+          "Setting up Supabase project and database",
+          "Planning implementation phases",
+          "Understanding build order",
+          "Reference for database schema and RLS policies"
+        ],
+        "key_sections": {
+          "project_overview": "High-level project summary",
+          "phases": {
+            "phase_1_initial_setup": "Project init, dependencies, env vars",
+            "phase_2_folder_structure": "Create feature-first architecture",
+            "phase_3_design_tokens": "Configure Tailwind with design tokens",
+            "phase_4_domain_models": "Define TypeScript types",
+            "phase_5_supabase_setup": "Database schema, RLS policies",
+            "phase_6_auth": "Supabase Auth setup",
+            "phase_7_api_layer": "Supabase client, React Query hooks",
+            "phase_8_global_components": "Build shared UI components",
+            "phase_9_auth_screens": "Sign in, sign up, error pages",
+            "phase_10_core_screens": "Feed, Add, Profile, Experience Detail",
+            "phase_11_routing": "Next.js routing with auth protection",
+            "phase_12_location_handling": "GPS -> IP -> Manual fallback",
+            "phase_13_error_loading_states": "Loading, error, empty states",
+            "phase_14_responsive_layout": "Mobile-first responsive design",
+            "phase_15_testing_qa": "Optional testing setup",
+            "phase_16_tags_system": "Database-backed tags with i18n",
+            "phase_17_follow_visibility": "Follow relationships and visibility",
+            "phase_18_explore": "Explore feature with filters"
+          },
+          "database_schema": "SQL for all tables with RLS policies",
+          "critical_principles": "Must-follow architecture, UX, a11y, security rules"
+        },
+        "relates_to": [
+          "front.tech.json -> References tech stack and models",
+          "front.ux.json -> References design tokens and components",
+          "front.strategy.json -> Implements strategic objectives"
+        ]
+      }
+    }
+  },
+  "quick_reference": {
+    "when_building": {
+      "new_component": [
+        "Check frontend -> ux -> components_inventory for UX requirements",
+        "Check frontend -> tech -> ui_components for existing components",
+        "Check frontend -> ux -> design_tokens for styling",
+        "Check frontend -> ux -> a11y_logic for accessibility"
+      ],
+      "new_feature": [
+        "Check frontend -> strategy -> scope_frontend to verify in MVP scope",
+        "Check frontend -> ux -> screen_specs for UX requirements",
+        "Check frontend -> tech -> architecture for folder placement",
+        "Check frontend -> tech -> api_routes for API endpoints"
+      ],
+      "supabase_integration": [
+        "Check frontend -> tech -> supabase for configuration",
+        "Check frontend -> setup-plan -> phase_5_supabase_setup for database schema",
+        "Check frontend -> tech -> domain_models_frontend for TypeScript types",
+        "Ensure RLS policies match access patterns"
+      ],
+      "authentication": [
+        "Check frontend -> tech -> supabase -> auth for providers",
+        "Check frontend -> setup-plan -> phase_6_auth for implementation",
+        "Check frontend -> ux -> screen_specs -> auth for UI specs"
+      ],
+      "api_integration": [
+        "Check frontend -> tech -> api_routes for all endpoints",
+        "Check frontend -> tech -> domain_models_frontend for types",
+        "Use lib/api/endpoints.ts facade"
+      ],
+      "styling": [
+        "Check frontend -> ux -> design_tokens for colors/spacing/typography",
+        "Apply in Tailwind classes using token names"
+      ],
+      "location_features": [
+        "Check frontend -> tech -> integration -> location_behaviors",
+        "Check frontend -> ux -> screen_specs -> quick_add_flow"
+      ],
+      "place_deduplication": [
+        "Check frontend -> tech -> place_deduplication for strategy",
+        "Check frontend -> tech -> api_routes -> places for endpoints",
+        "Check frontend -> tech -> domain_models_frontend -> PlaceStats"
+      ],
+      "tags": [
+        "Check frontend -> tech -> tags_system for architecture",
+        "Use useTags() hook for fetching",
+        "Use useTagLabel() for i18n display names"
+      ],
+      "visibility_and_follows": [
+        "Check frontend -> tech -> visibility_system for levels",
+        "Use useFollow() for follow mutations",
+        "Check RLS policies for visibility enforcement"
+      ]
+    }
+  },
+  "search_patterns": {
+    "find_type_definition": "frontend -> tech -> domain_models_frontend -> types -> [TypeName]",
+    "find_component_spec": "frontend -> tech -> ui_components",
+    "find_screen_layout": "frontend -> ux -> screen_specs -> [screen_name]",
+    "find_design_token": "frontend -> ux -> design_tokens -> [color|typography|spacing|radius]",
+    "find_supabase_config": "frontend -> tech -> supabase",
+    "find_database_schema": "frontend -> setup-plan -> phase_5_supabase_setup",
+    "find_auth_setup": "frontend -> setup-plan -> phase_6_auth",
+    "find_api_routes": "frontend -> tech -> api_routes -> [category]",
+    "find_tags_system": "frontend -> tech -> tags_system",
+    "find_visibility_rules": "frontend -> tech -> visibility_system",
+    "find_place_deduplication": "frontend -> tech -> place_deduplication",
+    "check_mvp_scope": "frontend -> strategy -> scope_frontend"
+  },
+  "critical_cross_references": {
+    "domain_models": {
+      "defined_in": "frontend -> tech -> domain_models_frontend",
+      "database_schema": "frontend -> setup-plan -> phase_5_supabase_setup",
+      "code_location": "src/lib/models/index.ts",
+      "used_in": ["All Supabase queries", "All feature components", "API routes"]
+    },
+    "supabase": {
+      "config": "frontend -> tech -> supabase",
+      "setup": "frontend -> setup-plan -> phase_5_supabase_setup",
+      "auth": "frontend -> setup-plan -> phase_6_auth",
+      "code_location": "src/lib/supabase/",
+      "used_by": ["All data fetching", "Authentication", "File uploads"]
+    },
+    "design_tokens": {
+      "defined_in": "frontend -> ux -> design_tokens",
+      "code_location": "tailwind.config.ts",
+      "used_by": "All UI components"
+    },
+    "tags": {
+      "architecture": "frontend -> tech -> tags_system",
+      "database": "frontend -> setup-plan -> tags table",
+      "code_location": "src/features/add/hooks/useTags.ts, src/hooks/useTagLabel.ts"
+    },
+    "visibility": {
+      "architecture": "frontend -> tech -> visibility_system",
+      "database": "experiences.visibility column + RLS policies",
+      "code_location": "src/app/api/feed/route.ts"
+    },
+    "api_facade": {
+      "defined_in": "frontend -> tech -> api_routes",
+      "code_location": "src/lib/api/endpoints.ts",
+      "used_by": "All feature hooks"
+    }
+  },
+  "workflow_guide": {
+    "starting_project": {
+      "order": [
+        "1. Read frontend -> strategy to understand goals",
+        "2. Read frontend -> tech -> stack to confirm tech choices",
+        "3. Create Supabase project (see frontend -> setup-plan -> phase_5_supabase_setup)",
+        "4. Follow frontend -> setup-plan phases in order",
+        "5. Reference frontend -> ux -> design_tokens during Tailwind setup"
+      ]
+    },
+    "implementing_feature": {
+      "order": [
+        "1. Check frontend -> strategy -> scope_frontend (is it in scope?)",
+        "2. Read frontend -> ux -> screen_specs -> [feature] for UX requirements",
+        "3. Read frontend -> tech -> domain_models_frontend for types",
+        "4. Check frontend -> tech -> api_routes for needed endpoints",
+        "5. Check Supabase tables and RLS policies if needed",
+        "6. Read frontend -> tech -> ui_components for component list"
+      ]
+    },
+    "styling_component": {
+      "order": [
+        "1. Read frontend -> ux -> design_tokens",
+        "2. Apply Tailwind classes using token names",
+        "3. Check frontend -> ux -> a11y_logic for accessibility",
+        "4. Verify against frontend -> ux -> screen_specs for layout"
+      ]
+    },
+    "adding_auth_protected_feature": {
+      "order": [
+        "1. Check frontend -> setup-plan -> phase_6_auth for auth patterns",
+        "2. Use AuthGuard component or middleware protection",
+        "3. Access user via useAuth hook",
+        "4. Ensure RLS policies allow user access to data"
+      ]
+    },
+    "working_with_tags": {
+      "order": [
+        "1. Read frontend -> tech -> tags_system for architecture",
+        "2. Use useTags() hook to fetch all tags",
+        "3. Use useTagLabel() to resolve slug to display name",
+        "4. For custom tags, POST to /api/tags"
+      ]
+    },
+    "implementing_visibility": {
+      "order": [
+        "1. Read frontend -> tech -> visibility_system for levels",
+        "2. Add VisibilitySelector to forms",
+        "3. Feed API respects visibility automatically via RLS",
+        "4. Use VisibilityBadge component for display"
+      ]
+    }
+  }
+}

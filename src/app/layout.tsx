@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: 'Circle Picks - Recommendations from people you trust',
   description: 'Discover places your friends love. Social recommendations from your trusted circle.',
   icons: {
-    icon: '/assets/favicon.ico',
+    icon: '/favicon.ico',
   },
 };
 
