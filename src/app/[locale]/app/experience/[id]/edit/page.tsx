@@ -17,6 +17,7 @@ import { useUpdateExperience } from '@/features/experience-detail/hooks/useExper
 import { useAuthContext } from '@/lib/auth/AuthContext';
 import { api } from '@/lib/api/endpoints';
 import type { PriceRange, ExperienceVisibility } from '@/lib/models';
+import { routes, type Locale } from '@/lib/routes';
 
 export default function EditExperiencePage() {
   const router = useRouter();
@@ -26,7 +27,7 @@ export default function EditExperiencePage() {
   const { mutate: updateExperience, isPending } = useUpdateExperience();
 
   const experienceId = params.id as string;
-  const locale = params.locale as string;
+  const locale = params.locale as Locale;
 
   // Fetch experience data
   const {
@@ -71,7 +72,7 @@ export default function EditExperiencePage() {
   // Redirect if not owner
   useEffect(() => {
     if (experience && user && !isOwner) {
-      router.push(`/${locale}/app/experience/${experienceId}/${experience.slug}`);
+      router.push(routes.app.experience.detail(locale, experienceId, experience.slug || ''));
     }
   }, [experience, user, isOwner, router, locale, experienceId]);
 
@@ -96,10 +97,10 @@ export default function EditExperiencePage() {
   }
 
   const breadcrumbItems = [
-    { label: t('nav.feed'), href: `/${locale}/app` },
+    { label: t('nav.feed'), href: routes.app.feed(locale) },
     {
       label: experience.place.name,
-      href: `/${locale}/app/experience/${experienceId}/${experience.slug}`,
+      href: routes.app.experience.detail(locale, experienceId, experience.slug || ''),
     },
     { label: t('experience.edit.title') },
   ];
@@ -162,7 +163,7 @@ export default function EditExperiencePage() {
       {
         onSuccess: () => {
           router.push(
-            `/${locale}/app/experience/${experienceId}/${experience.slug}`
+            routes.app.experience.detail(locale, experienceId, experience.slug || '')
           );
         },
       }

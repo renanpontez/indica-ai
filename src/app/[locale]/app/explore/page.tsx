@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { useExplore } from '@/features/explore/hooks/useExplore';
 import { ExperienceCard } from '@/features/feed/components/ExperienceCard';
+import { routes, routePaths, type Locale } from '@/lib/routes';
 
 // Helper to format tag slug as fallback display name
 function formatTagSlug(slug: string): string {
@@ -55,7 +56,7 @@ export default function ExplorePage() {
               {tags.slice(0, 8).map((tagItem) => (
                 <Link
                   key={tagItem.tag}
-                  href={`/app/explore/tag/${tagItem.tag}`}
+                  href={routePaths.app.explore.tag(tagItem.tag)}
                   className="group p-4 bg-white rounded-xl border border-divider hover:border-primary hover:shadow-md transition-all"
                 >
                   <div className="flex items-center justify-between">
@@ -78,7 +79,7 @@ export default function ExplorePage() {
                 {t('explore.sections.cities')}
               </h2>
               <Link
-                href="/app/explore/cities"
+                href={routePaths.app.explore.cities()}
                 className="text-sm text-primary hover:underline"
               >
                 {t('explore.viewAll')}
@@ -88,7 +89,7 @@ export default function ExplorePage() {
               {cities.slice(0, 8).map((city) => (
                 <Link
                   key={`${city.city}-${city.country}`}
-                  href={`/app/explore/all?city=${encodeURIComponent(city.city)}`}
+                  href={routePaths.app.explore.all({ city: city.city })}
                   className="group p-4 bg-white rounded-xl border border-divider hover:border-primary hover:shadow-md transition-all"
                 >
                   <div className="flex flex-col">
@@ -112,7 +113,7 @@ export default function ExplorePage() {
               {t('explore.sections.recent')}
             </h2>
             <Link
-              href="/app/explore/all"
+              href={routePaths.app.explore.all()}
               className="text-sm text-primary hover:underline"
             >
               {t('explore.viewAll')}
@@ -156,7 +157,7 @@ export default function ExplorePage() {
                   experience={experience}
                   onClick={() =>
                     router.push(
-                      `/${locale}/app/experience/${experience.experience_id}/${experience.slug}`
+                      routes.app.experience.detail(locale as Locale, experience.experience_id, experience.slug || '')
                     )
                   }
                 />

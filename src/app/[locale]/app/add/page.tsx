@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useLocale } from 'next-intl';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { Button } from '@/components/Button';
 import { useTranslations } from 'next-intl';
+import { routes, routePaths, type Locale } from '@/lib/routes';
 import { Input } from '@/components/Input';
 import { TextArea } from '@/components/TextArea';
 import { PlaceSearchInput } from '@/features/add/components/PlaceSearchInput';
@@ -23,12 +25,13 @@ type InputMode = 'search' | 'manual';
 
 export default function AddPage() {
   const router = useRouter();
+  const locale = useLocale() as Locale;
   const t = useTranslations();
   const { locationState, requestGPS } = useLocationContext();
   const { mutate: createExperience, isPending } = useCreateExperience();
 
   const breadcrumbItems = [
-    { label: t('nav.feed'), href: '/app' },
+    { label: t('nav.feed'), href: routePaths.app.feed() },
     { label: t('nav.add') },
   ];
 
@@ -224,7 +227,7 @@ export default function AddPage() {
       } as any,
       {
         onSuccess: () => {
-          router.push('/app');
+          router.push(routes.app.feed(locale));
         },
       }
     );

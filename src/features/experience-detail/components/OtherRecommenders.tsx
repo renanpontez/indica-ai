@@ -1,8 +1,9 @@
 'use client';
 
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
 import { Avatar } from '@/components/Avatar';
 import { useTranslations } from 'next-intl';
+import { routePaths } from '@/lib/routes';
 import type { OtherRecommender } from '@/lib/models';
 import { generateExperienceSlug } from '@/lib/utils/format';
 
@@ -34,7 +35,7 @@ export function OtherRecommenders({
         {recommenders.map((recommender) => (
           <Link
             key={recommender.id}
-            href={`/app/experience/${recommender.experience_id}/${slug}`}
+            href={routePaths.app.experience.detail(recommender.experience_id, slug)}
             className="flex items-center gap-2 px-3 py-2 rounded-full bg-surface hover:bg-divider transition-colors"
           >
             <Avatar

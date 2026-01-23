@@ -40,6 +40,103 @@
       "privacy": "Privacy",
       "contact": "Contact",
       "rights": "All rights reserved."
+    },
+    "trustBar": {
+      "placesShared": "{count} places shared",
+      "inCities": "In {count} cities",
+      "privateBeta": "Private Beta"
+    },
+    "problems": {
+      "title": "Sound familiar?",
+      "problem1": {
+        "title": "Endless scrolling through fake reviews",
+        "description": "You can't tell which reviews are real or paid for"
+      },
+      "problem2": {
+        "title": "Don't know which friend went where",
+        "description": "Great recommendations get lost in group chats"
+      },
+      "problem3": {
+        "title": "Forget your favorite spots",
+        "description": "Can't remember that amazing place from last trip"
+      }
+    },
+    "howItWorks": {
+      "title": "How it works",
+      "subtitle": "Three simple steps to better recommendations",
+      "step1": {
+        "title": "Connect with friends",
+        "description": "Follow the people whose taste you trust"
+      },
+      "step2": {
+        "title": "See their favorite places",
+        "description": "Browse recommendations from your network"
+      },
+      "step3": {
+        "title": "Save and discover",
+        "description": "Keep track of places you want to try"
+      }
+    },
+    "benefits": {
+      "title": "Why Circle Picks?",
+      "benefit1": {
+        "title": "Never waste money on disappointing meals",
+        "description": "Trust recommendations from real friends, not anonymous reviewers"
+      },
+      "benefit2": {
+        "title": "Remember every great spot friends mention",
+        "description": "Save recommendations in one place, organized and easy to find"
+      },
+      "benefit3": {
+        "title": "Discover hidden gems before they get crowded",
+        "description": "Get insider tips from locals and well-traveled friends"
+      }
+    },
+    "socialProof": {
+      "title": "Perfect for",
+      "persona1": {
+        "title": "The Foodie",
+        "description": "Keep all your food discoveries organized in one place"
+      },
+      "persona2": {
+        "title": "The Traveler",
+        "description": "Get local tips from friends who've been there"
+      },
+      "persona3": {
+        "title": "The Social Butterfly",
+        "description": "Easily share your favorite spots with your circle"
+      }
+    },
+    "faq": {
+      "title": "Questions?",
+      "q1": {
+        "question": "Is it free?",
+        "answer": "Yes! Circle Picks is completely free to use. We believe everyone should have access to great recommendations from people they trust."
+      },
+      "q2": {
+        "question": "Do my friends need to be on Circle Picks?",
+        "answer": "Not necessarily! You can explore public recommendations from the community. But the experience gets even better when your friends join and share their favorite spots."
+      },
+      "q3": {
+        "question": "How is this different from Yelp or Google Reviews?",
+        "answer": "Instead of anonymous reviews from strangers, Circle Picks shows you recommendations from people you actually know and trust. No fake reviews, no sponsored content - just real picks from real friends."
+      },
+      "q4": {
+        "question": "Can I keep my recommendations private?",
+        "answer": "Absolutely! You control who sees your recommendations. You can share publicly, only with followers, or keep spots private for yourself."
+      },
+      "q5": {
+        "question": "What if I don't have many friends on the app yet?",
+        "answer": "Start by exploring public recommendations from the community. You can also invite friends directly from the app. The more friends you connect with, the more personalized your experience becomes!"
+      }
+    },
+    "finalCta": {
+      "title": "Ready to discover better places?",
+      "description": "Join the private beta and start getting recommendations from people you trust.",
+      "button": "Create free account",
+      "secondaryButton": "Browse public recommendations",
+      "noCreditCard": "No credit card required",
+      "freeForever": "Free forever"
     }
   },
   "nav": {

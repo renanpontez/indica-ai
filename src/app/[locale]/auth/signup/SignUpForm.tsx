@@ -5,11 +5,12 @@ import { useLocale, useTranslations } from 'next-intl';
 
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
+import { routes, type Locale } from '@/lib/routes';
 
 export default function SignUpForm() {
   const searchParams = useSearchParams();
   const locale = useLocale();
-  const callbackUrl = searchParams.get('callbackUrl') || `/${locale}/app`;
+  const callbackUrl = searchParams.get('callbackUrl') || routes.app.feed(locale as Locale);
   const router = useRouter();
   const t = useTranslations('auth.signUp');
   const [formData, setFormData] = useState({
@@ -77,12 +78,12 @@ export default function SignUpForm() {
 
       if (data.requiresSignIn) {
         // Redirect to signin
-        router.push(`/${locale}/auth/signin`);
+        router.push(routes.auth.signin(locale as Locale));
         return;
       }
 
       // Success - redirect to app
-      router.push(`/${locale}/app`);
+      router.push(routes.app.feed(locale as Locale));
       router.refresh();
     } catch {
       setError(t('errors.generic'));

@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
+import { routes, type Locale } from '@/lib/routes';
 
 export default function SignInForm() {
   const router = useRouter();
@@ -13,7 +14,7 @@ export default function SignInForm() {
   const searchParams = useSearchParams();
   const t = useTranslations('auth.signIn');
 
-  const callbackUrl = searchParams.get('callbackUrl') || `/${locale}/app`;
+  const callbackUrl = searchParams.get('callbackUrl') || routes.app.feed(locale as Locale);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');

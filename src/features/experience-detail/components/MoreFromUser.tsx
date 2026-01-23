@@ -1,4 +1,5 @@
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
+import { routePaths } from '@/lib/routes';
 import type { ExperienceFeedItem } from '@/lib/models';
 
 interface MoreFromUserProps {
@@ -18,7 +19,7 @@ export function MoreFromUser({ userName, experiences }: MoreFromUserProps) {
         {experiences.map((exp) => (
           <Link
             key={exp.id}
-            href={`/app/experience/${exp.experience_id}/${exp.slug}`}
+            href={routePaths.app.experience.detail(exp.experience_id, exp.slug || '')}
             className="flex items-center gap-4 p-3 rounded-xl hover:bg-surface transition-colors group"
           >
             {/* Thumbnail */}

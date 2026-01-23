@@ -8,6 +8,7 @@ import { useToggleBookmark } from '@/features/experience-detail/hooks/useToggleB
 import { useDeleteExperience } from '@/features/experience-detail/hooks/useExperienceMutations';
 import { useToast } from '@/lib/hooks/useToast';
 import { useAuth } from '@/lib/hooks/useAuth';
+import { routes, type Locale } from '@/lib/routes';
 import type { ExperienceFeedItem } from '@/lib/models';
 
 interface SectionHeaderProps {
@@ -152,7 +153,7 @@ export function ExperienceList({
 
   const handleBookmarkToggle = (experience: ExperienceFeedItem) => {
     if (!isAuthenticated) {
-      router.push(`/${locale}/auth/signin`);
+      router.push(routes.auth.signin(locale as Locale));
       return;
     }
 
@@ -171,7 +172,7 @@ export function ExperienceList({
           } else {
             showToast(t('bookmark.addedToast'), 'success', {
               label: t('bookmark.seeNow'),
-              href: `/${locale}/app/profile/me?tab=bookmarks`,
+              href: routes.app.profile.me(locale as Locale, { tab: 'bookmarks' }),
             });
           }
         },
@@ -209,7 +210,7 @@ export function ExperienceList({
               <ExperienceCard
                 key={experience.id}
                 experience={experience}
-                onClick={() => router.push(`/${locale}/app/experience/${experience.experience_id}/${experience.slug}`)}
+                onClick={() => router.push(routes.app.experience.detail(locale as Locale, experience.experience_id, experience.slug || ''))}
                 onBookmarkToggle={() => handleBookmarkToggle(experience)}
               />
             ))}
@@ -234,7 +235,7 @@ export function ExperienceList({
               <ExperienceCard
                 key={experience.id}
                 experience={experience}
-                onClick={() => router.push(`/${locale}/app/experience/${experience.experience_id}/${experience.slug}`)}
+                onClick={() => router.push(routes.app.experience.detail(locale as Locale, experience.experience_id, experience.slug || ''))}
                 onBookmarkToggle={() => handleBookmarkToggle(experience)}
               />
             ))}
@@ -255,15 +256,15 @@ export function ExperienceList({
               <ExperienceCard
                 key={experience.id}
                 experience={experience}
-                onClick={() => router.push(`/${locale}/app/experience/${experience.experience_id}/${experience.slug}`)}
-                onEdit={() => router.push(`/${locale}/app/experience/${experience.experience_id}/edit`)}
+                onClick={() => router.push(routes.app.experience.detail(locale as Locale, experience.experience_id, experience.slug || ''))}
+                onEdit={() => router.push(routes.app.experience.edit(locale as Locale, experience.experience_id))}
                 onDelete={() => handleDelete(experience.experience_id)}
               />
             ))}
           </div>
           {hasMoreMySuggestions && (
             <SeeMoreButton
-              href={`/${locale}/app/profile/me`}
+              href={routes.app.profile.me(locale as Locale)}
               label={t('home.sections.seeAllMySuggestions')}
             />
           )}
@@ -283,14 +284,14 @@ export function ExperienceList({
               <ExperienceCard
                 key={experience.id}
                 experience={experience}
-                onClick={() => router.push(`/${locale}/app/experience/${experience.experience_id}/${experience.slug}`)}
+                onClick={() => router.push(routes.app.experience.detail(locale as Locale, experience.experience_id, experience.slug || ''))}
                 onBookmarkToggle={() => handleBookmarkToggle(experience)}
               />
             ))}
           </div>
           {hasMoreCommunitySuggestions && (
             <SeeMoreButton
-              href={`/${locale}/app/explore`}
+              href={routes.app.explore.index(locale as Locale)}
               label={t('home.sections.seeAllCommunity')}
             />
           )}
