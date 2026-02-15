@@ -5,6 +5,7 @@ import { api, ExploreResponse } from '@/lib/api/endpoints';
 
 interface UseExploreOptions {
   city?: string;
+  citySlug?: string;
   tag?: string;
   limit?: number;
 }
@@ -21,6 +22,7 @@ export function useExplore(options: UseExploreOptions = {}) {
       setError(null);
       const result = await api.getExplore({
         city: options.city,
+        citySlug: options.citySlug,
         tag: options.tag,
         limit: options.limit || 20,
         offset: newOffset,
@@ -40,7 +42,7 @@ export function useExplore(options: UseExploreOptions = {}) {
     } finally {
       setIsLoading(false);
     }
-  }, [options.city, options.tag, options.limit]);
+  }, [options.city, options.citySlug, options.tag, options.limit]);
 
   useEffect(() => {
     fetchExplore(0);
@@ -59,6 +61,7 @@ export function useExplore(options: UseExploreOptions = {}) {
     cities: data?.cities || [],
     tags: data?.tags || [],
     total: data?.total || 0,
+    resolvedCity: data?.resolvedCity || null,
     isLoading,
     error,
     loadMore,

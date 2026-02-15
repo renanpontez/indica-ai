@@ -42,12 +42,12 @@
       "rights": "Todos os direitos reservados."
     },
     "trustBar": {
-      "placesShared": "{count} lugares compartilhados",
-      "inCities": "Em {count} cidades",
+      "placesShared": "+{count} experiências compartilhadas",
+      "inCities": "+{count} cidades",
       "privateBeta": "Beta Privado"
     },
     "problems": {
-      "title": "Parece familiar?",
+      "title": "O que queremos acabar",
       "problem1": {
         "title": "Rolar infinitamente por reviews falsas",
         "description": "Você não sabe quais avaliações são reais ou pagas"
@@ -66,7 +66,7 @@
       "subtitle": "Três passos simples para melhores indicações",
       "step1": {
         "title": "Conecte-se com amigos",
-        "description": "Siga pessoas cujo gosto você confia"
+        "description": "Siga as pessoas que você confia"
       },
       "step2": {
         "title": "Veja os lugares favoritos deles",
@@ -326,16 +326,16 @@
       "friendsOnly": "Apenas Amigos",
       "friendsOnlyDescription": "Só seus seguidores"
     },
-    "creatingPlace": "Criando lugar...",
-    "savePlace": "Salvar Lugar",
+    "creatingPlace": "Criando indicação...",
+    "savePlace": "Salvar Indicação",
     "existingPlace": {
       "title": "Lugar Já Existe",
-      "description": "Este lugar já foi indicado por outras pessoas. Deseja adicionar sua experiência ao mesmo lugar?",
+      "description": "Esta experiência já foi indicada por outras pessoas. Deseja adicionar sua experiência ao mesmo lugar?",
       "recommendationCount": "{count} pessoas indicaram",
       "oftenTaggedAs": "Geralmente marcado como:",
       "noExistingRecommendations": "Seja o primeiro a indicar este lugar!",
       "addMyExperience": "Adicionar Minha Experiência",
-      "differentPlace": "É um Lugar Diferente"
+      "differentPlace": "É um Experiência Diferente"
     }
   },
   "place": {
@@ -415,6 +415,10 @@
     "tag": {
       "subtitle": "{count} experiências em {tag}",
       "empty": "Nenhuma sugestão pública em {tag} ainda."
+    },
+    "city": {
+      "subtitle": "{count} experiências em {city}",
+      "empty": "Nenhuma sugestão pública em {city} ainda."
     }
   },
   "experience": {

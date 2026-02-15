@@ -50,21 +50,25 @@ export default function ExploreTagPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-6xl mx-auto px-6 py-8">
-        <Breadcrumb items={breadcrumbItems} />
-
+      <Breadcrumb items={breadcrumbItems} />
+      <div className="2xl:max-w-[1400px] md:max-w-[1000px] mx-auto py-4">
         <div className="mb-8">
           <h1 className="text-2xl md:text-3xl font-bold text-dark-grey mb-2">
             {tagLabel}
           </h1>
-          <p className="text-medium-grey">
-            {t('explore.tag.subtitle', { count: total, tag: tagLabel })}
-          </p>
+          {!isLoading && (
+            <p className="text-medium-grey">
+              {t('explore.tag.subtitle', { count: total, tag: tagLabel })}
+            </p>
+          )}
+          {isLoading && experiences.length === 0 && (
+            <div className="w-48 h-5 bg-surface rounded animate-pulse" />
+          )}
         </div>
 
         {isLoading && experiences.length === 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(9)].map((_, i) => (
+            {[...Array(6)].map((_, i) => (
               <div
                 key={i}
                 className="bg-white rounded-xl border border-divider p-4 animate-pulse"
@@ -87,7 +91,7 @@ export default function ExploreTagPage() {
               </div>
             ))}
           </div>
-        ) : experiences.length === 0 ? (
+        ) : experiences.length === 0 && !isLoading ? (
           <div className="text-center py-12 bg-white rounded-xl border border-divider">
             <p className="text-medium-grey">
               {t('explore.tag.empty', { tag: tagLabel })}

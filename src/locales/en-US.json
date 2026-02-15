@@ -416,6 +416,10 @@
     "tag": {
       "subtitle": "{count} experiences in {tag}",
       "empty": "No public suggestions in {tag} yet."
+    },
+    "city": {
+      "subtitle": "{count} experiences in {city}",
+      "empty": "No public suggestions in {city} yet."
     }
   },
   "experience": {

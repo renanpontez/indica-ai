@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { formatTimeAgo, generateExperienceSlug } from '@/lib/utils/format';
+import { formatTimeAgo, generateExperienceSlug, slugify } from '@/lib/utils/format';
 
 // Helper to format slug to display name (capitalize first letter, replace hyphens with spaces)
 function formatSlugToDisplayName(slug: string): string {
@@ -48,9 +48,10 @@ function transformExperience(exp: any, tagDisplayNames: Map<string, string>) {
 
 export interface ExploreResponse {
   experiences: ReturnType<typeof transformExperience>[];
-  cities: { city: string; country: string; count: number }[];
+  cities: { city: string; country: string; count: number; slug: string }[];
   tags: { tag: string; count: number; displayName: string | null }[];
   total: number;
+  resolvedCity?: string | null;
 }
 
 export async function GET(request: NextRequest) {
@@ -58,10 +59,27 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
 
   // Query parameters for filtering
-  const city = searchParams.get('city');
+  let city = searchParams.get('city');
+  const citySlug = searchParams.get('citySlug');
   const tag = searchParams.get('tag');
   const limit = parseInt(searchParams.get('limit') || '20');
   const offset = parseInt(searchParams.get('offset') || '0');
+
+  // Resolve citySlug to actual city name
+  let resolvedCity: string | null = null;
+  if (citySlug && !city) {
+    const { data: distinctCities } = await supabase
+      .from('places')
+      .select('city')
+      .not('city', 'is', null);
+
+    const uniqueCities = [...new Set((distinctCities || []).map((p: any) => p.city).filter(Boolean))];
+    const matchedCity = uniqueCities.find((c: string) => slugify(c) === citySlug);
+    if (matchedCity) {
+      city = matchedCity;
+      resolvedCity = matchedCity;
+    }
+  }
 
   // Build the query - only public experiences
   let query = supabase
@@ -143,7 +161,9 @@ export async function GET(request: NextRequest) {
       }
     }
   });
-  const cities = Array.from(cityMap.values()).sort((a, b) => b.count - a.count);
+  const cities = Array.from(cityMap.values())
+    .map(c => ({ ...c, slug: slugify(c.city) }))
+    .sort((a, b) => b.count - a.count);
 
   // Get aggregated tags
   const { data: tagsData } = await supabase
@@ -184,16 +204,27 @@ export async function GET(request: NextRequest) {
     }))
     .sort((a, b) => b.count - a.count);
 
-  // Get total count for pagination
-  const { count: total } = await supabase
+  // Get total count for pagination (with same filters applied)
+  let countQuery = supabase
     .from('experiences')
     .select('*', { count: 'exact', head: true })
     .eq('visibility', 'public');
+
+  if (tag) {
+    countQuery = countQuery.contains('tags', [tag]);
+  }
+
+  if (city) {
+    countQuery = countQuery.ilike('places.city', `%${city}%`);
+  }
+
+  const { count: total } = await countQuery;
 
   return NextResponse.json({
     experiences: transformedExperiences,
     cities,
     tags,
     total: total || 0,
+    resolvedCity: resolvedCity || null,
   });
 }

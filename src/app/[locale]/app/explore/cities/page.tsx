@@ -65,7 +65,7 @@ export default function ExploreCitiesPage() {
             {cities.map((city) => (
               <Link
                 key={`${city.city}-${city.country}`}
-                href={routePaths.app.explore.all({ city: city.city })}
+                href={routePaths.app.explore.city(city.slug)}
                 className="group p-6 bg-white rounded-xl border border-divider hover:border-primary hover:shadow-md transition-all"
               >
                 <div className="flex flex-col">

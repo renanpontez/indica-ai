@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import LandingNavbar from '@/components/LandingNavbar';
 import { routes, type Locale } from '@/lib/routes';
+import { slugify } from '@/lib/utils/format';
 import { createClient } from '@/lib/supabase/server';
 
 interface LandingPageProps {
@@ -115,6 +116,7 @@ function FAQAccordion({ questions }: { questions: { question: string; answer: st
 export default async function LandingPage({ params }: LandingPageProps) {
   const { locale } = await params;
   const t = await getTranslations('landing');
+  const tExplore = await getTranslations('explore');
   const supabase = await createClient();
 
   // Fetch real stats from DB
@@ -180,9 +182,9 @@ export default async function LandingPage({ params }: LandingPageProps) {
       <section className="relative py-16 lg:py-24 lg:pt-0 overflow-hidden bg-gradient-to-b from-white to-gray-50">
         <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10">
           {/* Floating Cards Container */}
-          <div className="relative h-[400px] lg:h-[400px] mb-12">
+          <div className="relative h-[400px] lg:h-[400px] mb-12  rounded-full">
             {/* SVG Connection Lines */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
+            <svg className="absolute inset-0 w-full h-full pointer-events-none  rounded-full" style={{ zIndex: 0 }}>
               <defs>
                 <pattern id="dot-pattern" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
                   <circle cx="2" cy="2" r="1.5" fill="#E5E7EB" />
@@ -201,7 +203,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
 
             {/* Center Logo Card */}
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
-              <div className="w-24 h-24 lg:w-32 lg:h-32 rounded-3xl bg-gradient-to-br from-primary to-primary/80 shadow-xl flex items-center justify-center">
+              <div className="w-24 h-24 lg:w-32 lg:h-32 rounded-full bg-gradient-to-br from-primary to-primary/80 shadow-xl flex items-center justify-center">
                 <Image
                   src="/assets/circle-picks.svg"
                   alt="Circle Picks"
@@ -214,7 +216,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
 
             {/* Person 1 - Top Left */}
             <div className="absolute left-[2%] lg:left-[5%] top-[15%] lg:top-[20%] z-10 animate-float-slow">
-              <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-2xl overflow-hidden shadow-lg border-4 border-white">
+              <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full overflow-hidden shadow-lg border-4 border-white">
                 <Image
                   src={people[0].image}
                   alt={people[0].name}
@@ -227,14 +229,14 @@ export default async function LandingPage({ params }: LandingPageProps) {
 
             {/* Activity Card - Beach (Top Left Area) */}
             <div className="absolute left-[15%] lg:left-[18%] top-[40%] lg:top-[40%] z-10 animate-float">
-              <div className={`w-12 h-12 lg:w-14 lg:h-14 rounded-xl ${activityCards[0].color} shadow-lg flex items-center justify-center`}>
+              <div className={`w-12 h-12 lg:w-14 lg:h-14 rounded-full ${activityCards[0].color} shadow-lg flex items-center justify-center`}>
                 {activityCards[0].icon}
               </div>
             </div>
 
             {/* Person 2 - Bottom Left */}
             <div className="absolute left-[5%] lg:left-[10%] bottom-[15%] lg:bottom-[20%] z-10 animate-float-delayed">
-              <div className="w-14 h-14 lg:w-18 lg:h-18 rounded-2xl overflow-hidden shadow-lg border-4 border-white">
+              <div className="w-14 h-14 lg:w-18 lg:h-18 rounded-full overflow-hidden shadow-lg border-4 border-white">
                 <Image
                   src={people[1].image}
                   alt={people[1].name}
@@ -247,21 +249,21 @@ export default async function LandingPage({ params }: LandingPageProps) {
 
             {/* Activity Card - Hotel (Top Right) */}
             <div className="absolute right-[15%] lg:right-[18%] top-[15%] lg:top-[18%] z-10 animate-float">
-              <div className={`w-12 h-12 lg:w-14 lg:h-14 rounded-xl ${activityCards[1].color} shadow-lg flex items-center justify-center`}>
+              <div className={`w-12 h-12 lg:w-14 lg:h-14 rounded-full ${activityCards[1].color} shadow-lg flex items-center justify-center`}>
                 {activityCards[1].icon}
               </div>
             </div>
 
             {/* Activity Card - Food (Top Right Area) */}
             <div className="absolute right-[2%] lg:right-[5%] top-[20%] lg:top-[22%] z-10 animate-float-slow">
-              <div className={`w-14 h-14 lg:w-16 lg:h-16 rounded-xl ${activityCards[2].color} shadow-lg flex items-center justify-center`}>
+              <div className={`w-14 h-14 lg:w-16 lg:h-16 rounded-full ${activityCards[2].color} shadow-lg flex items-center justify-center`}>
                 {activityCards[2].icon}
               </div>
             </div>
 
             {/* Person 3 - Right Middle */}
             <div className="absolute right-[8%] lg:right-[12%] top-[55%] lg:top-[55%] z-10 animate-float-delayed">
-              <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-2xl overflow-hidden shadow-lg border-4 border-white">
+              <div className="w-16 h-16 lg:w-20 lg:h-20  rounded-full overflow-hidden shadow-lg border-4 border-white">
                 <Image
                   src={people[2].image}
                   alt={people[2].name}
@@ -274,14 +276,14 @@ export default async function LandingPage({ params }: LandingPageProps) {
 
             {/* Activity Card - Bar (Right Bottom) */}
             <div className="absolute right-[20%] lg:right-[25%] bottom-[10%] lg:bottom-[12%] z-10 animate-float">
-              <div className={`w-11 h-11 lg:w-12 lg:h-12 rounded-xl ${activityCards[3].color} shadow-lg flex items-center justify-center`}>
+              <div className={`w-11 h-11 lg:w-12 lg:h-12 rounded-full ${activityCards[3].color} shadow-lg flex items-center justify-center`}>
                 {activityCards[3].icon}
               </div>
             </div>
 
             {/* Person 4 - Bottom Left Area */}
             <div className="absolute left-[22%] lg:left-[25%] bottom-[5%] lg:bottom-[8%] z-10 animate-float-slow">
-              <div className="w-14 h-14 lg:w-16 lg:h-16 rounded-2xl overflow-hidden shadow-lg border-4 border-white">
+              <div className="w-14 h-14 lg:w-16 lg:h-16 rounded-full overflow-hidden shadow-lg border-4 border-white">
                 <Image
                   src={people[3].image}
                   alt={people[3].name}
@@ -294,7 +296,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
 
             {/* Activity Card - Cafe (Far Right) */}
             <div className="absolute right-[0%] lg:right-[2%] top-[45%] lg:top-[45%] z-10 animate-float-delayed">
-              <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-white shadow-lg border border-gray-100 flex items-center justify-center">
+              <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white shadow-lg border border-gray-100 flex items-center justify-center">
                 <svg className="w-6 h-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
@@ -348,6 +350,52 @@ export default async function LandingPage({ params }: LandingPageProps) {
         </div>
       </section>
 
+
+      {/* How It Works Section */}
+      <section className="py-16 lg:py-24 bg-white">
+        <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl lg:text-3xl font-bold text-dark-grey mb-2">
+              {t('howItWorks.title')}
+            </h2>
+            <p className="text-medium-grey">{t('howItWorks.subtitle')}</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
+            {/* Step 1 */}
+            <div className="text-center">
+              <div className="mb-4">
+                <svg className="w-12 h-12 mx-auto text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+                </svg>
+              </div>
+              <h3 className="font-bold text-dark-grey mb-2">{t('howItWorks.step1.title')}</h3>
+              <p className="text-medium-grey text-sm">{t('howItWorks.step1.description')}</p>
+            </div>
+            {/* Step 2 */}
+            <div className="text-center">
+              <div className="mb-4">
+                <svg className="w-12 h-12 mx-auto text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                </svg>
+              </div>
+              <h3 className="font-bold text-dark-grey mb-2">{t('howItWorks.step2.title')}</h3>
+              <p className="text-medium-grey text-sm">{t('howItWorks.step2.description')}</p>
+            </div>
+            {/* Step 3 */}
+            <div className="text-center">
+              <div className="mb-4">
+                <svg className="w-12 h-12 mx-auto text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
+                </svg>
+              </div>
+              <h3 className="font-bold text-dark-grey mb-2">{t('howItWorks.step3.title')}</h3>
+              <p className="text-medium-grey text-sm">{t('howItWorks.step3.description')}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Problem-Agitation Section */}
       <section className="py-16 lg:py-24 bg-gray-50">
         <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10">
@@ -384,60 +432,6 @@ export default async function LandingPage({ params }: LandingPageProps) {
               </div>
               <h3 className="font-bold text-dark-grey mb-2">{t('problems.problem3.title')}</h3>
               <p className="text-medium-grey text-sm">{t('problems.problem3.description')}</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works Section */}
-      <section className="py-16 lg:py-24 bg-white">
-        <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl lg:text-3xl font-bold text-dark-grey mb-2">
-              {t('howItWorks.title')}
-            </h2>
-            <p className="text-medium-grey">{t('howItWorks.subtitle')}</p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
-            {/* Step 1 */}
-            <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-primary/10 flex items-center justify-center">
-                <span className="text-2xl font-bold text-primary">1</span>
-              </div>
-              <div className="mb-4">
-                <svg className="w-12 h-12 mx-auto text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
-                </svg>
-              </div>
-              <h3 className="font-bold text-dark-grey mb-2">{t('howItWorks.step1.title')}</h3>
-              <p className="text-medium-grey text-sm">{t('howItWorks.step1.description')}</p>
-            </div>
-            {/* Step 2 */}
-            <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-primary/10 flex items-center justify-center">
-                <span className="text-2xl font-bold text-primary">2</span>
-              </div>
-              <div className="mb-4">
-                <svg className="w-12 h-12 mx-auto text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                </svg>
-              </div>
-              <h3 className="font-bold text-dark-grey mb-2">{t('howItWorks.step2.title')}</h3>
-              <p className="text-medium-grey text-sm">{t('howItWorks.step2.description')}</p>
-            </div>
-            {/* Step 3 */}
-            <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-primary/10 flex items-center justify-center">
-                <span className="text-2xl font-bold text-primary">3</span>
-              </div>
-              <div className="mb-4">
-                <svg className="w-12 h-12 mx-auto text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
-                </svg>
-              </div>
-              <h3 className="font-bold text-dark-grey mb-2">{t('howItWorks.step3.title')}</h3>
-              <p className="text-medium-grey text-sm">{t('howItWorks.step3.description')}</p>
             </div>
           </div>
         </div>
@@ -543,7 +537,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
             {featuredPlacesWithCounts.map((place) => (
               <Link
                 key={place.id}
-                href={routes.app.explore.index(locale, { city: place.name })}
+                href={routes.app.explore.city(locale, slugify(place.name))}
                 className="group"
               >
                 <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow">
@@ -560,7 +554,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
                     </span>
                     {place.count > 0 && (
                       <span className="text-white/80 text-sm">
-                        {place.count} {place.count === 1 ? t('explore.place') : t('explore.places')}
+                        {place.count} {place.count === 1 ? tExplore('place') : tExplore('places')}
                       </span>
                     )}
                   </div>

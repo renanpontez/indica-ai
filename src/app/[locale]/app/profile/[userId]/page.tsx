@@ -21,6 +21,7 @@ import { cn } from '@/lib/utils/cn';
 import { useAuth } from '@/lib/hooks/useAuth';
 import type { ExperienceFeedItem } from '@/lib/models';
 import { routes, type Locale } from '@/lib/routes';
+import { Button } from '@/components/Button';
 
 export default function ProfilePage({
   params,
@@ -304,6 +305,9 @@ export default function ProfilePage({
                       <p className="text-medium-grey max-w-sm">
                         {t('empty.suggestions.subtitle')}
                       </p>
+                      <Button type="button" onClick={() => router.push('/app/add')} className="mt-5">
+                        Indicar nova experiência
+                      </Button>
                     </div>
                   )}
                 </>
