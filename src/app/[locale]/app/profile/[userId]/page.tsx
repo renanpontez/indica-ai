@@ -136,8 +136,8 @@ export default function ProfilePage({
     await api.updateProfile(profileData);
     // Invalidate profile query to refetch updated data
     queryClient.invalidateQueries({ queryKey: ['profile', userId] });
-    // Refresh auth context so nav components update
-    await refreshUser();
+    // Refresh auth context so nav components update (non-blocking)
+    refreshUser();
   };
 
   return (

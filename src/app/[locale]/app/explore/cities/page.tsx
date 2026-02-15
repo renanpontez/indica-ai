@@ -26,9 +26,8 @@ export default function ExploreCitiesPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-6xl mx-auto px-6 py-8">
-        <Breadcrumb items={breadcrumbItems} />
-
+      <Breadcrumb items={breadcrumbItems} />
+      <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-2 py-8">
         <div className="mb-8">
           <h1 className="text-2xl md:text-3xl font-bold text-dark-grey mb-2">
             {t('explore.cities.title')}
