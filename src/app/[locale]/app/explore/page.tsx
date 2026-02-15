@@ -89,7 +89,7 @@ export default function ExplorePage() {
               {cities.slice(0, 8).map((city) => (
                 <Link
                   key={`${city.city}-${city.country}`}
-                  href={routePaths.app.explore.all({ city: city.city })}
+                  href={routePaths.app.explore.city(city.slug)}
                   className="group p-4 bg-white rounded-xl border border-divider hover:border-primary hover:shadow-md transition-all"
                 >
                   <div className="flex flex-col">
@@ -121,7 +121,7 @@ export default function ExplorePage() {
           </div>
 
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
                 <div
                   key={i}
@@ -150,7 +150,7 @@ export default function ExplorePage() {
               <p className="text-medium-grey">{t('explore.empty')}</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {experiences.map((experience) => (
                 <ExperienceCard
                   key={experience.id}

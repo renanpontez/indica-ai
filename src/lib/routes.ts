@@ -65,6 +65,7 @@ export const ROUTE_PATHS = {
       index: '/app/explore',
       all: '/app/explore/all',
       cities: '/app/explore/cities',
+      city: (slug: string) => `/app/explore/cities/${slug}`,
       tag: (slug: string) => `/app/explore/tag/${slug}`,
     },
     experience: {
@@ -171,6 +172,9 @@ export const routes = {
       cities: (locale: Locale) =>
         buildUrl(locale, ROUTE_PATHS.app.explore.cities),
 
+      city: (locale: Locale, slug: string, params?: QueryParams) =>
+        buildUrl(locale, ROUTE_PATHS.app.explore.city(slug), params),
+
       tag: (locale: Locale, slug: string, params?: QueryParams) =>
         buildUrl(locale, ROUTE_PATHS.app.explore.tag(slug), params),
     },
@@ -251,6 +255,9 @@ export const routePaths = {
 
       cities: () => ROUTE_PATHS.app.explore.cities,
 
+      city: (slug: string, params?: QueryParams) =>
+        ROUTE_PATHS.app.explore.city(slug) + buildQueryString(params),
+
       tag: (slug: string, params?: QueryParams) =>
         ROUTE_PATHS.app.explore.tag(slug) + buildQueryString(params),
     },
@@ -289,15 +296,6 @@ export const navItems: NavItem[] = [
     },
   },
   {
-    key: 'explore',
-    path: ROUTE_PATHS.app.explore.index,
-    translationKey: 'explore',
-    icon: {
-      viewBox: '0 0 24 24',
-      path: 'M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z',
-    },
-  },
-  {
     key: 'add',
     path: ROUTE_PATHS.app.add,
     translationKey: 'add',
@@ -307,15 +305,24 @@ export const navItems: NavItem[] = [
     },
   },
   {
-    key: 'profile',
-    path: ROUTE_PATHS.app.profile.me,
-    translationKey: 'profile',
+    key: 'explore',
+    path: ROUTE_PATHS.app.explore.index,
+    translationKey: 'explore',
     icon: {
       viewBox: '0 0 24 24',
-      path: '',
+      path: 'M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z',
     },
-    useAvatar: true,
   },
+  // {
+  //   key: 'profile',
+  //   path: ROUTE_PATHS.app.profile.me,
+  //   translationKey: 'profile',
+  //   icon: {
+  //     viewBox: '0 0 24 24',
+  //     path: '',
+  //   },
+  //   useAvatar: true,
+  // },
 ];
 
 // ============================================================================

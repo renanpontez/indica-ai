@@ -12,9 +12,10 @@ import type {
 // Explore response type
 export interface ExploreResponse {
   experiences: ExperienceFeedItem[];
-  cities: { city: string; country: string; count: number }[];
+  cities: { city: string; country: string; count: number; slug: string }[];
   tags: { tag: string; count: number; displayName: string | null }[];
   total: number;
+  resolvedCity?: string | null;
 }
 
 // Feed response type
@@ -220,12 +221,14 @@ export const api = {
   // Explore - public experiences
   getExplore: async (params?: {
     city?: string;
+    citySlug?: string;
     tag?: string;
     limit?: number;
     offset?: number;
   }): Promise<ExploreResponse> => {
     const searchParams = new URLSearchParams();
     if (params?.city) searchParams.append('city', params.city);
+    if (params?.citySlug) searchParams.append('citySlug', params.citySlug);
     if (params?.tag) searchParams.append('tag', params.tag);
     if (params?.limit) searchParams.append('limit', params.limit.toString());
     if (params?.offset) searchParams.append('offset', params.offset.toString());

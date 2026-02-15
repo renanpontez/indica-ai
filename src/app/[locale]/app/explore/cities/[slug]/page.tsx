@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { useExplore } from '@/features/explore/hooks/useExplore';
@@ -8,21 +8,33 @@ import { ExperienceCard } from '@/features/feed/components/ExperienceCard';
 import { Breadcrumb } from '@/components/Breadcrumb';
 import { routes, routePaths, type Locale } from '@/lib/routes';
 
-export default function ExploreAllPage() {
+// Helper to format slug to display name (capitalize first letter, replace hyphens with spaces)
+function formatSlugToDisplayName(slug: string): string {
+  return slug
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
+export default function ExploreCityPage() {
+  const params = useParams();
   const router = useRouter();
-  const searchParams = useSearchParams();
   const locale = useLocale();
   const t = useTranslations();
 
-  const city = searchParams.get('city') || undefined;
-  const { experiences, total, isLoading, error, loadMore, hasMore } = useExplore({
-    city,
+  const slug = params.slug as string;
+
+  const { experiences, total, resolvedCity, isLoading, error, loadMore, hasMore } = useExplore({
+    citySlug: slug,
     limit: 20,
   });
 
+  const cityLabel = resolvedCity || formatSlugToDisplayName(slug);
+
   const breadcrumbItems = [
     { label: t('nav.explore'), href: routePaths.app.explore.index() },
-    { label: city || t('explore.all.title') },
+    { label: t('explore.cities.title'), href: routePaths.app.explore.cities() },
+    { label: cityLabel },
   ];
 
   if (error) {
@@ -37,18 +49,18 @@ export default function ExploreAllPage() {
   return (
     <div className="min-h-screen bg-background">
       <Breadcrumb items={breadcrumbItems} />
-      <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 py-6">
+      <div className="2xl:max-w-[1400px] md:max-w-[1000px] mx-auto py-4">
         <div className="mb-8">
           <h1 className="text-2xl md:text-3xl font-bold text-dark-grey mb-2">
-            {city ? t('explore.all.cityTitle', { city }) : t('explore.all.title')}
+            {cityLabel}
           </h1>
           <p className="text-medium-grey">
-            {t('explore.all.subtitle', { count: total })}
+            {t('explore.city.subtitle', { count: total, city: cityLabel })}
           </p>
         </div>
 
         {isLoading && experiences.length === 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(9)].map((_, i) => (
               <div
                 key={i}
@@ -74,7 +86,9 @@ export default function ExploreAllPage() {
           </div>
         ) : experiences.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-xl border border-divider">
-            <p className="text-medium-grey">{t('explore.empty')}</p>
+            <p className="text-medium-grey">
+              {t('explore.city.empty', { city: cityLabel })}
+            </p>
             <Link
               href={routePaths.app.explore.index()}
               className="mt-4 inline-block text-primary hover:underline"
@@ -84,7 +98,7 @@ export default function ExploreAllPage() {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {experiences.map((experience) => (
                 <ExperienceCard
                   key={experience.id}
