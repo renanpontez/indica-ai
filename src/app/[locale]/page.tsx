@@ -129,42 +129,42 @@ export default async function LandingPage({ params }: LandingPageProps) {
   const uniqueCities = new Set(citiesResult.data?.map((p) => p.city) || []);
   const citiesCount = uniqueCities.size;
 
-  const featuredPlaces = [
-    {
-      id: 1,
-      name: 'São Paulo',
-      image: 'https://images.unsplash.com/photo-1543059080-f9b1272213d5?w=800&q=80',
-      count: 0,
-    },
-    {
-      id: 2,
-      name: 'Rio de Janeiro',
-      image: 'https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=800&q=80',
-      count: 0,
-    },
-    {
-      id: 3,
-      name: 'Lisboa',
-      image: 'https://images.unsplash.com/photo-1585208798174-6cedd86e019a?w=800&q=80',
-      count: 0,
-    },
-    {
-      id: 4,
-      name: 'Buenos Aires',
-      image: 'https://images.unsplash.com/photo-1612294037637-ec328d0e075e?w=800&q=80',
-      count: 0,
-    },
-  ];
+  // Fetch top cities by public experience count with a representative image
+  const { data: cityExperiences } = await supabase
+    .from('experiences')
+    .select(`
+      images,
+      places:place_id (
+        city,
+        country
+      )
+    `)
+    .eq('visibility', 'public');
 
-  // Get counts for featured cities
-  const cityCountsPromises = featuredPlaces.map(async (place) => {
-    const { count } = await supabase
-      .from('places')
-      .select('*', { count: 'exact', head: true })
-      .eq('city', place.name);
-    return { ...place, count: count || 0 };
+  const cityMap = new Map<string, { name: string; country: string; count: number; image: string | null }>();
+  (cityExperiences || []).forEach((exp: any) => {
+    if (exp.places?.city) {
+      const key = exp.places.city;
+      const existing = cityMap.get(key);
+      if (existing) {
+        existing.count++;
+        if (!existing.image && exp.images?.[0]) {
+          existing.image = exp.images[0];
+        }
+      } else {
+        cityMap.set(key, {
+          name: exp.places.city,
+          country: exp.places.country || '',
+          count: 1,
+          image: exp.images?.[0] || null,
+        });
+      }
+    }
   });
-  const featuredPlacesWithCounts = await Promise.all(cityCountsPromises);
+
+  const featuredCities = Array.from(cityMap.values())
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 4);
 
   const faqQuestions = [
     { question: t('faq.q1.question'), answer: t('faq.q1.answer') },
@@ -179,7 +179,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
       <LandingNavbar locale={locale} />
 
       {/* Hero Section - Floating Cards Style */}
-      <section className="relative py-16 lg:py-24 lg:pt-0 overflow-hidden bg-gradient-to-b from-white to-gray-50">
+      <section className="relative py-2 lg:py-24 lg:pt-0 overflow-hidden bg-gradient-to-b from-white to-gray-50">
         <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10">
           {/* Floating Cards Container */}
           <div className="relative h-[400px] lg:h-[400px] mb-12  rounded-full">
@@ -316,7 +316,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
             {/* CTA Button */}
             <Link
               href={routes.auth.signup(locale)}
-              className="inline-flex items-center px-8 py-4 bg-primary text-white rounded-full font-semibold text-lg hover:bg-primary/90 transition-all hover:shadow-lg hover:scale-105"
+              className="inline-flex items-center px-8 py-4 bg-primary text-white rounded-full font-semibold text-lg hover:bg-primary/90 transition-all hover:shadow-lg hover:scale-105 mb-4"
             >
               {t('nav.signUp')}
             </Link>
@@ -437,6 +437,55 @@ export default async function LandingPage({ params }: LandingPageProps) {
         </div>
       </section>
 
+
+      {/* Featured Places Section (Improved) */}
+      <section className="py-16 lg:py-24 bg-surface">
+        <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-2xl lg:text-3xl font-bold text-dark-grey">
+              {t('featured.title')}
+            </h2>
+            <Link
+              href={routes.app.explore.index(locale)}
+              className="px-4 py-2 bg-dark-grey text-white rounded-full text-sm font-semibold hover:bg-dark-grey/90 transition-colors"
+            >
+              {t('featured.exploreAll')}
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {featuredCities.map((city) => (
+              <Link
+                key={city.name}
+                href={routes.app.explore.city(locale, slugify(city.name))}
+                className="group"
+              >
+                <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow">
+                  {city.image ? (
+                    <Image
+                      src={city.image}
+                      alt={city.name}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/80 to-primary/40 group-hover:scale-105 transition-transform duration-300" />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <span className="text-white font-semibold text-lg block">
+                      {city.name}
+                    </span>
+                    <span className="text-white/80 text-sm">
+                      {city.count} {city.count === 1 ? tExplore('place') : tExplore('places')}
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Benefits Section (Improved About) */}
       <section className="py-16 lg:py-24 bg-surface">
         <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10">
@@ -519,51 +568,6 @@ export default async function LandingPage({ params }: LandingPageProps) {
         </div>
       </section>
 
-      {/* Featured Places Section (Improved) */}
-      <section className="py-16 lg:py-24 bg-surface">
-        <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl lg:text-3xl font-bold text-dark-grey">
-              {t('featured.title')}
-            </h2>
-            <Link
-              href={routes.app.explore.index(locale)}
-              className="px-4 py-2 bg-dark-grey text-white rounded-full text-sm font-semibold hover:bg-dark-grey/90 transition-colors"
-            >
-              {t('featured.exploreAll')}
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {featuredPlacesWithCounts.map((place) => (
-              <Link
-                key={place.id}
-                href={routes.app.explore.city(locale, slugify(place.name))}
-                className="group"
-              >
-                <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow">
-                  <Image
-                    src={place.image}
-                    alt={place.name}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <span className="text-white font-semibold text-lg block">
-                      {place.name}
-                    </span>
-                    {place.count > 0 && (
-                      <span className="text-white/80 text-sm">
-                        {place.count} {place.count === 1 ? tExplore('place') : tExplore('places')}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* FAQ Section */}
       <section className="py-16 lg:py-24 bg-white">
