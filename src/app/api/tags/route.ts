@@ -46,11 +46,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid name' }, { status: 400 });
   }
 
-  // Normalize slug: lowercase, trim, replace spaces with hyphens
+  // Normalize slug: lowercase, strip diacritics, replace spaces with hyphens
   const normalizedSlug = trimmedName
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Strip diacritics (ç→c, á→a, etc.)
     .toLowerCase()
     .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9-]/g, ''); // Remove special characters
+    .replace(/[^a-z0-9-]/g, '') // Remove remaining special characters
+    .replace(/-+/g, '-') // Collapse multiple hyphens
+    .replace(/^-|-$/g, ''); // Trim leading/trailing hyphens
 
   if (!normalizedSlug) {
     return NextResponse.json({ error: 'Invalid name' }, { status: 400 });
