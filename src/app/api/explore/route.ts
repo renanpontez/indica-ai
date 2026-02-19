@@ -205,9 +205,10 @@ export async function GET(request: NextRequest) {
     .sort((a, b) => b.count - a.count);
 
   // Get total count for pagination (with same filters applied)
+  // Must include places join so that city filter works on the related table
   let countQuery = supabase
     .from('experiences')
-    .select('*', { count: 'exact', head: true })
+    .select('*, places:place_id(city)', { count: 'exact', head: true })
     .eq('visibility', 'public');
 
   if (tag) {
