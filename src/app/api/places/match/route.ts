@@ -46,6 +46,7 @@ export async function GET(request: NextRequest) {
     const { data: experiences } = await supabase
       .from('experiences')
       .select('place_id')
+      .eq('status', 'active')
       .in('place_id', allPlaceIds);
 
     for (const exp of experiences || []) {

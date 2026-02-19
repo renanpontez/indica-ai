@@ -41,6 +41,7 @@ export async function GET(request: NextRequest) {
           avatar_url
         )
       `)
+      .eq('status', 'active')
       .or(`brief_description.ilike.${searchPattern}`)
       .limit(10);
 
@@ -59,6 +60,7 @@ export async function GET(request: NextRequest) {
             tags,
             price_range,
             created_at,
+            status,
             users:user_id (
               id,
               display_name,
@@ -87,7 +89,7 @@ export async function GET(request: NextRequest) {
       });
 
       placeExperiences?.forEach((place: any) => {
-        place.experiences?.forEach((exp: any) => {
+        place.experiences?.filter((exp: any) => exp.status !== 'inactive').forEach((exp: any) => {
           if (!experienceMap.has(exp.id)) {
             experienceMap.set(exp.id, {
               id: exp.id,

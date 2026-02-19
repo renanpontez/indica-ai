@@ -41,6 +41,15 @@ export async function DesktopNav({ user }: DesktopNavProps) {
           <div className="flex items-center gap-3 flex-shrink-0">
             <LanguageSwitcher />
 
+            {isAuthenticated && user.role === 'admin' && (
+              <Link
+                href={routes.app.admin.dashboard(locale)}
+                className="px-3 py-1.5 text-sm font-medium text-medium-grey hover:text-dark-grey border border-divider rounded-lg transition-colors"
+              >
+                {t('admin.nav.experiences')}
+              </Link>
+            )}
+
             {isAuthenticated ? (
               <Link href={routes.app.profile.me(locale)}>
                 <Avatar src={user.avatar_url} alt={user.display_name} size="sm" />

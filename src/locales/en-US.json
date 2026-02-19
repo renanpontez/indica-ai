@@ -490,5 +490,46 @@
       "changePhoto": "Change Photo",
       "uploadingPhoto": "Uploading..."
     }
+  },
+  "admin": {
+    "nav": {
+      "experiences": "Admin"
+    },
+    "experiences": {
+      "title": "Experience Moderation",
+      "filters": {
+        "all": "All",
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "table": {
+        "place": "Place",
+        "user": "User",
+        "city": "City",
+        "status": "Status",
+        "created": "Created",
+        "actions": "Actions"
+      },
+      "empty": "No experiences found",
+      "statusBadge": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "showing": "Showing {from}-{to} of {total}",
+      "prev": "Previous",
+      "next": "Next"
+    },
+    "moderation": {
+      "deactivateTitle": "Deactivate",
+      "message": "This will hide the experience from all public surfaces:",
+      "reasonLabel": "Reason for deactivation",
+      "reasonPlaceholder": "Describe why this experience is being deactivated...",
+      "reasonRequired": "A reason is required",
+      "cancel": "Cancel",
+      "confirm": "Deactivate",
+      "deactivating": "Deactivating...",
+      "reactivate": "Reactivate",
+      "reactivateConfirm": "Are you sure you want to reactivate this experience?"
+    }
   }
 }

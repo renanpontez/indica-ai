@@ -489,5 +489,46 @@
       "changePhoto": "Alterar Foto",
       "uploadingPhoto": "Enviando..."
     }
+  },
+  "admin": {
+    "nav": {
+      "experiences": "Admin"
+    },
+    "experiences": {
+      "title": "Moderação de Experiências",
+      "filters": {
+        "all": "Todas",
+        "active": "Ativas",
+        "inactive": "Inativas"
+      },
+      "table": {
+        "place": "Local",
+        "user": "Usuário",
+        "city": "Cidade",
+        "status": "Status",
+        "created": "Criado",
+        "actions": "Ações"
+      },
+      "empty": "Nenhuma experiência encontrada",
+      "statusBadge": {
+        "active": "Ativa",
+        "inactive": "Inativa"
+      },
+      "showing": "Mostrando {from}-{to} de {total}",
+      "prev": "Anterior",
+      "next": "Próximo"
+    },
+    "moderation": {
+      "deactivateTitle": "Desativar",
+      "message": "Isso ocultará a experiência de todas as superfícies públicas:",
+      "reasonLabel": "Motivo da desativação",
+      "reasonPlaceholder": "Descreva por que esta experiência está sendo desativada...",
+      "reasonRequired": "Um motivo é obrigatório",
+      "cancel": "Cancelar",
+      "confirm": "Desativar",
+      "deactivating": "Desativando...",
+      "reactivate": "Reativar",
+      "reactivateConfirm": "Tem certeza que deseja reativar esta experiência?"
+    }
   }
 }

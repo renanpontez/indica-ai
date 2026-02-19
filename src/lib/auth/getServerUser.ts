@@ -30,6 +30,7 @@ export async function getServerUser(): Promise<AuthUser | null> {
       display_name: profile.display_name,
       username: profile.username,
       avatar_url: profile.avatar_url,
+      role: (profile.role as 'user' | 'admin') || 'user',
     };
   }
 
@@ -50,5 +51,6 @@ export async function getServerUser(): Promise<AuthUser | null> {
       authUser.user_metadata?.avatar_url ||
       authUser.user_metadata?.picture ||
       null,
+    role: 'user',
   };
 }
