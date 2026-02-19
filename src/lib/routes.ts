@@ -76,6 +76,10 @@ export const ROUTE_PATHS = {
       view: (userId: string) => `/app/profile/${userId}`,
       me: '/app/profile/me',
     },
+    admin: {
+      dashboard: '/app/admin',
+      experiences: '/app/admin/experiences',
+    },
   },
 } as const;
 
@@ -201,6 +205,14 @@ export const routes = {
       me: (locale: Locale, params?: { tab?: 'experiences' | 'bookmarks' }) =>
         buildUrl(locale, ROUTE_PATHS.app.profile.me, params),
     },
+
+    admin: {
+      dashboard: (locale: Locale) =>
+        buildUrl(locale, ROUTE_PATHS.app.admin.dashboard),
+
+      experiences: (locale: Locale) =>
+        buildUrl(locale, ROUTE_PATHS.app.admin.experiences),
+    },
   },
 } as const;
 
@@ -276,6 +288,12 @@ export const routePaths = {
 
       me: (params?: { tab?: 'experiences' | 'bookmarks' }) =>
         ROUTE_PATHS.app.profile.me + buildQueryString(params),
+    },
+
+    admin: {
+      dashboard: () => ROUTE_PATHS.app.admin.dashboard,
+
+      experiences: () => ROUTE_PATHS.app.admin.experiences,
     },
   },
 } as const;

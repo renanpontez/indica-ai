@@ -62,6 +62,10 @@ export const mockApi = {
       visit_date: data.visit_date || null,
       visibility: data.visibility || 'public',
       created_at: new Date().toISOString(),
+      status: 'active',
+      moderation_reason: null,
+      moderated_at: null,
+      moderated_by: null,
     };
 
     createdExperiences.push(newExperience);

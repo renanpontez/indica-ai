@@ -108,6 +108,7 @@ export async function GET(request: NextRequest) {
       )
     `)
     .eq('visibility', 'public')
+    .eq('status', 'active')
     .order('created_at', { ascending: false });
 
   // Apply city filter if provided
@@ -142,7 +143,8 @@ export async function GET(request: NextRequest) {
         country
       )
     `)
-    .eq('visibility', 'public');
+    .eq('visibility', 'public')
+    .eq('status', 'active');
 
   // Aggregate cities with counts
   const cityMap = new Map<string, { city: string; country: string; count: number }>();
@@ -169,7 +171,8 @@ export async function GET(request: NextRequest) {
   const { data: tagsData } = await supabase
     .from('experiences')
     .select('tags')
-    .eq('visibility', 'public');
+    .eq('visibility', 'public')
+    .eq('status', 'active');
 
   // Aggregate tags with counts
   const tagMap = new Map<string, number>();
@@ -209,7 +212,8 @@ export async function GET(request: NextRequest) {
   let countQuery = supabase
     .from('experiences')
     .select('*, places:place_id(city)', { count: 'exact', head: true })
-    .eq('visibility', 'public');
+    .eq('visibility', 'public')
+    .eq('status', 'active');
 
   if (tag) {
     countQuery = countQuery.contains('tags', [tag]);

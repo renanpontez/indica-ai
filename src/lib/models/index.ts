@@ -78,6 +78,10 @@ export interface Experience {
   visit_date: string | null;
   visibility: ExperienceVisibility;
   created_at: string;
+  status: ExperienceStatus;
+  moderation_reason: string | null;
+  moderated_at: string | null;
+  moderated_by: string | null;
 }
 
 // User who also recommended the same place publicly
@@ -174,6 +178,12 @@ export interface FollowWithUser extends Follow {
 // Experience visibility
 export type ExperienceVisibility = 'public' | 'friends_only';
 
+// User role
+export type UserRole = 'user' | 'admin';
+
+// Experience moderation status
+export type ExperienceStatus = 'active' | 'inactive';
+
 // View Models for UI
 
 export type QuickAddStep = 'location_search' | 'select_place' | 'enrich' | 'review';
@@ -215,6 +225,7 @@ export interface AuthUser {
   avatar_url: string | null;
   provider: 'google' | 'email';
   created_at: string;
+  role: UserRole;
 }
 
 export interface SignUpRequest {

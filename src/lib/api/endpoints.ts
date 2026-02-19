@@ -9,6 +9,31 @@ import type {
   Tag,
 } from '@/lib/models';
 
+// Admin experience type
+export interface AdminExperience {
+  id: string;
+  brief_description: string | null;
+  images: string[];
+  created_at: string;
+  time_ago: string;
+  status: string;
+  moderation_reason: string | null;
+  moderated_at: string | null;
+  visibility: string;
+  user: {
+    id: string;
+    display_name: string;
+    avatar_url: string | null;
+    username: string | null;
+  };
+  place: {
+    id: string;
+    name: string;
+    city: string;
+    country: string;
+  };
+}
+
 // Explore response type
 export interface ExploreResponse {
   experiences: ExperienceFeedItem[];
@@ -257,5 +282,42 @@ export const api = {
       throw new Error(error.error || 'Failed to create tag');
     }
     return response.json();
+  },
+
+  // Admin
+  admin: {
+    getExperiences: async (params?: {
+      status?: string;
+      limit?: number;
+      offset?: number;
+    }): Promise<{ experiences: AdminExperience[]; total: number }> => {
+      const searchParams = new URLSearchParams();
+      if (params?.status) searchParams.append('status', params.status);
+      if (params?.limit) searchParams.append('limit', params.limit.toString());
+      if (params?.offset) searchParams.append('offset', params.offset.toString());
+
+      searchParams.append('_t', Date.now().toString());
+      const url = `/api/admin/experiences?${searchParams.toString()}`;
+      const response = await fetch(url, { cache: 'no-store' });
+      if (!response.ok) throw new Error('Failed to fetch admin experiences');
+      return response.json();
+    },
+
+    moderateExperience: async (
+      id: string,
+      action: 'deactivate' | 'reactivate',
+      reason?: string
+    ): Promise<{ success: boolean; status: string }> => {
+      const response = await fetch(`/api/admin/experiences/${id}/moderate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, reason }),
+      });
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.error || 'Failed to moderate experience');
+      }
+      return response.json();
+    },
   },
 };

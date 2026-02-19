@@ -88,6 +88,10 @@ export type Database = {
           user_id: string
           visit_date: string | null
           visibility: string
+          status: string
+          moderation_reason: string | null
+          moderated_at: string | null
+          moderated_by: string | null
         }
         Insert: {
           brief_description?: string | null
@@ -101,6 +105,10 @@ export type Database = {
           user_id: string
           visit_date?: string | null
           visibility?: string
+          status?: string
+          moderation_reason?: string | null
+          moderated_at?: string | null
+          moderated_by?: string | null
         }
         Update: {
           brief_description?: string | null
@@ -114,6 +122,10 @@ export type Database = {
           user_id?: string
           visit_date?: string | null
           visibility?: string
+          status?: string
+          moderation_reason?: string | null
+          moderated_at?: string | null
+          moderated_by?: string | null
         }
         Relationships: [
           {
@@ -255,6 +267,7 @@ export type Database = {
           display_name: string
           id: string
           username: string
+          role: string
         }
         Insert: {
           avatar_url?: string | null
@@ -262,6 +275,7 @@ export type Database = {
           display_name: string
           id: string
           username: string
+          role?: string
         }
         Update: {
           avatar_url?: string | null
@@ -269,6 +283,7 @@ export type Database = {
           display_name?: string
           id?: string
           username?: string
+          role?: string
         }
         Relationships: []
       }

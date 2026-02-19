@@ -75,6 +75,7 @@ async function getRecommendationCounts(
   const { data } = await supabase
     .from('experiences')
     .select('place_id')
+    .eq('status', 'active')
     .in('place_id', placeIds);
 
   // Count occurrences of each place_id
@@ -148,6 +149,7 @@ export async function GET(request: NextRequest) {
         )
       `)
       .eq('user_id', currentUserId)
+      .eq('status', 'active')
       .order('created_at', { ascending: false })
       .limit(10);
 
@@ -183,6 +185,7 @@ export async function GET(request: NextRequest) {
         )
       `)
       .in('user_id', followingIds)
+      .eq('status', 'active')
       .order('created_at', { ascending: false })
       .limit(30);
 
@@ -222,6 +225,7 @@ export async function GET(request: NextRequest) {
         instagram_handle
       )
     `)
+    .eq('status', 'active')
     .order('created_at', { ascending: false })
     .limit(50); // Fetch more to account for filtering
 
@@ -275,6 +279,7 @@ export async function GET(request: NextRequest) {
           instagram_handle
         )
       `)
+      .eq('status', 'active')
       .ilike('places.city', `%${userCity}%`)
       .order('created_at', { ascending: false })
       .limit(30); // Fetch more to account for filtering

@@ -83,6 +83,7 @@ export async function GET() {
         user_id,
         place_id,
         visibility,
+        status,
         users:user_id (
           id,
           display_name,
@@ -105,8 +106,8 @@ export async function GET() {
     return NextResponse.json({ error: 'Failed to fetch bookmarks' }, { status: 500 });
   }
 
-  // Filter out bookmarks with deleted experiences
-  const validBookmarks = (bookmarks || []).filter((b: any) => b.experiences);
+  // Filter out bookmarks with deleted or inactive experiences
+  const validBookmarks = (bookmarks || []).filter((b: any) => b.experiences && b.experiences.status !== 'inactive');
 
   // Collect all unique tag slugs and fetch display names
   const allTagSlugs = [...new Set(validBookmarks.flatMap((b: any) => b.experiences?.tags || []))];

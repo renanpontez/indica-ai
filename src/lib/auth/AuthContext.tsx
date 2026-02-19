@@ -17,6 +17,7 @@ export interface AuthUser {
   display_name: string;
   username: string;
   avatar_url: string | null;
+  role: 'user' | 'admin';
 }
 
 interface AuthContextValue {
@@ -57,6 +58,7 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
           display_name: profile.display_name,
           username: profile.username,
           avatar_url: profile.avatar_url,
+          role: (profile.role as 'user' | 'admin') || 'user',
         };
       }
 
@@ -77,6 +79,7 @@ export function AuthProvider({ children, initialUser }: AuthProviderProps) {
           (metadata?.avatar_url as string) ||
           (metadata?.picture as string) ||
           null,
+        role: 'user',
       };
     },
     [supabase]
