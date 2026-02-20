@@ -70,5 +70,37 @@ export async function POST(
     return NextResponse.json({ error: 'Experience not found' }, { status: 404 });
   }
 
+  // Create notification for the experience owner on deactivation
+  if (action === 'deactivate') {
+    try {
+      const { data: experience } = await supabase
+        .from('experiences')
+        .select('user_id, place_id')
+        .eq('id', id)
+        .single();
+
+      if (experience) {
+        const { data: place } = await supabase
+          .from('places')
+          .select('name')
+          .eq('id', experience.place_id)
+          .single();
+
+        const placeName = place?.name ?? 'Unknown';
+
+        await supabase.from('notifications').insert({
+          user_id: experience.user_id,
+          type: 'experience_deactivated',
+          title: `Your recommendation for ${placeName} was removed`,
+          body: reason!.trim(),
+          data: { experience_id: id, place_name: placeName },
+        });
+      }
+    } catch (notifError) {
+      // Best-effort: don't fail the moderation if notification insert fails
+      console.error('Failed to create notification:', notifError);
+    }
+  }
+
   return NextResponse.json({ success: true, status: updated.status });
 }

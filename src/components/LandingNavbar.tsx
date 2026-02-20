@@ -16,35 +16,35 @@ export default function LandingNavbar({ locale, showActions = true }: LandingNav
 
   return (
     <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-divider">
-      <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10">
+      <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-2 lg:px-10">
         <div className="flex items-center justify-between py-4">
           {/* Logo */}
-          <Link href={routes.home(locale)} className="flex items-center gap-2 flex-shrink-0">
+          <Link href={routes.home(locale)} className="flex items-center gap-1 md:gap-2 flex-shrink-0">
             <Image
               src="/assets/circle-picks.svg"
               alt="Circle Picks logo"
               width={32}
               height={32}
-              className="h-8 w-8"
+              className="size-6 sm:size-8"
             />
-            <span className="text-xl font-bold text-primary">
+            <span className="text-md sm:text-xl font-bold text-primary">
               Circle Picks
             </span>
           </Link>
 
           {/* Right Side Actions */}
-          <div className="flex items-center gap-3 flex-shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
             {showActions && (
               <>
                 <Link
                   href={routes.auth.signin(locale)}
-                  className="px-4 py-2 text-sm font-semibold text-dark-grey hover:text-primary transition-colors hidden sm:block"
+                  className="px-4 py-2 text-sm font-semibold text-dark-grey hover:text-primary transition-colors "
                 >
                   {t('nav.login')}
                 </Link>
                 <Link
                   href={routes.auth.signup(locale)}
-                  className="px-4 py-2 text-sm font-semibold text-white bg-primary hover:bg-primary/90 rounded-full transition-colors"
+                  className="p-2 text-xs font-semibold text-white bg-primary hover:bg-primary/90 rounded-full transition-colors hidden sm:block"
                 >
                   {t('nav.signUp')}
                 </Link>

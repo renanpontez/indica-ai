@@ -188,7 +188,8 @@ export async function PATCH(
     const { count } = await supabase
       .from('experiences')
       .select('*', { count: 'exact', head: true })
-      .eq('place_id', placeId);
+      .eq('place_id', placeId)
+      .eq('status', 'active');
 
     // Get other public recommenders for the same place
     const { data: otherExperiences } = await supabase
@@ -205,6 +206,7 @@ export async function PATCH(
       `)
       .eq('place_id', placeId)
       .eq('visibility', 'public')
+      .eq('status', 'active')
       .neq('user_id', updatedExperience.user_id)
       .order('created_at', { ascending: false })
       .limit(10);
@@ -321,7 +323,8 @@ export async function GET(
   const { count } = await supabase
     .from('experiences')
     .select('*', { count: 'exact', head: true })
-    .eq('place_id', placeId);
+    .eq('place_id', placeId)
+    .eq('status', 'active');
 
   // Get other public recommenders for the same place (excluding current experience's user)
   const { data: otherExperiences } = await supabase
@@ -338,6 +341,7 @@ export async function GET(
     `)
     .eq('place_id', placeId)
     .eq('visibility', 'public')
+    .eq('status', 'active')
     .neq('user_id', experience.user_id)
     .order('created_at', { ascending: false })
     .limit(10);
