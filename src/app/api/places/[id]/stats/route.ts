@@ -12,7 +12,8 @@ export async function GET(
   const { data: experiences, error } = await supabase
     .from('experiences')
     .select('tags')
-    .eq('place_id', id);
+    .eq('place_id', id)
+    .eq('status', 'active');
 
   if (error) {
     console.error('Place stats error:', error);

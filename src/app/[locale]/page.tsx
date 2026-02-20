@@ -139,7 +139,8 @@ export default async function LandingPage({ params }: LandingPageProps) {
         country
       )
     `)
-    .eq('visibility', 'public');
+    .eq('visibility', 'public')
+    .eq('status', 'active');
 
   const cityMap = new Map<string, { name: string; country: string; count: number; image: string | null }>();
   (cityExperiences || []).forEach((exp: any) => {

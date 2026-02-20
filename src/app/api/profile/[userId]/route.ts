@@ -67,6 +67,7 @@ export async function GET(
         )
       `)
       .eq('user_id', authUser.id)
+      .eq('status', 'active')
       .order('created_at', { ascending: false });
 
     if (expError) {
@@ -191,6 +192,7 @@ export async function GET(
       )
     `)
     .eq('user_id', userId)
+    .eq('status', 'active')
     .order('created_at', { ascending: false });
 
   if (expError) {
