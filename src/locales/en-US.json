@@ -491,6 +491,16 @@
       "uploadingPhoto": "Uploading..."
     }
   },
+  "notifications": {
+    "title": "Notifications",
+    "bell": "Notifications",
+    "empty": "No notifications yet",
+    "markAllRead": "Mark all as read",
+    "reason": "Reason",
+    "types": {
+      "experience_deactivated": "Your recommendation for {placeName} was removed by a moderator"
+    }
+  },
   "admin": {
     "nav": {
       "experiences": "Admin"

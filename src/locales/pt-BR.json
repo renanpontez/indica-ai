@@ -490,6 +490,16 @@
       "uploadingPhoto": "Enviando..."
     }
   },
+  "notifications": {
+    "title": "Notificações",
+    "bell": "Notificações",
+    "empty": "Nenhuma notificação ainda",
+    "markAllRead": "Marcar todas como lidas",
+    "reason": "Motivo",
+    "types": {
+      "experience_deactivated": "Sua recomendação para {placeName} foi removida por um moderador"
+    }
+  },
   "admin": {
     "nav": {
       "experiences": "Admin"

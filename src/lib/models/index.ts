@@ -206,6 +206,26 @@ export interface ExperienceCardProps {
   onBookmarkToggle?: () => void;
 }
 
+// Notification Models
+
+export type NotificationType = 'experience_deactivated';
+
+export interface Notification {
+  id: string;
+  user_id: string;
+  type: NotificationType;
+  title: string;
+  body: string | null;
+  data: { experience_id?: string; place_name?: string };
+  read: boolean;
+  created_at: string;
+}
+
+export interface NotificationsResponse {
+  notifications: Notification[];
+  unreadCount: number;
+}
+
 // API Response Types
 
 export interface ApiError {
