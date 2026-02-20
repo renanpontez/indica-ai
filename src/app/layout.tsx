@@ -4,6 +4,7 @@ import Script from 'next/script';
 import './globals.css';
 
 const ZAPBOLT_URL = process.env.NEXT_PUBLIC_ZAPBOLT_URL;
+const UMAMI_WEBSITE_ID = process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID;
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -26,6 +27,14 @@ export default function RootLayout({
         {ZAPBOLT_URL && (
           <Script
             src={ZAPBOLT_URL}
+            strategy="afterInteractive"
+          />
+        )}
+        {UMAMI_WEBSITE_ID && (
+          <Script
+            defer
+            src="https://cloud.umami.is/script.js"
+            data-website-id={UMAMI_WEBSITE_ID}
             strategy="afterInteractive"
           />
         )}
