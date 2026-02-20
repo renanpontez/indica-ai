@@ -7,6 +7,7 @@ import type {
   PlaceSearchResult,
   Bookmark,
   Tag,
+  NotificationsResponse,
 } from '@/lib/models';
 
 // Admin experience type
@@ -282,6 +283,22 @@ export const api = {
       throw new Error(error.error || 'Failed to create tag');
     }
     return response.json();
+  },
+
+  // Notifications
+  getNotifications: async (): Promise<NotificationsResponse> => {
+    const response = await fetch('/api/notifications');
+    if (!response.ok) throw new Error('Failed to fetch notifications');
+    return response.json();
+  },
+
+  markNotificationsRead: async (notificationIds?: string[]): Promise<void> => {
+    const response = await fetch('/api/notifications/read', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ notificationIds }),
+    });
+    if (!response.ok) throw new Error('Failed to mark notifications as read');
   },
 
   // Admin

@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { SearchBar } from './SearchBar';
 import { Avatar } from './Avatar';
+import { NotificationBell } from '@/features/notifications/components/NotificationBell';
 import type { AuthUser } from '@/lib/auth/AuthContext';
 import { routes, type Locale } from '@/lib/routes';
 
@@ -40,6 +41,8 @@ export async function DesktopNav({ user }: DesktopNavProps) {
           {/* Right Side Actions */}
           <div className="flex items-center gap-3 flex-shrink-0">
             <LanguageSwitcher />
+
+            {isAuthenticated && <NotificationBell />}
 
             {isAuthenticated && user.role === 'admin' && (
               <Link
