@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { getAuthUser } from '@/lib/supabase/getAuthUser';
 
 // Helper to get recommendation count for a place
 async function getRecommendationCount(supabase: ReturnType<typeof createClient> extends Promise<infer T> ? T : never, placeId: string): Promise<number> {
@@ -53,9 +54,9 @@ export async function POST(request: NextRequest) {
   const supabase = await createClient();
 
   // Get authenticated user
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
+  const user = await getAuthUser(supabase);
 
-  if (authError || !user) {
+  if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

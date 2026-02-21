@@ -1,13 +1,11 @@
 import { createAuthClient, createClient } from '@/lib/supabase/server';
+import { getAuthUser } from '@/lib/supabase/getAuthUser';
 import type { AuthUser } from './AuthContext';
 
 export async function getServerUser(): Promise<AuthUser | null> {
-  // Use auth client to get the authenticated user
+  // Use auth client to get the authenticated user (cookies or Bearer token)
   const authSupabase = await createAuthClient();
-
-  const {
-    data: { user: authUser },
-  } = await authSupabase.auth.getUser();
+  const authUser = await getAuthUser(authSupabase);
 
   if (!authUser) {
     return null;

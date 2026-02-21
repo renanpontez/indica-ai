@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { getAuthUser } from '@/lib/supabase/getAuthUser';
 import { formatTimeAgo, generateExperienceSlug } from '@/lib/utils/format';
 
 // Helper to format slug to display name (capitalize first letter, replace hyphens with spaces)
@@ -27,7 +28,7 @@ export async function GET(
 
   // Handle "me" - return current authenticated user's profile
   if (userId === 'me') {
-    const { data: { user: authUser } } = await supabase.auth.getUser();
+    const authUser = await getAuthUser(supabase);
 
     if (!authUser) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
@@ -258,7 +259,7 @@ export async function GET(
     .eq('follower_id', userId);
 
   // Get current user to check if they're viewing their own profile
-  const { data: { user: authUser } } = await supabase.auth.getUser();
+  const authUser = await getAuthUser(supabase);
 
   // Filter experiences based on visibility
   // Show all if viewing own profile, or only public + friends_only if current user follows the profile
