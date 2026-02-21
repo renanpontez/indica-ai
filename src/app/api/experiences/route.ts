@@ -12,6 +12,21 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  // Ensure user exists in public.users (may be missing if signup trigger failed)
+  const { data: existingUser } = await supabase
+    .from('users')
+    .select('id')
+    .eq('id', user.id)
+    .single();
+
+  if (!existingUser) {
+    await supabase.from('users').insert({
+      id: user.id,
+      display_name: user.user_metadata?.display_name || user.email || 'User',
+      username: user.user_metadata?.username || `user_${user.id.substring(0, 8)}`,
+    });
+  }
+
   const body = await request.json();
   const { place_id, place, price_range, tags, brief_description, phone_number, images, visit_date, visibility } = body;
 
