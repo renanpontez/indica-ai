@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { getAuthUser } from '@/lib/supabase/getAuthUser';
 
 // DELETE /api/bookmarks/[id] - Delete a bookmark
 export async function DELETE(
@@ -9,7 +10,7 @@ export async function DELETE(
   const { id } = await params;
   const supabase = await createClient();
 
-  const { data: { user: authUser } } = await supabase.auth.getUser();
+  const authUser = await getAuthUser(supabase);
 
   if (!authUser) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });

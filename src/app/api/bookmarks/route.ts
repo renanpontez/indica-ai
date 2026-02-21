@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { getAuthUser } from '@/lib/supabase/getAuthUser';
 import { formatTimeAgo, generateExperienceSlug } from '@/lib/utils/format';
 
 // Helper to format slug to display name (capitalize first letter, replace hyphens with spaces)
@@ -60,7 +61,7 @@ function transformBookmarkToFeedItem(bookmark: any, tagDisplayNames: Map<string,
 export async function GET() {
   const supabase = await createClient();
 
-  const { data: { user: authUser } } = await supabase.auth.getUser();
+  const authUser = await getAuthUser(supabase);
 
   if (!authUser) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
@@ -135,7 +136,7 @@ export async function GET() {
 export async function POST(request: Request) {
   const supabase = await createClient();
 
-  const { data: { user: authUser } } = await supabase.auth.getUser();
+  const authUser = await getAuthUser(supabase);
 
   if (!authUser) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
