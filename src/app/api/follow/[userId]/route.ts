@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { getAuthUser } from '@/lib/supabase/getAuthUser';
 
 // GET /api/follow/[userId] - Check if current user follows the target user
 export async function GET(
@@ -9,7 +10,7 @@ export async function GET(
   const { userId } = await params;
   const supabase = await createClient();
 
-  const { data: { user: authUser } } = await supabase.auth.getUser();
+  const authUser = await getAuthUser(supabase);
 
   if (!authUser) {
     return NextResponse.json({ isFollowing: false });
@@ -33,7 +34,7 @@ export async function POST(
   const { userId } = await params;
   const supabase = await createClient();
 
-  const { data: { user: authUser } } = await supabase.auth.getUser();
+  const authUser = await getAuthUser(supabase);
 
   if (!authUser) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
@@ -91,7 +92,7 @@ export async function DELETE(
   const { userId } = await params;
   const supabase = await createClient();
 
-  const { data: { user: authUser } } = await supabase.auth.getUser();
+  const authUser = await getAuthUser(supabase);
 
   if (!authUser) {
     return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });

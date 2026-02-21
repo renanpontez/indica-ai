@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { getAuthUser } from '@/lib/supabase/getAuthUser';
 
 // GET /api/tags - Fetch all tags (system + custom)
 export async function GET() {
@@ -24,12 +25,9 @@ export async function POST(request: NextRequest) {
   const supabase = await createClient();
 
   // Require authentication
-  const {
-    data: { user },
-    error: authError,
-  } = await supabase.auth.getUser();
+  const user = await getAuthUser(supabase);
 
-  if (authError || !user) {
+  if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { getAuthUser } from '@/lib/supabase/getAuthUser';
 import { formatTimeAgo, generateExperienceSlug } from '@/lib/utils/format';
 import { geolocation } from '@vercel/functions';
 
@@ -95,7 +96,7 @@ export async function GET(request: NextRequest) {
   const userCity = geo?.city || null;
 
   // Get current authenticated user
-  const { data: { user: authUser } } = await supabase.auth.getUser();
+  const authUser = await getAuthUser(supabase);
   const currentUserId = authUser?.id;
 
   // Get list of users the current user follows (for visibility filtering)
