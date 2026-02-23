@@ -44,6 +44,8 @@ export const ROUTE_PATHS = {
   auth: {
     signin: '/auth/signin',
     signup: '/auth/signup',
+    forgotPassword: '/auth/forgot-password',
+    resetPassword: '/auth/reset-password',
     error: '/auth/error',
     callback: '/auth/callback',
   },
@@ -140,6 +142,12 @@ export const routes = {
 
     signup: (locale: Locale, params?: { callbackUrl?: string }) =>
       buildUrl(locale, ROUTE_PATHS.auth.signup, params),
+
+    forgotPassword: (locale: Locale) =>
+      buildUrl(locale, ROUTE_PATHS.auth.forgotPassword),
+
+    resetPassword: (locale: Locale) =>
+      buildUrl(locale, ROUTE_PATHS.auth.resetPassword),
 
     error: (locale: Locale, params?: { error?: string }) =>
       buildUrl(locale, ROUTE_PATHS.auth.error, params),
@@ -239,6 +247,10 @@ export const routePaths = {
 
     signup: (params?: { callbackUrl?: string }) =>
       ROUTE_PATHS.auth.signup + buildQueryString(params),
+
+    forgotPassword: () => ROUTE_PATHS.auth.forgotPassword,
+
+    resetPassword: () => ROUTE_PATHS.auth.resetPassword,
 
     error: (params?: { error?: string }) =>
       ROUTE_PATHS.auth.error + buildQueryString(params),
@@ -352,6 +364,8 @@ export const publicRoutes = [
   ROUTE_PATHS.home,
   ROUTE_PATHS.auth.signin,
   ROUTE_PATHS.auth.signup,
+  ROUTE_PATHS.auth.forgotPassword,
+  ROUTE_PATHS.auth.resetPassword,
   ROUTE_PATHS.auth.error,
   ROUTE_PATHS.auth.callback,
   ROUTE_PATHS.legal.terms,

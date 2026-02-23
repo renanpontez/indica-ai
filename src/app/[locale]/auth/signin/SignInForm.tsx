@@ -6,7 +6,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
-import { routes, type Locale } from '@/lib/routes';
+import { routes, routePaths, type Locale } from '@/lib/routes';
+import { Link } from '@/i18n/routing';
 
 export default function SignInForm() {
   const router = useRouter();
@@ -100,6 +101,14 @@ export default function SignInForm() {
             required
             disabled={isLoading}
           />
+          <div className="mt-1.5 text-right">
+            <Link
+              href={routePaths.auth.forgotPassword()}
+              className="text-primary text-[0.8rem] font-medium hover:underline"
+            >
+              {t('forgotPassword')}
+            </Link>
+          </div>
         </div>
 
         <Button
