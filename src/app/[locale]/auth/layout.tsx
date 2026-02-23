@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
 import LandingNavbar from '@/components/LandingNavbar';
 import { routes, type Locale } from '@/lib/routes';
@@ -14,7 +15,11 @@ export default async function AuthLayout({ children, params }: AuthLayoutProps) 
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (user) {
+  // Allow authenticated users through if they're in a password recovery flow
+  const cookieStore = await cookies();
+  const isPasswordRecovery = cookieStore.get('password_recovery')?.value === 'true';
+
+  if (user && !isPasswordRecovery) {
     redirect(routes.app.feed(typedLocale));
   }
 

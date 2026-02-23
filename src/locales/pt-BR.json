@@ -354,9 +354,46 @@
       "signInButton": "Entrar",
       "or": "ou",
       "googleButton": "Entrar com Google",
+      "forgotPassword": "Esqueceu sua senha?",
       "errors": {
         "invalidCredentials": "Email ou senha inválidos",
         "generic": "Ocorreu um erro. Por favor, tente novamente."
+      }
+    },
+    "forgotPassword": {
+      "title": "Esqueceu sua senha?",
+      "subtitle": "Digite seu email e enviaremos um link de redefinição",
+      "email": "Email",
+      "emailPlaceholder": "seu@email.com",
+      "sendButton": "Enviar link",
+      "sending": "Enviando...",
+      "successTitle": "Verifique seu email",
+      "successMessage": "Enviamos um link de redefinição para {email}",
+      "backToSignIn": "Voltar para login",
+      "errors": {
+        "emailRequired": "Email é obrigatório",
+        "generic": "Ocorreu um erro. Tente novamente."
+      }
+    },
+    "resetPassword": {
+      "title": "Definir nova senha",
+      "subtitle": "Digite sua nova senha abaixo",
+      "password": "Nova senha",
+      "confirmPassword": "Confirmar nova senha",
+      "resetButton": "Redefinir senha",
+      "resetting": "Redefinindo...",
+      "successTitle": "Senha atualizada!",
+      "successMessage": "Sua senha foi redefinida. Redirecionando para login...",
+      "validation": {
+        "minChars": "Pelo menos 6 caracteres",
+        "passwordsMatch": "Senhas coincidem",
+        "passwordsNoMatch": "Senhas não coincidem"
+      },
+      "errors": {
+        "passwordTooShort": "A senha deve ter pelo menos 6 caracteres",
+        "passwordMismatch": "As senhas não coincidem",
+        "linkExpired": "Este link expirou. Solicite um novo.",
+        "generic": "Ocorreu um erro. Tente novamente."
       }
     },
     "signUp": {
