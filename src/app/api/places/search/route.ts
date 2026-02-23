@@ -87,23 +87,33 @@ export async function GET(request: NextRequest) {
     }));
 
   // Combine results: local first, then Google
-  const allResults = [...localResults, ...googlePlaceResults];
+  let allResults = [...localResults, ...googlePlaceResults];
 
-  // If coordinates provided, sort by distance
+  // If coordinates provided, filter out distant results and sort by distance
   if (userLat !== undefined && userLng !== undefined) {
-    allResults.sort((a, b) => {
-      if (!a.lat || !a.lng) return 1;
-      if (!b.lat || !b.lng) return -1;
+    const MAX_KM = 100;
 
-      const distA = Math.sqrt(
-        Math.pow(a.lat - userLat, 2) + Math.pow(a.lng - userLng, 2)
-      );
-      const distB = Math.sqrt(
-        Math.pow(b.lat - userLat, 2) + Math.pow(b.lng - userLng, 2)
-      );
-      return distA - distB;
-    });
+    allResults = allResults
+      .map((place) => {
+        if (!place.lat || !place.lng) return { ...place, distanceKm: Infinity };
+        const distanceKm = haversineKm(userLat, userLng, place.lat, place.lng);
+        return { ...place, distanceKm };
+      })
+      .filter((place) => place.distanceKm <= MAX_KM)
+      .sort((a, b) => a.distanceKm - b.distanceKm)
+      .map(({ distanceKm: _, ...place }) => place);
   }
 
   return NextResponse.json(allResults.slice(0, 10));
+}
+
+function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  const R = 6371;
+  const dLat = toRad(lat2 - lat1);
+  const dLng = toRad(lng2 - lng1);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
