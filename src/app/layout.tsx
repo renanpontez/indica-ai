@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { GoogleTagManager } from '@next/third-parties/google';
 import Script from 'next/script';
 import './globals.css';
 
 const ZAPBOLT_URL = process.env.NEXT_PUBLIC_ZAPBOLT_URL;
 const UMAMI_WEBSITE_ID = process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID;
+const GTM_ID = 'GTM-MTXKB248';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -22,6 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html suppressHydrationWarning>
+      <GoogleTagManager gtmId={GTM_ID} />
       <body className={inter.className}>
         {children}
         {ZAPBOLT_URL && (
