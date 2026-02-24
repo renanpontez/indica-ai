@@ -1,8 +1,11 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { getTranslations } from 'next-intl/server';
+import LandingNavbar from '@/components/LandingNavbar';
+import { routes, type Locale } from '@/lib/routes';
 
 interface PrivacyPageProps {
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: Locale }>;
 }
 
 const content = {
@@ -393,24 +396,11 @@ const content = {
 export default async function PrivacyPage({ params }: PrivacyPageProps) {
   const { locale } = await params;
   const t = content[locale as keyof typeof content] || content['pt-BR'];
+  const tLanding = await getTranslations('landing');
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="border-b border-divider">
-        <div className="max-w-3xl mx-auto px-6 py-6">
-          <Link href={`/${locale}`} className="flex items-center gap-2">
-            <Image
-              src="/assets/circle-picks.svg"
-              alt="Circle Picks logo"
-              width={24}
-              height={24}
-              className="h-6 w-6"
-            />
-            <span className="font-bold text-primary">Circle Picks</span>
-          </Link>
-        </div>
-      </header>
+      <LandingNavbar locale={locale} />
 
       {/* Content */}
       <main className="max-w-3xl mx-auto px-6 py-12">
@@ -499,9 +489,34 @@ export default async function PrivacyPage({ params }: PrivacyPageProps) {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-divider py-8">
-        <div className="max-w-3xl mx-auto px-6 text-center text-sm text-medium-grey">
-          © 2026 Circle Picks. All rights reserved.
+      <footer className="py-12 bg-white border-t border-divider">
+        <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-2">
+              <Image
+                src="/assets/circle-picks.svg"
+                alt="Circle Picks logo"
+                width={24}
+                height={24}
+                className="h-6 w-6"
+              />
+              <span className="font-bold text-primary">Circle Picks</span>
+            </div>
+            <div className="flex items-center gap-6 text-sm text-medium-grey">
+              <Link href={routes.legal.terms(locale)} className="hover:text-dark-grey transition-colors">
+                {tLanding('footer.terms')}
+              </Link>
+              <Link href={routes.legal.privacy(locale)} className="hover:text-dark-grey transition-colors">
+                {tLanding('footer.privacy')}
+              </Link>
+              <Link href="mailto:contact@circlepicks.app" className="hover:text-dark-grey transition-colors">
+                {tLanding('footer.contact')}
+              </Link>
+            </div>
+            <p className="text-sm text-medium-grey">
+              © 2026 Circle Picks. {tLanding('footer.rights')}
+            </p>
+          </div>
         </div>
       </footer>
     </div>
