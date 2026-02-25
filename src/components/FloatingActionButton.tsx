@@ -39,23 +39,53 @@ export function FloatingActionButton() {
 
   return (
     <nav className="fixed bottom-0 md:bottom-6 left-0 right-0 md:left-1/2 md:-translate-x-1/2 md:right-auto z-20">
-      <div className="flex items-center justify-around gap-5 py-3 px-6 bg-white border-t md:border border-divider md:rounded-2xl md:shadow-lg">
+      <div className="flex items-center justify-around gap-5 py-3 px-6 pb-[max(0.75rem,env(safe-area-inset-bottom))] bg-white border-t border-divider md:bg-white md:border md:rounded-2xl md:shadow-lg">
         {navItems.map((item) => {
           const active = isActive(item);
           const href = `/${locale}${item.path}`;
           const isMainButton = item.key === 'add';
 
+          if (isMainButton) {
+            return (
+              <Link
+                key={item.key}
+                href={href}
+                className="relative flex items-center justify-center -mt-8 md:-mt-0 border-8 border-white rounded-full md:border-0"
+              >
+                <span
+                  className={cn(
+                    'flex items-center justify-center w-14 h-14 rounded-full border-2 transition-all duration-200',
+                    !active
+                      ? 'bg-primary border-primary shadow-[0_0_16px_rgba(253,81,46,0.3)]'
+                      : 'bg-white border-primary shadow-[0_0_16px_rgba(255,255,255,0.8)]'
+                  )}
+                >
+                  <svg
+                    className={cn(
+                      'w-7 h-7 transition-colors',
+                      !active ? 'text-white' : 'text-primary'
+                    )}
+                    fill="none"
+                    viewBox={item.icon.viewBox}
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d={item.icon.path}
+                    />
+                  </svg>
+                </span>
+              </Link>
+            );
+          }
+
           return (
             <Link
               key={item.key}
               href={href}
-              className={
-                cn(
-                  linkStyles(active),
-                  isMainButton && 'bg-primary border-transparent border text-white rounded-md px-4 py-2 font-medium hover:text-primary hover:bg-white hover:border hover:border-primary',
-                  isMainButton && active && 'bg-white text-primary'
-                )
-              }
+              className={linkStyles(active)}
             >
               {item.useAvatar ? (
                 <Avatar
