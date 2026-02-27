@@ -31,6 +31,7 @@ export function LanguageSwitcher() {
   }, []);
 
   const handleLanguageChange = (langCode: LocaleCode) => {
+    document.cookie = `NEXT_LOCALE=${langCode};path=/;max-age=31536000;SameSite=Lax`;
     router.replace(pathname, { locale: langCode });
     setIsOpen(false);
   };
