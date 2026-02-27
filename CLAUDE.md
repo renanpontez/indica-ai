@@ -10,6 +10,7 @@ Social place-sharing and recommendation platform. Users share experiences at pla
 - **i18n**: next-intl — pt-BR (default), en-US
 - **State**: React Query (server state), React Context (auth), useState (UI)
 - **Forms**: react-hook-form
+- **Analytics/Consent**: Google Tag Manager (GTM-MTXKB248) via `@next/third-parties`, CookieYes cookie consent (installed via GTM, Google Consent Mode V2), Umami
 - **Package manager**: npm
 
 ## Commands
@@ -114,6 +115,17 @@ Conventional commits, lowercase: `feat:`, `fix:`, `docs:`, `refactor:`. Short me
 - `follow` — id, follower_id, following_id
 - `tags` — id, slug, display_name, is_system
 
+## Environments
+
+| | Production | Staging |
+|---|---|---|
+| **Branch** | `main` | `staging` |
+| **Vercel** | Production deployment | Preview deployment |
+| **Supabase** | `circlepicks` (`jxrykpyaeqcqkbueexhg`) | `circle-picks-staging` (`utsjtumgfyznjzvpfwos`) |
+| **Local env** | `.env.local` | `.env.staging` (copy to `.env.local` to use) |
+
+Workflow: develop on `staging` → push → Vercel Preview. Merge `staging` → `main` → Vercel Production.
+
 ## Environment Variables
 
 | Variable | Context |
@@ -123,3 +135,4 @@ Conventional commits, lowercase: `feat:`, `fix:`, `docs:`, `refactor:`. Short me
 | `SUPABASE_SECRET_KEY` | Server — Supabase service role key |
 | `GOOGLE_PLACES_API_KEY` | Server — Google Places API |
 | `NEXT_PUBLIC_ZAPBOLT_URL` | Client — Analytics widget |
+| `NEXT_PUBLIC_UMAMI_WEBSITE_ID` | Client — Umami analytics |
