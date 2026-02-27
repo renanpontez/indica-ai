@@ -15,6 +15,7 @@ interface EditProfileModalProps {
     avatar_url: string | null;
   };
   onSave: (data: { display_name: string; username: string; avatar_url?: string }) => Promise<void>;
+  onDeleteAccount: () => void;
 }
 
 export function EditProfileModal({
@@ -22,8 +23,10 @@ export function EditProfileModal({
   onClose,
   user,
   onSave,
+  onDeleteAccount,
 }: EditProfileModalProps) {
   const t = useTranslations('profile.editModal');
+  const tProfile = useTranslations('profile');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [displayName, setDisplayName] = useState(user.display_name);
   const [username, setUsername] = useState(user.username);
@@ -274,6 +277,20 @@ export function EditProfileModal({
               </button>
             </div>
           </form>
+
+          {/* Delete Account */}
+          <div className="mt-6 pt-6 border-t border-divider">
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                onDeleteAccount();
+              }}
+              className="text-sm text-red-500 hover:text-red-600 transition-colors"
+            >
+              {tProfile('deleteAccount')}
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -503,6 +503,12 @@
     "editProfile": "Edit Profile",
     "signOut": "Sign out",
     "signingOut": "Signing out...",
+    "deleteAccount": "Delete account",
+    "deleteAccountTitle": "Delete your account?",
+    "deleteAccountMessage": "This will permanently delete your account and all your data, including your experiences, bookmarks, and followers. This action cannot be undone.",
+    "deleteAccountConfirm": "Delete my account",
+    "deleteAccountCancel": "Cancel",
+    "deletingAccount": "Deleting...",
     "follow": "Follow",
     "unfollow": "Unfollow",
     "empty": {
