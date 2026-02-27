@@ -502,6 +502,12 @@
     "editProfile": "Editar Perfil",
     "signOut": "Sair da conta",
     "signingOut": "Saindo...",
+    "deleteAccount": "Excluir conta",
+    "deleteAccountTitle": "Excluir sua conta?",
+    "deleteAccountMessage": "Isso vai excluir permanentemente sua conta e todos os seus dados, incluindo suas indicações, salvos e seguidores. Essa ação não pode ser desfeita.",
+    "deleteAccountConfirm": "Excluir minha conta",
+    "deleteAccountCancel": "Cancelar",
+    "deletingAccount": "Excluindo...",
     "follow": "Seguir",
     "unfollow": "Seguindo",
     "empty": {

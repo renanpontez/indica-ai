@@ -9,6 +9,7 @@ import { LoadingSpinner } from '@/components/LoadingSpinner';
 import { ErrorMessage } from '@/components/ErrorMessage';
 import { ExperienceCard } from '@/features/feed/components/ExperienceCard';
 import { EditProfileModal } from '@/features/profile/components/EditProfileModal';
+import { DeleteAccountModal } from '@/features/profile/components/DeleteAccountModal';
 import { FollowButton } from '@/components/FollowButton';
 import { useProfile } from '@/features/profile/hooks/useProfile';
 import { useBookmarks } from '@/features/profile/hooks/useBookmarks';
@@ -49,6 +50,7 @@ export default function ProfilePage({
     }
   }, [tabParam]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const { refreshUser, user: currentUser } = useAuth();
   const { showToast } = useToast();
@@ -362,12 +364,23 @@ export default function ProfilePage({
 
           {/* Edit Profile Modal */}
           {userId === 'me' && (
-            <EditProfileModal
-              isOpen={isEditModalOpen}
-              onClose={() => setIsEditModalOpen(false)}
-              user={displayUser}
-              onSave={handleSaveProfile}
-            />
+            <>
+              <EditProfileModal
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                user={displayUser}
+                onSave={handleSaveProfile}
+                onDeleteAccount={() => setIsDeleteModalOpen(true)}
+              />
+              <DeleteAccountModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onDeleted={() => {
+                  router.push(routes.home(locale as Locale));
+                  router.refresh();
+                }}
+              />
+            </>
           )}
         </>
       )}
