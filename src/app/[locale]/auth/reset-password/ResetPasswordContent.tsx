@@ -11,7 +11,7 @@ export default function ResetPasswordContent({ locale }: ResetPasswordContentPro
   const t = useTranslations('auth.resetPassword');
 
   return (
-    <div className="w-full max-w-md">
+    <>
       <div className="text-center mb-8">
         <h1 className="text-[1.4rem] font-semibold text-dark-grey mb-2">
           {t('title')}
@@ -22,6 +22,6 @@ export default function ResetPasswordContent({ locale }: ResetPasswordContentPro
       </div>
 
       <ResetPasswordForm locale={locale} />
-    </div>
+    </>
   );
 }
