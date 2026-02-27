@@ -20,6 +20,29 @@ export default async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Geo-based locale detection for first-time visitors (no NEXT_LOCALE cookie)
+  const localeCookie = request.cookies.get('NEXT_LOCALE')?.value;
+  let needsLocaleCookie = false;
+
+  if (!localeCookie) {
+    const country = request.headers.get('x-vercel-ip-country') || '';
+    const detectedLocale = country === 'BR' || country === '' ? 'pt-BR' : 'en-US';
+
+    if (detectedLocale === 'en-US') {
+      // Non-BR visitor: redirect to /en-US/... and set cookie
+      const firstVisitPath = removeLocalePrefix(pathname);
+      const url = request.nextUrl.clone();
+      url.pathname = `/en-US${firstVisitPath || '/'}`;
+      const response = NextResponse.redirect(url);
+      response.cookies.set('NEXT_LOCALE', 'en-US', { path: '/', maxAge: 31536000, sameSite: 'lax' });
+      return response;
+    }
+
+    // BR visitor (or local dev): tell next-intl to use pt-BR and persist cookie on response
+    request.cookies.set('NEXT_LOCALE', 'pt-BR');
+    needsLocaleCookie = true;
+  }
+
   // Update Supabase session (refresh tokens if needed)
   const { user, supabaseResponse } = await updateSession(request);
 
@@ -29,6 +52,11 @@ export default async function proxy(request: NextRequest) {
   if (isPublicRoute(pathnameWithoutLocale)) {
     // Public route - allow access and let intl middleware handle locale
     const intlResponse = intlMiddleware(request);
+
+    // Persist locale cookie for first-time BR visitors
+    if (needsLocaleCookie) {
+      intlResponse.cookies.set('NEXT_LOCALE', 'pt-BR', { path: '/', maxAge: 31536000, sameSite: 'lax' });
+    }
 
     // Merge cookies from Supabase response
     supabaseResponse.cookies.getAll().forEach((cookie) => {
@@ -42,11 +70,20 @@ export default async function proxy(request: NextRequest) {
   if (!user) {
     const locale = extractLocale(pathname);
     const signInUrl = new URL(routes.auth.signin(locale, { callbackUrl: pathname }), request.url);
-    return NextResponse.redirect(signInUrl);
+    const response = NextResponse.redirect(signInUrl);
+    if (needsLocaleCookie) {
+      response.cookies.set('NEXT_LOCALE', 'pt-BR', { path: '/', maxAge: 31536000, sameSite: 'lax' });
+    }
+    return response;
   }
 
   // Authenticated user accessing protected route
   const intlResponse = intlMiddleware(request);
+
+  // Persist locale cookie for first-time BR visitors
+  if (needsLocaleCookie) {
+    intlResponse.cookies.set('NEXT_LOCALE', 'pt-BR', { path: '/', maxAge: 31536000, sameSite: 'lax' });
+  }
 
   // Merge cookies from Supabase response
   supabaseResponse.cookies.getAll().forEach((cookie) => {

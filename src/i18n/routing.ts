@@ -11,8 +11,8 @@ export const routing = defineRouting({
   // Never show /pt-BR in the URL for the default locale
   localePrefix: 'as-needed',
 
-  // Disable automatic locale detection based on browser language
-  localeDetection: false,
+  // Enable locale detection so next-intl reads the NEXT_LOCALE cookie
+  localeDetection: true,
 });
 
 // Lightweight wrappers around Next.js' navigation APIs
