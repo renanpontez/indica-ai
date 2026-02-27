@@ -350,6 +350,27 @@ Sign out the current user.
 
 ---
 
+#### `DELETE /api/auth/delete`
+
+Permanently delete the authenticated user's account and all associated data.
+
+- **Auth:** Required (Bearer token or cookies)
+- **Body:** None
+- **Response (200):**
+
+```json
+{ "success": true }
+```
+
+- **Behavior:**
+  - Deletes the user from Supabase Auth via admin API
+  - All related data is cascade-deleted (experiences, bookmarks, follows, notifications, tags)
+  - Signs out the current session
+  - This action is irreversible
+- **Errors:** `401` (not authenticated), `500` (deletion failed)
+
+---
+
 ### Profile
 
 #### `GET /api/profile/:userId`
