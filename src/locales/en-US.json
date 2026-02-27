@@ -460,10 +460,37 @@
     }
   },
   "experience": {
+    "location": "Location",
     "actions": {
       "menu": "More options",
       "edit": "Edit",
-      "delete": "Delete"
+      "delete": "Delete",
+      "report": "Report",
+      "blockUser": "Block user",
+      "bookmark": "Bookmark",
+      "removeBookmark": "Remove bookmark"
+    },
+    "reportModal": {
+      "title": "Report experience",
+      "message": "Why are you reporting this?",
+      "spam": "Spam",
+      "inappropriate": "Inappropriate content",
+      "misleading": "Misleading information",
+      "other": "Other",
+      "description": "Additional details (optional)",
+      "descriptionPlaceholder": "Tell us more...",
+      "cancel": "Cancel",
+      "submit": "Submit report",
+      "submitting": "Submitting...",
+      "success": "Report submitted. Thank you."
+    },
+    "blockModal": {
+      "title": "Block user?",
+      "message": "You won't see their content in your feed anymore. You can unblock them later.",
+      "cancel": "Cancel",
+      "confirm": "Block",
+      "blocking": "Blocking...",
+      "success": "User blocked"
     },
     "edit": {
       "title": "Edit Experience",
@@ -584,5 +611,19 @@
       "reactivate": "Reactivate",
       "reactivateConfirm": "Are you sure you want to reactivate this experience?"
     }
+  },
+  "report": {
+    "title": "Report experience",
+    "reason": "Reason",
+    "spam": "Spam",
+    "inappropriate": "Inappropriate content",
+    "misleading": "Misleading information",
+    "other": "Other",
+    "description": "Additional details (optional)",
+    "descriptionPlaceholder": "Tell us more about the issue...",
+    "submit": "Submit report",
+    "submitting": "Submitting...",
+    "success": "Report submitted. Thank you.",
+    "alreadyReported": "You already reported this experience."
   }
 }

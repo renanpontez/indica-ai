@@ -14,8 +14,21 @@ export function useFollow() {
 
   const followMutation = useMutation({
     mutationFn: (userId: string) => api.followUser(userId),
-    onSuccess: (_, userId) => {
-      // Invalidate follow status and profile queries
+    onMutate: async (userId) => {
+      await queryClient.cancelQueries({ queryKey: ['follow-status', userId] });
+      const previous = queryClient.getQueryData(['follow-status', userId]);
+      queryClient.setQueryData(['follow-status', userId], (old: any) => ({
+        ...old,
+        isFollowing: true,
+      }));
+      return { previous, userId };
+    },
+    onError: (_err, userId, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(['follow-status', userId], context.previous);
+      }
+    },
+    onSettled: (_, __, userId) => {
       queryClient.invalidateQueries({ queryKey: ['follow-status', userId] });
       queryClient.invalidateQueries({ queryKey: ['profile', userId] });
       queryClient.invalidateQueries({ queryKey: ['feed'] });
@@ -24,8 +37,21 @@ export function useFollow() {
 
   const unfollowMutation = useMutation({
     mutationFn: (userId: string) => api.unfollowUser(userId),
-    onSuccess: (_, userId) => {
-      // Invalidate follow status and profile queries
+    onMutate: async (userId) => {
+      await queryClient.cancelQueries({ queryKey: ['follow-status', userId] });
+      const previous = queryClient.getQueryData(['follow-status', userId]);
+      queryClient.setQueryData(['follow-status', userId], (old: any) => ({
+        ...old,
+        isFollowing: false,
+      }));
+      return { previous, userId };
+    },
+    onError: (_err, userId, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(['follow-status', userId], context.previous);
+      }
+    },
+    onSettled: (_, __, userId) => {
       queryClient.invalidateQueries({ queryKey: ['follow-status', userId] });
       queryClient.invalidateQueries({ queryKey: ['profile', userId] });
       queryClient.invalidateQueries({ queryKey: ['feed'] });

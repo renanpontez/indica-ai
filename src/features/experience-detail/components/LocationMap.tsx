@@ -1,5 +1,7 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
+
 interface LocationMapProps {
   lat: number | null;
   lng: number | null;
@@ -9,6 +11,8 @@ interface LocationMapProps {
 }
 
 export function LocationMap({ lat, lng, placeName, address, googleMapsUrl }: LocationMapProps) {
+  const t = useTranslations('experience');
+
   // If no coordinates, don't render
   if (!lat || !lng) {
     return null;
@@ -23,7 +27,7 @@ export function LocationMap({ lat, lng, placeName, address, googleMapsUrl }: Loc
 
   return (
     <div className="mb-6">
-      <h3 className="text-body font-medium text-text-primary mb-3">Location</h3>
+      <h3 className="text-body font-medium text-text-primary mb-3">{t('location')}</h3>
       <div className="rounded-xl overflow-hidden bg-surface">
         {/* Map Container */}
         <div className="relative">

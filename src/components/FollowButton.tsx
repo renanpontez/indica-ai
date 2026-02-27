@@ -14,7 +14,7 @@ interface FollowButtonProps {
 export function FollowButton({ userId, className, showLabel = true }: FollowButtonProps) {
   const t = useTranslations('profile');
   const { user: currentUser } = useAuth();
-  const { data: followStatus, isLoading: isLoadingStatus } = useFollowStatus(userId, currentUser?.id);
+  const { data: followStatus, isPending: isLoadingStatus } = useFollowStatus(userId, currentUser?.id);
   const { follow, unfollow, isPending } = useFollow();
 
   // Don't show button if viewing own profile or not logged in
@@ -40,7 +40,9 @@ export function FollowButton({ userId, className, showLabel = true }: FollowButt
         disabled
         className={className}
       >
-        ...
+        {showLabel ? <span className="invisible">{t('follow')}</span> : (
+          <svg className="w-5 h-5 invisible" viewBox="0 0 24 24" />
+        )}
       </Button>
     );
   }

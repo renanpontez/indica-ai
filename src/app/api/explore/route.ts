@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { getAuthUser } from '@/lib/supabase/getAuthUser';
 import { formatTimeAgo, generateExperienceSlug, slugify } from '@/lib/utils/format';
 
 // Helper to format slug to display name (capitalize first letter, replace hyphens with spaces)
@@ -57,6 +58,17 @@ export interface ExploreResponse {
 export async function GET(request: NextRequest) {
   const supabase = await createClient();
   const searchParams = request.nextUrl.searchParams;
+
+  // Optional auth for block filtering
+  const authUser = await getAuthUser(supabase);
+  let blockedUserIds: string[] = [];
+  if (authUser) {
+    const { data: blockedUsers } = await supabase
+      .from('blocks')
+      .select('blocked_id')
+      .eq('blocker_id', authUser.id);
+    blockedUserIds = (blockedUsers || []).map(b => b.blocked_id);
+  }
 
   // Query parameters for filtering
   let city = searchParams.get('city');
@@ -131,8 +143,12 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to fetch experiences' }, { status: 500 });
   }
 
-  // Filter out experiences where place is null (due to inner join behavior)
-  const validExperiences = (experiences || []).filter((exp: any) => exp.places !== null);
+  // Filter out experiences where place is null (due to inner join behavior) and blocked users
+  const validExperiences = (experiences || []).filter((exp: any) => {
+    if (exp.places === null) return false;
+    if (blockedUserIds.includes(exp.user_id)) return false;
+    return true;
+  });
 
   // Get aggregated cities (for the cities page)
   const { data: citiesData } = await supabase

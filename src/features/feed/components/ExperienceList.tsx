@@ -1,13 +1,16 @@
 'use client';
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { ExperienceCard } from './ExperienceCard';
 import { FeedEmptyState } from './FeedEmptyState';
 import { useToggleBookmark } from '@/features/experience-detail/hooks/useToggleBookmark';
 import { useDeleteExperience } from '@/features/experience-detail/hooks/useExperienceMutations';
+import { ReportExperienceModal } from '@/features/experience-detail/components/ReportExperienceModal';
 import { useToast } from '@/lib/hooks/useToast';
 import { useAuth } from '@/lib/hooks/useAuth';
+import { api } from '@/lib/api/endpoints';
 import { routes, type Locale } from '@/lib/routes';
 import type { ExperienceFeedItem } from '@/lib/models';
 
@@ -145,6 +148,7 @@ export function ExperienceList({
   const { mutateAsync: deleteExperience } = useDeleteExperience();
   const { showToast } = useToast();
   const { isAuthenticated } = useAuth();
+  const [reportTarget, setReportTarget] = useState<ExperienceFeedItem | null>(null);
 
   const handleDelete = async (experienceId: string) => {
     await deleteExperience(experienceId);
@@ -183,6 +187,18 @@ export function ExperienceList({
     );
   };
 
+  const handleReport = async (reason: string, description?: string) => {
+    if (!reportTarget) return;
+    await api.reportExperience(reportTarget.experience_id, reason, description);
+    showToast(t('experience.reportModal.success'), 'success');
+  };
+
+  const handleBlock = async (userId: string) => {
+    await api.blockUser(userId);
+    showToast(t('experience.blockModal.success'), 'success');
+    router.refresh();
+  };
+
   const isEmpty = mySuggestions.length === 0 && friendsSuggestions.length === 0 && communitySuggestions.length === 0 && nearbyPlaces.length === 0;
 
   if (isEmpty) {
@@ -212,6 +228,8 @@ export function ExperienceList({
                 experience={experience}
                 onClick={() => router.push(routes.app.experience.detail(locale as Locale, experience.experience_id, experience.slug || ''))}
                 onBookmarkToggle={() => handleBookmarkToggle(experience)}
+                onReport={isAuthenticated ? () => setReportTarget(experience) : undefined}
+                onBlock={isAuthenticated ? () => handleBlock(experience.user.id) : undefined}
               />
             ))}
           </div>
@@ -237,6 +255,8 @@ export function ExperienceList({
                 experience={experience}
                 onClick={() => router.push(routes.app.experience.detail(locale as Locale, experience.experience_id, experience.slug || ''))}
                 onBookmarkToggle={() => handleBookmarkToggle(experience)}
+                onReport={isAuthenticated ? () => setReportTarget(experience) : undefined}
+                onBlock={isAuthenticated ? () => handleBlock(experience.user.id) : undefined}
               />
             ))}
           </div>
@@ -286,6 +306,8 @@ export function ExperienceList({
                 experience={experience}
                 onClick={() => router.push(routes.app.experience.detail(locale as Locale, experience.experience_id, experience.slug || ''))}
                 onBookmarkToggle={() => handleBookmarkToggle(experience)}
+                onReport={isAuthenticated ? () => setReportTarget(experience) : undefined}
+                onBlock={isAuthenticated ? () => handleBlock(experience.user.id) : undefined}
               />
             ))}
           </div>
@@ -297,6 +319,13 @@ export function ExperienceList({
           )}
         </section>
       )}
+
+      {/* Report Modal */}
+      <ReportExperienceModal
+        isOpen={!!reportTarget}
+        onSubmit={handleReport}
+        onClose={() => setReportTarget(null)}
+      />
     </div>
   );
 }

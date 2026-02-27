@@ -564,6 +564,7 @@ Get the home feed with categorized experience sections.
   - `nearbyPlaces` — experiences in the user's detected city (via Vercel geolocation headers)
   - Includes `isBookmarked` and `bookmarkId` for each item if authenticated
   - All items include `place.recommendation_count`
+  - Blocked users' experiences are excluded from all sections (except `mySuggestions`)
 - **Errors:** `500`
 
 ---
@@ -574,7 +575,7 @@ Get the home feed with categorized experience sections.
 
 Browse public experiences with filtering and pagination.
 
-- **Auth:** None
+- **Auth:** Optional (if authenticated, blocked users' experiences are excluded)
 - **Query params:**
   - `city` (optional) — filter by city name
   - `citySlug` (optional) — filter by city slug (URL-friendly)
@@ -700,6 +701,78 @@ Remove a bookmark.
 ```
 
 - **Errors:** `401`, `403` (not owner), `404`, `500`
+
+---
+
+### Reports
+
+#### `POST /api/reports`
+
+Report an experience for inappropriate content.
+
+- **Auth:** Required
+- **Body:**
+
+```json
+{
+  "experience_id": "uuid",
+  "reason": "spam",
+  "description": "Optional additional details"
+}
+```
+
+- **Validation:**
+  - `experience_id` — required, must exist
+  - `reason` — required, one of: `spam`, `inappropriate`, `misleading`, `other`
+  - `description` — optional
+- **Response (200):**
+
+```json
+{ "success": true }
+```
+
+- **Behavior:** If the user already reported this experience, the report is updated (upsert).
+- **Errors:** `400` (validation), `401`, `404` (experience not found), `500`
+
+---
+
+### Blocks
+
+#### `POST /api/blocks`
+
+Block a user. Blocked users' content will be hidden from the authenticated user's feed and explore.
+
+- **Auth:** Required
+- **Body:**
+
+```json
+{ "blocked_id": "uuid" }
+```
+
+- **Response (200):**
+
+```json
+{ "success": true }
+```
+
+- **Behavior:** If the user is already blocked, returns success (idempotent).
+- **Errors:** `400` (cannot block yourself, missing field), `401`, `404` (user not found), `500`
+
+---
+
+#### `DELETE /api/blocks/:userId`
+
+Unblock a user.
+
+- **Auth:** Required
+- **Params:** `userId` — blocked user UUID
+- **Response (200):**
+
+```json
+{ "success": true }
+```
+
+- **Errors:** `401`, `500`
 
 ---
 

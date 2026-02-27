@@ -244,6 +244,41 @@ export const api = {
     }
   },
 
+  // Reports & Blocks
+  reportExperience: async (experienceId: string, reason: string, description?: string): Promise<void> => {
+    const response = await fetch('/api/reports', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ experience_id: experienceId, reason, description }),
+    });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.error || 'Failed to report experience');
+    }
+  },
+
+  blockUser: async (userId: string): Promise<void> => {
+    const response = await fetch('/api/blocks', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ blocked_id: userId }),
+    });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.error || 'Failed to block user');
+    }
+  },
+
+  unblockUser: async (userId: string): Promise<void> => {
+    const response = await fetch(`/api/blocks/${userId}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.error || 'Failed to unblock user');
+    }
+  },
+
   // Explore - public experiences
   getExplore: async (params?: {
     city?: string;

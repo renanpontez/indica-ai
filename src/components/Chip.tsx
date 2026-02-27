@@ -23,10 +23,10 @@ export function Chip({
     <Component
       onClick={onClick}
       className={cn(
-        'inline-flex items-center justify-center rounded-chip px-3 py-1.5 text-small font-medium transition-colors',
-        variant === 'default' && 'bg-chip-bg text-dark-grey',
-        variant === 'price' && 'bg-surface text-medium-grey',
-        variant === 'outlined' && 'border border-primary text-primary bg-transparent',
+        'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-primary border border-primary transition-colors',
+        variant === 'default' && 'text-dark-grey',
+        variant === 'price' && 'text-medium-grey',
+        variant === 'outlined' && 'border border-primary text-primary bg-transparent text-sm',
         active && 'bg-primary text-white',
         onClick && 'cursor-pointer hover:bg-opacity-80',
         className
