@@ -31,7 +31,7 @@ export function ImageGallery({ images, placeName, priceRange }: ImageGalleryProp
   if (!hasImages) {
     return (
       <div className="relative w-full">
-        <div className="aspect-[16/9] md:aspect-[21/5] rounded-xl overflow-hidden bg-gradient-to-br from-surface to-divider flex items-center justify-center">
+        <div className="aspect-[16/9] rounded-xl overflow-hidden bg-gradient-to-br from-surface to-divider flex items-center justify-center">
           <div className="text-center p-8">
             <PlaceholderImage
               size="sm"
@@ -55,11 +55,11 @@ export function ImageGallery({ images, placeName, priceRange }: ImageGalleryProp
   if (!hasMultipleImages) {
     return (
       <div className="relative w-full">
-        <div className="aspect-[16/9] md:aspect-[21/9] rounded-xl overflow-hidden bg-surface">
+        <div className="rounded-xl overflow-hidden bg-surface flex items-center justify-center max-h-[70vh]">
           <img
             src={images[0]}
             alt={placeName}
-            className="h-full w-full object-cover"
+            className="w-full max-h-[70vh] object-contain"
           />
           {/* Price Badge */}
           {priceRange && (
@@ -77,11 +77,11 @@ export function ImageGallery({ images, placeName, priceRange }: ImageGalleryProp
     <div className="relative w-full">
       <div className="flex gap-2 md:gap-3">
         {/* Main Image */}
-        <div className="relative flex-1 aspect-[4/3] md:aspect-[16/10] rounded-xl overflow-hidden bg-surface">
+        <div className="relative flex-1 rounded-xl overflow-hidden bg-surface flex items-center justify-center max-h-[70vh]">
           <img
             src={images[currentIndex]}
             alt={`${placeName} - Image ${currentIndex + 1}`}
-            className="h-full w-full object-cover"
+            className="w-full max-h-[70vh] object-contain"
           />
 
           {/* Price Badge */}

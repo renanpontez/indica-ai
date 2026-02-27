@@ -13,6 +13,8 @@ interface ExperienceCardProps {
   onBookmarkToggle?: () => void;
   onEdit?: () => void;
   onDelete?: () => void;
+  onReport?: () => void;
+  onBlock?: () => void;
 }
 
 export function ExperienceCard({
@@ -21,6 +23,8 @@ export function ExperienceCard({
   onBookmarkToggle,
   onEdit,
   onDelete,
+  onReport,
+  onBlock,
 }: ExperienceCardProps) {
   const { user, place, price_range, tags, time_ago, description } = experience;
   const t = useTranslations('place');
@@ -54,6 +58,8 @@ export function ExperienceCard({
     }
   };
 
+  const hasAnyAction = onEdit || onDelete || onBookmarkToggle || onReport || onBlock;
+
   return (
     <article
       className="group cursor-pointer bg-white rounded-xl border border-divider overflow-hidden transition-all hover:shadow-lg"
@@ -76,7 +82,7 @@ export function ExperienceCard({
             </div>
           </div>
         </div>
-        {(onEdit || onDelete) ? (
+        {hasAnyAction && (
           <div className="relative" ref={menuRef}>
             <button
               onClick={(e) => {
@@ -103,7 +109,8 @@ export function ExperienceCard({
 
             {/* Dropdown Menu */}
             {isMenuOpen && (
-              <div className="absolute right-0 top-full mt-1 w-36 bg-white rounded-lg shadow-lg border border-divider py-1 z-10">
+              <div className="absolute right-0 top-full mt-1 bg-white rounded-lg shadow-lg border border-divider py-1 z-10 whitespace-nowrap">
+                {/* Owner actions */}
                 {onEdit && (
                   <button
                     onClick={(e) => {
@@ -134,45 +141,65 @@ export function ExperienceCard({
                     {tExperience('actions.delete')}
                   </button>
                 )}
+
+                {/* Non-owner actions */}
+                {onBookmarkToggle && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsMenuOpen(false);
+                      onBookmarkToggle();
+                    }}
+                    className="w-full px-4 py-2 text-left text-sm text-dark-grey hover:bg-surface transition-colors flex items-center gap-2"
+                  >
+                    {experience.isBookmarked ? (
+                      <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                      </svg>
+                    ) : (
+                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                      </svg>
+                    )}
+                    {experience.isBookmarked
+                      ? tExperience('actions.removeBookmark')
+                      : tExperience('actions.bookmark')}
+                  </button>
+                )}
+                {onReport && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsMenuOpen(false);
+                      onReport();
+                    }}
+                    className="w-full px-4 py-2 text-left text-sm text-dark-grey hover:bg-surface transition-colors flex items-center gap-2"
+                  >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2z" />
+                    </svg>
+                    {tExperience('actions.report')}
+                  </button>
+                )}
+                {onBlock && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsMenuOpen(false);
+                      onBlock();
+                    }}
+                    className="w-full px-4 py-2 text-left text-sm text-red-500 hover:bg-red-50 transition-colors flex items-center gap-2"
+                  >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                    </svg>
+                    {tExperience('actions.blockUser')}
+                  </button>
+                )}
               </div>
             )}
           </div>
-        ) : onBookmarkToggle ? (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onBookmarkToggle();
-            }}
-            className={`p-2 hover:bg-surface rounded-full transition-colors ${
-              experience.isBookmarked ? 'text-primary' : 'text-medium-grey'
-            }`}
-            aria-label={experience.isBookmarked ? 'Remove bookmark' : 'Bookmark this place'}
-          >
-            {experience.isBookmarked ? (
-              <svg
-                className="h-5 w-5"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-              </svg>
-            ) : (
-              <svg
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-                />
-              </svg>
-            )}
-          </button>
-        ) : null}
+        )}
       </div>
 
       {/* Horizontal Content */}
@@ -222,8 +249,6 @@ export function ExperienceCard({
             </p>
           )}
 
-
-
           {/* Tags */}
           <div className="flex items-center gap-2 flex-wrap mb-2">
             {tags.slice(0, 3).map((tag, index) => (
@@ -237,18 +262,11 @@ export function ExperienceCard({
           </div>
 
           <div className="flex flex-row gap-2 items-center mb-2">
-
-
             {/* Price Badge */}
             <div className="backdrop-blur-sm py-1">
               <span className="text-xs font-semibold text-dark-grey">{price_range}</span>
             </div>
-
-            {/* <span className="text-[10px] text-black/20 mx-1">●</span> */}
-
-
           </div>
-
 
           {/* Description */}
           {description && (

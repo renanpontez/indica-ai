@@ -15,6 +15,7 @@ import { useProfile } from '@/features/profile/hooks/useProfile';
 import { useBookmarks } from '@/features/profile/hooks/useBookmarks';
 import { useToggleBookmark } from '@/features/experience-detail/hooks/useToggleBookmark';
 import { useDeleteExperience } from '@/features/experience-detail/hooks/useExperienceMutations';
+import { ReportExperienceModal } from '@/features/experience-detail/components/ReportExperienceModal';
 import { useFollowStatus } from '@/features/profile/hooks/useFollow';
 import { useToast } from '@/lib/hooks/useToast';
 import { api } from '@/lib/api/endpoints';
@@ -51,6 +52,7 @@ export default function ProfilePage({
   }, [tabParam]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [reportTarget, setReportTarget] = useState<ExperienceFeedItem | null>(null);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const { refreshUser, user: currentUser } = useAuth();
   const { showToast } = useToast();
@@ -111,6 +113,18 @@ export default function ProfilePage({
   const handleDelete = async (experienceId: string) => {
     await deleteExperience(experienceId);
     showToast(tExperience('deleteModal.success'), 'success');
+  };
+
+  const handleReport = async (reason: string, description?: string) => {
+    if (!reportTarget) return;
+    await api.reportExperience(reportTarget.experience_id, reason, description);
+    showToast(tExperience('reportModal.success'), 'success');
+  };
+
+  const handleBlock = async (userId: string) => {
+    await api.blockUser(userId);
+    showToast(tExperience('blockModal.success'), 'success');
+    router.refresh();
   };
 
   const handleSignOut = async () => {
@@ -276,6 +290,8 @@ export default function ProfilePage({
                           onEdit={isOwnProfile ? () => router.push(routes.app.experience.edit(locale as Locale, experience.experience_id)) : undefined}
                           onDelete={isOwnProfile ? () => handleDelete(experience.experience_id) : undefined}
                           onBookmarkToggle={!isOwnProfile ? () => handleBookmarkToggle(experience) : undefined}
+                          onReport={!isOwnProfile && currentUser ? () => setReportTarget(experience) : undefined}
+                          onBlock={!isOwnProfile && currentUser ? () => handleBlock(experience.user.id) : undefined}
                         />
                       ))}
                     </div>
@@ -384,6 +400,13 @@ export default function ProfilePage({
           )}
         </>
       )}
+
+      {/* Report Modal */}
+      <ReportExperienceModal
+        isOpen={!!reportTarget}
+        onSubmit={handleReport}
+        onClose={() => setReportTarget(null)}
+      />
     </div>
   );
 }

@@ -39,6 +39,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      blocks: {
+        Row: {
+          id: string
+          blocker_id: string
+          blocked_id: string
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          blocker_id: string
+          blocked_id: string
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          blocker_id?: string
+          blocked_id?: string
+          created_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blocks_blocker_id_fkey"
+            columns: ["blocker_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "blocks_blocked_id_fkey"
+            columns: ["blocked_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bookmarks: {
         Row: {
           created_at: string | null
@@ -265,6 +301,48 @@ export type Database = {
           name?: string
         }
         Relationships: []
+      }
+      reports: {
+        Row: {
+          id: string
+          reporter_id: string
+          experience_id: string
+          reason: string
+          description: string | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          reporter_id: string
+          experience_id: string
+          reason: string
+          description?: string | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          reporter_id?: string
+          experience_id?: string
+          reason?: string
+          description?: string | null
+          created_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reports_reporter_id_fkey"
+            columns: ["reporter_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reports_experience_id_fkey"
+            columns: ["experience_id"]
+            isOneToOne: false
+            referencedRelation: "experiences"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tags: {
         Row: {

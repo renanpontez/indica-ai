@@ -459,10 +459,37 @@
     }
   },
   "experience": {
+    "location": "Localização",
     "actions": {
       "menu": "Mais opções",
       "edit": "Editar",
-      "delete": "Excluir"
+      "delete": "Excluir",
+      "report": "Denunciar",
+      "blockUser": "Bloquear usuário",
+      "bookmark": "Salvar",
+      "removeBookmark": "Remover dos salvos"
+    },
+    "reportModal": {
+      "title": "Denunciar experiência",
+      "message": "Por que você está denunciando isso?",
+      "spam": "Spam",
+      "inappropriate": "Conteúdo inapropriado",
+      "misleading": "Informação enganosa",
+      "other": "Outro",
+      "description": "Detalhes adicionais (opcional)",
+      "descriptionPlaceholder": "Conte-nos mais...",
+      "cancel": "Cancelar",
+      "submit": "Enviar denúncia",
+      "submitting": "Enviando...",
+      "success": "Denúncia enviada. Obrigado."
+    },
+    "blockModal": {
+      "title": "Bloquear usuário?",
+      "message": "Você não verá mais o conteúdo dessa pessoa no seu feed. Você pode desbloquear depois.",
+      "cancel": "Cancelar",
+      "confirm": "Bloquear",
+      "blocking": "Bloqueando...",
+      "success": "Usuário bloqueado"
     },
     "edit": {
       "title": "Editar Indicação",
@@ -583,5 +610,19 @@
       "reactivate": "Reativar",
       "reactivateConfirm": "Tem certeza que deseja reativar esta experiência?"
     }
+  },
+  "report": {
+    "title": "Denunciar experiência",
+    "reason": "Motivo",
+    "spam": "Spam",
+    "inappropriate": "Conteúdo inapropriado",
+    "misleading": "Informação enganosa",
+    "other": "Outro",
+    "description": "Detalhes adicionais (opcional)",
+    "descriptionPlaceholder": "Conte-nos mais sobre o problema...",
+    "submit": "Enviar denúncia",
+    "submitting": "Enviando...",
+    "success": "Denúncia enviada. Obrigado.",
+    "alreadyReported": "Você já denunciou esta experiência."
   }
 }

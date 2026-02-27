@@ -104,6 +104,9 @@ export async function GET(request: NextRequest) {
   // Map of experience_id -> bookmark_id for current user
   const userBookmarks = new Map<string, string>();
 
+  // Blocked user IDs (for filtering)
+  let blockedUserIds: string[] = [];
+
   if (currentUserId) {
     const { data: following } = await supabase
       .from('follows')
@@ -120,6 +123,13 @@ export async function GET(request: NextRequest) {
     for (const bookmark of bookmarks || []) {
       userBookmarks.set(bookmark.experience_id, bookmark.id);
     }
+
+    // Fetch blocked users
+    const { data: blockedUsers } = await supabase
+      .from('blocks')
+      .select('blocked_id')
+      .eq('blocker_id', currentUserId);
+    blockedUserIds = (blockedUsers || []).map(b => b.blocked_id);
   }
 
   // Fetch my suggestions (if authenticated)
@@ -160,7 +170,9 @@ export async function GET(request: NextRequest) {
 
   // Fetch friends' suggestions (experiences from users the current user follows)
   let friendsExperiencesData: any[] = [];
-  if (currentUserId && followingIds.length > 0) {
+  // Filter out blocked users from following list
+  const unblockedFollowingIds = followingIds.filter(id => !blockedUserIds.includes(id));
+  if (currentUserId && unblockedFollowingIds.length > 0) {
     const { data: friendsExperiences } = await supabase
       .from('experiences')
       .select(`
@@ -186,7 +198,7 @@ export async function GET(request: NextRequest) {
           instagram_handle
         )
       `)
-      .in('user_id', followingIds)
+      .in('user_id', unblockedFollowingIds)
       .eq('status', 'active')
       .order('created_at', { ascending: false })
       .limit(30);
@@ -231,10 +243,15 @@ export async function GET(request: NextRequest) {
     .order('created_at', { ascending: false })
     .limit(50); // Fetch more to account for filtering
 
-  // Filter experiences based on visibility
+  // Filter experiences based on visibility and blocked users
   const filteredCommunityExperiences = (communityExperiences || []).filter((exp: any) => {
     // Exclude current user's experiences
     if (currentUserId && exp.user_id === currentUserId) {
+      return false;
+    }
+
+    // Exclude blocked users' experiences
+    if (blockedUserIds.includes(exp.user_id)) {
       return false;
     }
 
@@ -286,11 +303,12 @@ export async function GET(request: NextRequest) {
       .order('created_at', { ascending: false })
       .limit(30); // Fetch more to account for filtering
 
-    // Filter out experiences that are already in my suggestions and apply visibility rules
+    // Filter out experiences that are already in my suggestions, blocked users, and apply visibility rules
     const myIds = new Set(myExperiencesData.map((e: any) => e.id));
     filteredNearbyExperiences = (nearbyExperiences || [])
       .filter((exp: any) => {
         if (myIds.has(exp.id)) return false;
+        if (blockedUserIds.includes(exp.user_id)) return false;
 
         const visibility = exp.visibility || 'public';
         if (visibility === 'public') return true;
