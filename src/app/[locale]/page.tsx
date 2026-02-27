@@ -180,10 +180,10 @@ export default async function LandingPage({ params }: LandingPageProps) {
       <LandingNavbar locale={locale} />
 
       {/* Hero Section - Floating Cards Style */}
-      <section className="relative py-2 lg:py-24 lg:pt-0 overflow-hidden bg-gradient-to-b from-white to-gray-50">
-        <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10">
+      <section className="relative py-0 lg:py-4 lg:pt-0 overflow-hidden bg-gradient-to-b from-white to-gray-50">
+        <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-8">
           {/* Floating Cards Container */}
-          <div className="relative h-[400px] lg:h-[400px] mb-12  rounded-full">
+          <div className="relative h-[400px] lg:h-[400px] mb-4 rounded-full">
             {/* SVG Connection Lines */}
             <svg className="absolute inset-0 w-full h-full pointer-events-none  rounded-full" style={{ zIndex: 0 }}>
               <defs>
@@ -216,7 +216,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
             </div>
 
             {/* Person 1 - Top Left */}
-            <div className="absolute left-[2%] lg:left-[5%] top-[15%] lg:top-[20%] z-10 animate-float-slow">
+            <div className="absolute left-[2%] lg:left-[5%] top-[12%] lg:top-[20%] z-10 animate-float-slow">
               <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full overflow-hidden shadow-lg border-4 border-white">
                 <Image
                   src={people[0].image}
@@ -229,14 +229,14 @@ export default async function LandingPage({ params }: LandingPageProps) {
             </div>
 
             {/* Activity Card - Beach (Top Left Area) */}
-            <div className="absolute left-[15%] lg:left-[18%] top-[40%] lg:top-[40%] z-10 animate-float">
+            <div className="absolute left-[15%] lg:left-[18%] top-[35%] lg:top-[40%] z-10 animate-float">
               <div className={`w-12 h-12 lg:w-14 lg:h-14 rounded-full ${activityCards[0].color} shadow-lg flex items-center justify-center`}>
                 {activityCards[0].icon}
               </div>
             </div>
 
             {/* Person 2 - Bottom Left */}
-            <div className="absolute left-[5%] lg:left-[10%] bottom-[15%] lg:bottom-[20%] z-10 animate-float-delayed">
+            <div className="absolute left-[5%] lg:left-[8%] bottom-[25%] lg:bottom-[20%] z-10 animate-float-delayed">
               <div className="w-14 h-14 lg:w-18 lg:h-18 rounded-full overflow-hidden shadow-lg border-4 border-white">
                 <Image
                   src={people[1].image}
@@ -249,7 +249,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
             </div>
 
             {/* Activity Card - Hotel (Top Right) */}
-            <div className="absolute right-[15%] lg:right-[18%] top-[15%] lg:top-[18%] z-10 animate-float">
+            <div className="absolute right-[15%] lg:right-[18%] top-[12%] lg:top-[18%] z-10 animate-float">
               <div className={`w-12 h-12 lg:w-14 lg:h-14 rounded-full ${activityCards[1].color} shadow-lg flex items-center justify-center`}>
                 {activityCards[1].icon}
               </div>
@@ -307,20 +307,29 @@ export default async function LandingPage({ params }: LandingPageProps) {
 
           {/* Hero Text */}
           <div className="text-center max-w-2xl mx-auto">
-            <h1 className="text-4xl lg:text-5xl font-bold text-dark-grey mb-4 leading-tight">
+            <h1 className="text-2xl lg:text-3xl font-bold text-dark-grey mb-4 leading-tight">
               {t('hero.title')}
             </h1>
-            <p className="text-lg text-medium-grey mb-8 leading-relaxed">
+            <p className="text-md text-medium-grey mb-8 leading-relaxed">
               {t('hero.subtitle')}
             </p>
 
-            {/* CTA Button */}
-            <Link
-              href={routes.auth.signup(locale)}
-              className="inline-flex items-center px-8 py-4 bg-primary text-white rounded-full font-semibold text-lg hover:bg-primary/90 transition-all hover:shadow-lg hover:scale-105 mb-4"
-            >
-              {t('nav.signUp')}
-            </Link>
+            <div className="flex flex-row gap-4 justify-center items-center mb-4">
+
+              {/* CTA Button */}
+              <Link
+                href={routes.auth.signup(locale)}
+                className="inline-flex items-center px-8 py-4 bg-primary text-white rounded-full font-semibold text-lg hover:bg-primary/90 transition-all hover:shadow-lg hover:scale-105 mb-4"
+              >
+                {t('nav.signUp')}
+              </Link>
+              <Link
+                href={routes.auth.signup(locale)}
+                className="inline-flex items-center px-4 py-3 text-primary rounded-full font-semibold text-lg hover:bg-primary/90 transition-all hover:shadow-lg hover:scale-105 mb-2"
+              >
+                {t('nav.login')}
+              </Link>
+            </div>
           </div>
         </div>
       </section>
