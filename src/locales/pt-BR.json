@@ -33,7 +33,7 @@
     "cta": {
       "title": "Comece a compartilhar suas descobertas",
       "description": "Junte-se a milhares de pessoas que estão descobrindo experências incríveis através de amigos. Crie sua conta e comece a compartilhar suas experiências favoritas.",
-      "button": "Criar conta grátis"
+      "button": "Bem-vindo ao Circle Picks"
     },
     "footer": {
       "terms": "Termos",
@@ -401,8 +401,8 @@
       "subtitle": "Junte-se para compartilhar seus lugares favoritos com amigos",
       "hasAccount": "Já possui uma conta?",
       "signIn": "Entrar",
-      "displayName": "Seu nome",
-      "displayNamePlaceholder": "João Silva",
+      "displayName": "Nome",
+      "displayNamePlaceholder": "Seu nome",
       "email": "Email",
       "emailPlaceholder": "seuemail@email.com",
       "password": "Senha",
@@ -415,7 +415,7 @@
       },
       "creatingAccount": "Criando conta...",
       "createAccountButton": "Criar conta",
-      "orContinueWith": "Ou continue com",
+      "orContinueWith": "ou continue com e-mail",
       "googleButton": "Continuar com Google",
       "errors": {
         "passwordMismatch": "As senhas não coincidem",
