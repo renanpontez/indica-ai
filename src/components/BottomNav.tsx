@@ -128,7 +128,10 @@ export function BottomNav() {
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary',
                   active
                     ? 'text-primary'
-                    : 'text-medium-grey hover:text-dark-grey'
+                    : 'text-medium-grey hover:text-dark-grey',
+                  item.id === 'add'
+                    ? 'outline-4 outline-white'
+                    : ''
                 )}
                 aria-label={item.label}
                 aria-current={active ? 'page' : undefined}
