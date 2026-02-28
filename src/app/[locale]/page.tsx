@@ -167,6 +167,7 @@ export default async function LandingPage({ params }: LandingPageProps) {
                     <span className="text-[9px] font-normal opacity-80 uppercase tracking-wide">{t('hero.appStore.prefix')}</span>
                     <span className="text-sm font-semibold">App Store</span>
                   </div>
+                  <span className="ml-1 px-1.5 py-0.5 bg-white/20 rounded text-[9px] font-semibold uppercase tracking-wide">{t('hero.appStore.soon')}</span>
                 </a>
               </div>
             </div>

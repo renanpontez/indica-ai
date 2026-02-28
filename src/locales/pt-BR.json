@@ -13,7 +13,8 @@
       "searchButton": "Buscar",
       "appStore": {
         "prefix": "Baixe na",
-        "aria": "Baixe na App Store"
+        "aria": "Baixe na App Store",
+        "soon": "Em breve"
       }
     },
     "categories": {

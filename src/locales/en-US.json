@@ -13,7 +13,8 @@
       "searchButton": "Search",
       "appStore": {
         "prefix": "Download on the",
-        "aria": "Download on the App Store"
+        "aria": "Download on the App Store",
+        "soon": "Soon"
       }
     },
     "categories": {
