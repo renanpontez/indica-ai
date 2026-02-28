@@ -15,18 +15,28 @@ export function useFollow() {
   const followMutation = useMutation({
     mutationFn: (userId: string) => api.followUser(userId),
     onMutate: async (userId) => {
+      // Cancel any outgoing refetches for this user's follow status
       await queryClient.cancelQueries({ queryKey: ['follow-status', userId] });
-      const previous = queryClient.getQueryData(['follow-status', userId]);
-      queryClient.setQueryData(['follow-status', userId], (old: any) => ({
+
+      // Snapshot all matching queries for rollback
+      const previousEntries: [readonly unknown[], unknown][] = [];
+      queryClient.getQueriesData({ queryKey: ['follow-status', userId] }).forEach(([key, data]) => {
+        previousEntries.push([key, data]);
+      });
+
+      // Optimistically set all matching queries to isFollowing: true
+      queryClient.setQueriesData({ queryKey: ['follow-status', userId] }, (old: any) => ({
         ...old,
         isFollowing: true,
       }));
-      return { previous, userId };
+
+      return { previousEntries, userId };
     },
-    onError: (_err, userId, context) => {
-      if (context?.previous) {
-        queryClient.setQueryData(['follow-status', userId], context.previous);
-      }
+    onError: (_err, _userId, context) => {
+      // Rollback all queries to their previous values
+      context?.previousEntries.forEach(([key, data]) => {
+        queryClient.setQueryData(key, data);
+      });
     },
     onSettled: (_, __, userId) => {
       queryClient.invalidateQueries({ queryKey: ['follow-status', userId] });
@@ -39,17 +49,23 @@ export function useFollow() {
     mutationFn: (userId: string) => api.unfollowUser(userId),
     onMutate: async (userId) => {
       await queryClient.cancelQueries({ queryKey: ['follow-status', userId] });
-      const previous = queryClient.getQueryData(['follow-status', userId]);
-      queryClient.setQueryData(['follow-status', userId], (old: any) => ({
+
+      const previousEntries: [readonly unknown[], unknown][] = [];
+      queryClient.getQueriesData({ queryKey: ['follow-status', userId] }).forEach(([key, data]) => {
+        previousEntries.push([key, data]);
+      });
+
+      queryClient.setQueriesData({ queryKey: ['follow-status', userId] }, (old: any) => ({
         ...old,
         isFollowing: false,
       }));
-      return { previous, userId };
+
+      return { previousEntries, userId };
     },
-    onError: (_err, userId, context) => {
-      if (context?.previous) {
-        queryClient.setQueryData(['follow-status', userId], context.previous);
-      }
+    onError: (_err, _userId, context) => {
+      context?.previousEntries.forEach(([key, data]) => {
+        queryClient.setQueryData(key, data);
+      });
     },
     onSettled: (_, __, userId) => {
       queryClient.invalidateQueries({ queryKey: ['follow-status', userId] });

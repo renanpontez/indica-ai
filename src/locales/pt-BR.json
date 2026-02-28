@@ -537,6 +537,12 @@
     "deletingAccount": "Excluindo...",
     "follow": "Seguir",
     "unfollow": "Seguindo",
+    "unfollowModal": {
+      "title": "Deixar de seguir?",
+      "message": "Você não verá mais as indicações dessa pessoa no seu feed.",
+      "confirm": "Deixar de seguir",
+      "cancel": "Cancelar"
+    },
     "empty": {
       "suggestions": {
         "title": "Nenhuma indicação ainda",

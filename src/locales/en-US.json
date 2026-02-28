@@ -538,6 +538,12 @@
     "deletingAccount": "Deleting...",
     "follow": "Follow",
     "unfollow": "Unfollow",
+    "unfollowModal": {
+      "title": "Unfollow user?",
+      "message": "You will no longer see their recommendations in your feed.",
+      "confirm": "Unfollow",
+      "cancel": "Cancel"
+    },
     "empty": {
       "suggestions": {
         "title": "No suggestions yet",
