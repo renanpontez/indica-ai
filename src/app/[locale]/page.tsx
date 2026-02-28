@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import LandingNavbar from '@/components/LandingNavbar';
+import HeroPhoneMockups from '@/components/HeroPhoneMockups';
 import { routes, type Locale } from '@/lib/routes';
 import { slugify } from '@/lib/utils/format';
 import { createClient } from '@/lib/supabase/server';
@@ -9,79 +10,6 @@ import { createClient } from '@/lib/supabase/server';
 interface LandingPageProps {
   params: Promise<{ locale: Locale }>;
 }
-
-// Activity cards with icons and colors
-const activityCards = [
-  {
-    id: 'beach',
-    color: 'bg-cyan-400',
-    icon: (
-      <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707" />
-      </svg>
-    ),
-  },
-  {
-    id: 'hotel',
-    color: 'bg-amber-400',
-    icon: (
-      <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-      </svg>
-    ),
-  },
-  {
-    id: 'food',
-    color: 'bg-orange-500',
-    icon: (
-      <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-      </svg>
-    ),
-  },
-  {
-    id: 'bar',
-    color: 'bg-purple-500',
-    icon: (
-      <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-      </svg>
-    ),
-  },
-  {
-    id: 'cafe',
-    color: 'bg-rose-400',
-    icon: (
-      <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-      </svg>
-    ),
-  },
-];
-
-// Fake people using Unsplash
-const people = [
-  {
-    id: 1,
-    name: 'Ana',
-    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face',
-  },
-  {
-    id: 2,
-    name: 'Carlos',
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
-  },
-  {
-    id: 3,
-    name: 'Julia',
-    image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
-  },
-  {
-    id: 4,
-    name: 'Pedro',
-    image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
-  },
-];
 
 // FAQ Accordion Client Component
 function FAQAccordion({ questions }: { questions: { question: string; answer: string }[] }) {
@@ -179,156 +107,75 @@ export default async function LandingPage({ params }: LandingPageProps) {
     <div className="min-h-screen bg-background">
       <LandingNavbar locale={locale} />
 
-      {/* Hero Section - Floating Cards Style */}
-      <section className="relative py-0 lg:py-4 lg:pt-0 overflow-hidden bg-gradient-to-b from-white to-gray-50">
-        <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-8">
-          {/* Floating Cards Container */}
-          <div className="relative h-[400px] lg:h-[400px] mb-4 rounded-full">
-            {/* SVG Connection Lines */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none  rounded-full" style={{ zIndex: 0 }}>
-              <defs>
-                <pattern id="dot-pattern" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
-                  <circle cx="2" cy="2" r="1.5" fill="#E5E7EB" />
-                </pattern>
-              </defs>
-              {/* Connection lines from center to cards */}
-              <line x1="50%" y1="50%" x2="8%" y2="25%" stroke="#E5E7EB" strokeWidth="2" strokeDasharray="4 4" className="hidden lg:block" />
-              <line x1="50%" y1="50%" x2="25%" y2="70%" stroke="#E5E7EB" strokeWidth="2" strokeDasharray="4 4" className="hidden lg:block" />
-              <line x1="50%" y1="50%" x2="92%" y2="25%" stroke="#E5E7EB" strokeWidth="2" strokeDasharray="4 4" className="hidden lg:block" />
-              <line x1="50%" y1="50%" x2="85%" y2="65%" stroke="#E5E7EB" strokeWidth="2" strokeDasharray="4 4" className="hidden lg:block" />
-              <line x1="50%" y1="50%" x2="18%" y2="45%" stroke="#E5E7EB" strokeWidth="2" strokeDasharray="4 4" className="hidden lg:block" />
-              <line x1="50%" y1="50%" x2="82%" y2="40%" stroke="#E5E7EB" strokeWidth="2" strokeDasharray="4 4" className="hidden lg:block" />
-              <line x1="50%" y1="50%" x2="12%" y2="70%" stroke="#E5E7EB" strokeWidth="2" strokeDasharray="4 4" className="hidden lg:block" />
-              <line x1="50%" y1="50%" x2="75%" y2="80%" stroke="#E5E7EB" strokeWidth="2" strokeDasharray="4 4" className="hidden lg:block" />
-            </svg>
+      {/* Hero Section - Phone Mockup Collage Style */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-white via-white to-gray-50">
+        {/* Subtle background gradient blobs */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-primary/5 blur-3xl"/>
+          <div className="absolute top-40 -left-20 w-80 h-80 rounded-full bg-primary/5 blur-3xl"/>
+        </div>
 
-            {/* Center Logo Card */}
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
-              <div className="w-24 h-24 lg:w-32 lg:h-32 rounded-full bg-gradient-to-br from-primary to-primary/80 shadow-xl flex items-center justify-center">
-                <Image
-                  src="/assets/circle-picks.svg"
-                  alt="Circle Picks"
-                  width={64}
-                  height={64}
-                  className="w-12 h-12 lg:w-16 lg:h-16 brightness-0 invert"
-                />
+        <div className="relative 2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-8">
+          {/* Two-column layout: text left, phones right on desktop; stacked on mobile */}
+          <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16 py-14 lg:py-20">
+
+            {/* Left column: headline, subtitle, CTAs */}
+            <div className="hero-text-animate flex-1 text-center lg:text-left max-w-xl mx-auto lg:mx-0">
+              {/* Eyebrow badge */}
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-primary/10 rounded-full mb-5">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary"/>
+                <span className="text-xs font-semibold text-primary uppercase tracking-wider">{t('hero.eyebrow')}</span>
+              </div>
+
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-dark-grey mb-5 leading-tight">
+                {t('hero.title')}
+              </h1>
+              <p className="text-base lg:text-lg text-medium-grey mb-8 leading-relaxed">
+                {t('hero.subtitle')}
+              </p>
+
+              {/* Primary CTA */}
+              <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start mb-8">
+                <Link
+                  href={routes.auth.signup(locale)}
+                  className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-primary text-white rounded-full font-semibold text-base hover:bg-primary/90 transition-all hover:shadow-lg hover:scale-105"
+                >
+                  {t('nav.signUp')}
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+                  </svg>
+                </Link>
+                <Link
+                  href={routes.auth.signin(locale)}
+                  className="inline-flex items-center justify-center px-7 py-3.5 border border-divider text-dark-grey rounded-full font-semibold text-base hover:border-primary/40 hover:text-primary transition-all"
+                >
+                  {t('nav.login')}
+                </Link>
+              </div>
+
+              {/* App Store badge */}
+              <div className="flex flex-row gap-3 justify-center lg:justify-start flex-wrap">
+                <a
+                  href="#"
+                  aria-label={t('hero.appStore.aria')}
+                  className="inline-flex items-center gap-2.5 px-4 py-2.5 bg-dark-grey text-white rounded-xl hover:bg-dark-grey/90 transition-all hover:scale-105 hover:shadow-md"
+                >
+                  <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                  </svg>
+                  <div className="flex flex-col leading-none">
+                    <span className="text-[9px] font-normal opacity-80 uppercase tracking-wide">{t('hero.appStore.prefix')}</span>
+                    <span className="text-sm font-semibold">App Store</span>
+                  </div>
+                </a>
               </div>
             </div>
 
-            {/* Person 1 - Top Left */}
-            <div className="absolute left-[2%] lg:left-[5%] top-[12%] lg:top-[20%] z-10 animate-float-slow">
-              <div className="w-16 h-16 lg:w-20 lg:h-20 rounded-full overflow-hidden shadow-lg border-4 border-white">
-                <Image
-                  src={people[0].image}
-                  alt={people[0].name}
-                  width={80}
-                  height={80}
-                  className="w-full h-full object-cover"
-                />
+            {/* Right column: phone mockup collage */}
+            <div className="flex-shrink-0 w-full lg:w-auto flex justify-center">
+              <div className="relative w-[320px] sm:w-[380px] lg:w-[440px] h-[380px] sm:h-[440px] lg:h-[480px]">
+                <HeroPhoneMockups />
               </div>
-            </div>
-
-            {/* Activity Card - Beach (Top Left Area) */}
-            <div className="absolute left-[15%] lg:left-[18%] top-[35%] lg:top-[40%] z-10 animate-float">
-              <div className={`w-12 h-12 lg:w-14 lg:h-14 rounded-full ${activityCards[0].color} shadow-lg flex items-center justify-center`}>
-                {activityCards[0].icon}
-              </div>
-            </div>
-
-            {/* Person 2 - Bottom Left */}
-            <div className="absolute left-[5%] lg:left-[8%] bottom-[25%] lg:bottom-[20%] z-10 animate-float-delayed">
-              <div className="w-14 h-14 lg:w-18 lg:h-18 rounded-full overflow-hidden shadow-lg border-4 border-white">
-                <Image
-                  src={people[1].image}
-                  alt={people[1].name}
-                  width={72}
-                  height={72}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
-
-            {/* Activity Card - Hotel (Top Right) */}
-            <div className="absolute right-[15%] lg:right-[18%] top-[12%] lg:top-[18%] z-10 animate-float">
-              <div className={`w-12 h-12 lg:w-14 lg:h-14 rounded-full ${activityCards[1].color} shadow-lg flex items-center justify-center`}>
-                {activityCards[1].icon}
-              </div>
-            </div>
-
-            {/* Activity Card - Food (Top Right Area) */}
-            <div className="absolute right-[2%] lg:right-[5%] top-[20%] lg:top-[22%] z-10 animate-float-slow">
-              <div className={`w-14 h-14 lg:w-16 lg:h-16 rounded-full ${activityCards[2].color} shadow-lg flex items-center justify-center`}>
-                {activityCards[2].icon}
-              </div>
-            </div>
-
-            {/* Person 3 - Right Middle */}
-            <div className="absolute right-[8%] lg:right-[12%] top-[55%] lg:top-[55%] z-10 animate-float-delayed">
-              <div className="w-16 h-16 lg:w-20 lg:h-20  rounded-full overflow-hidden shadow-lg border-4 border-white">
-                <Image
-                  src={people[2].image}
-                  alt={people[2].name}
-                  width={80}
-                  height={80}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
-
-            {/* Activity Card - Bar (Right Bottom) */}
-            <div className="absolute right-[20%] lg:right-[25%] bottom-[10%] lg:bottom-[12%] z-10 animate-float">
-              <div className={`w-11 h-11 lg:w-12 lg:h-12 rounded-full ${activityCards[3].color} shadow-lg flex items-center justify-center`}>
-                {activityCards[3].icon}
-              </div>
-            </div>
-
-            {/* Person 4 - Bottom Left Area */}
-            <div className="absolute left-[22%] lg:left-[25%] bottom-[5%] lg:bottom-[8%] z-10 animate-float-slow">
-              <div className="w-14 h-14 lg:w-16 lg:h-16 rounded-full overflow-hidden shadow-lg border-4 border-white">
-                <Image
-                  src={people[3].image}
-                  alt={people[3].name}
-                  width={64}
-                  height={64}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
-
-            {/* Activity Card - Cafe (Far Right) */}
-            <div className="absolute right-[0%] lg:right-[2%] top-[45%] lg:top-[45%] z-10 animate-float-delayed">
-              <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white shadow-lg border border-gray-100 flex items-center justify-center">
-                <svg className="w-6 h-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          {/* Hero Text */}
-          <div className="text-center max-w-2xl mx-auto">
-            <h1 className="text-2xl lg:text-3xl font-bold text-dark-grey mb-4 leading-tight">
-              {t('hero.title')}
-            </h1>
-            <p className="text-md text-medium-grey mb-8 leading-relaxed">
-              {t('hero.subtitle')}
-            </p>
-
-            <div className="flex flex-row gap-4 justify-center items-center mb-4">
-
-              {/* CTA Button */}
-              <Link
-                href={routes.auth.signup(locale)}
-                className="inline-flex items-center px-8 py-4 bg-primary text-white rounded-full font-semibold text-lg hover:bg-primary/90 transition-all hover:shadow-lg hover:scale-105 mb-4"
-              >
-                {t('nav.signUp')}
-              </Link>
-              <Link
-                href={routes.auth.signup(locale)}
-                className="inline-flex items-center px-4 py-3 text-primary rounded-full font-semibold text-lg hover:bg-primary/90 transition-all hover:shadow-lg hover:scale-105 mb-2"
-              >
-                {t('nav.login')}
-              </Link>
             </div>
           </div>
         </div>
