@@ -4,6 +4,7 @@ import { getTranslations } from 'next-intl/server';
 import LandingNavbar from '@/components/LandingNavbar';
 import HeroPhoneMockups from '@/components/HeroPhoneMockups';
 import BrowserMockup from '@/components/BrowserMockup';
+import PhoneMockupPair from '@/components/PhoneMockupPair';
 import { routes, type Locale } from '@/lib/routes';
 import { slugify } from '@/lib/utils/format';
 import { createClient } from '@/lib/supabase/server';
@@ -264,13 +265,13 @@ export default async function LandingPage({ params }: LandingPageProps) {
       </section>
 
 
-      {/* Problems Section — text left, image right (mirrored) */}
+      {/* Problems Section — text left, phones right (mirrored) */}
       <section className="py-16 lg:py-24 bg-white">
         <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-6 lg:px-10">
           <div className="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-16">
-            {/* Right — Browser mockup */}
-            <div className="flex-1 w-full max-w-md lg:max-w-none">
-              <BrowserMockup />
+            {/* Right — Phone mockups */}
+            <div className="flex-1 w-full flex justify-center">
+              <PhoneMockupPair />
             </div>
 
             {/* Left — Problems */}
