@@ -8,8 +8,13 @@
     "hero": {
       "title": "Discover amazing places through your friends",
       "subtitle": "The best way to find restaurants, cafes, bars, and hotels is through people you trust",
+      "eyebrow": "Private Beta",
       "searchPlaceholder": "Search places...",
-      "searchButton": "Search"
+      "searchButton": "Search",
+      "appStore": {
+        "prefix": "Download on the",
+        "aria": "Download on the App Store"
+      }
     },
     "categories": {
       "restaurants": "Restaurants",

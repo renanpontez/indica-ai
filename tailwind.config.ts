@@ -53,6 +53,10 @@ const config: Config = {
         'float': 'float 4s ease-in-out infinite',
         'float-slow': 'float-slow 5s ease-in-out infinite',
         'float-delayed': 'float-delayed 4.5s ease-in-out infinite 0.5s',
+        'phone-float': 'phone-float 6s ease-in-out infinite',
+        'phone-float-left': 'phone-float-left 7s ease-in-out infinite 0.5s',
+        'phone-float-right': 'phone-float-right 6.5s ease-in-out infinite 1s',
+        'fade-slide-up': 'fade-slide-up 0.7s ease-out both',
       },
       keyframes: {
         float: {
@@ -66,6 +70,22 @@ const config: Config = {
         'float-delayed': {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-12px)' },
+        },
+        'phone-float': {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        'phone-float-left': {
+          '0%, 100%': { transform: 'rotate(-8deg) translateY(20px)' },
+          '50%': { transform: 'rotate(-8deg) translateY(10px)' },
+        },
+        'phone-float-right': {
+          '0%, 100%': { transform: 'rotate(8deg) translateY(20px)' },
+          '50%': { transform: 'rotate(8deg) translateY(10px)' },
+        },
+        'fade-slide-up': {
+          '0%': { opacity: '0', transform: 'translateY(30px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
         },
       },
     },

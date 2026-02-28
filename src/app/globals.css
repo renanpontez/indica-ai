@@ -23,3 +23,90 @@ body {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+/* Hero section entrance animations */
+@keyframes heroTextIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heroPhoneCenterIn {
+  from {
+    opacity: 0;
+    transform: translateY(48px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heroPhoneLeftIn {
+  from {
+    opacity: 0;
+    transform: rotate(-8deg) translateY(60px);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(-8deg) translateY(20px);
+  }
+}
+
+@keyframes heroPhoneRightIn {
+  from {
+    opacity: 0;
+    transform: rotate(8deg) translateY(60px);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(8deg) translateY(20px);
+  }
+}
+
+/* Continuous float animations after entrance */
+@keyframes phoneCenterFloat {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes phoneLeftFloat {
+  0%, 100% { transform: rotate(-8deg) translateY(20px); }
+  50% { transform: rotate(-8deg) translateY(10px); }
+}
+
+@keyframes phoneRightFloat {
+  0%, 100% { transform: rotate(8deg) translateY(20px); }
+  50% { transform: rotate(8deg) translateY(10px); }
+}
+
+.hero-text-animate {
+  animation: heroTextIn 0.7s ease-out 0.1s both;
+}
+
+.hero-phones-animate {
+  animation: heroPhoneCenterIn 0.8s ease-out 0.2s both;
+}
+
+.phone-center-float {
+  animation:
+    heroPhoneCenterIn 0.8s ease-out 0.2s both,
+    phoneCenterFloat 6s ease-in-out 1s infinite;
+}
+
+.phone-left-float {
+  animation:
+    heroPhoneLeftIn 0.9s ease-out 0.35s both,
+    phoneLeftFloat 7s ease-in-out 1.25s infinite;
+}
+
+.phone-right-float {
+  animation:
+    heroPhoneRightIn 0.9s ease-out 0.5s both,
+    phoneRightFloat 6.5s ease-in-out 1.4s infinite;
+}

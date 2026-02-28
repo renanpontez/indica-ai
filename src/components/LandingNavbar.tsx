@@ -15,9 +15,9 @@ export default function LandingNavbar({ locale, showActions = true }: LandingNav
   const t = useTranslations('landing');
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-divider">
-      <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-2 lg:px-10">
-        <div className="flex items-center justify-between py-4">
+    <nav className="sticky top-0 z-50 pt-3 pb-1">
+      <div className="2xl:max-w-[1440px] max-w-[1000px] mx-auto px-4 lg:px-10">
+        <div className="flex items-center justify-between py-3 px-5 bg-white/90 backdrop-blur-md rounded-full shadow-sm border border-divider">
           {/* Logo */}
           <Link href={routes.home(locale)} className="flex items-center gap-1 md:gap-2 flex-shrink-0">
             <Image
