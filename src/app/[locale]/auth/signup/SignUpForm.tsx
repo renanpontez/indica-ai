@@ -83,7 +83,7 @@ export default function SignUpForm() {
       }
 
       // Success - redirect to app
-      router.push(routes.app.feed(locale as Locale));
+      router.push(routes.app.feed(locale as Locale) + '?n=1');
       router.refresh();
     } catch {
       setError(t('errors.generic'));
