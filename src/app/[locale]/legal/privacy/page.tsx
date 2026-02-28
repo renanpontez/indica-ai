@@ -11,7 +11,7 @@ interface PrivacyPageProps {
 const content = {
   'pt-BR': {
     title: 'Política de Privacidade e Termos de Uso',
-    lastUpdated: 'Efetiva a partir de 23 de Fevereiro de 2026',
+    lastUpdated: 'Efetiva a partir de 27 de Fevereiro de 2026',
     backToHome: 'Voltar para o início',
     privacyTitle: 'Política de Privacidade',
     termsTitle: 'Termos de Uso',
@@ -59,8 +59,10 @@ const content = {
           'Não vendemos, alugamos ou comercializamos seus dados pessoais. Podemos compartilhar suas informações nos seguintes casos:',
         list: [
           'Supabase: infraestrutura de banco de dados e autenticação, onde seus dados são armazenados e processados',
+          'Google Sign-In e Apple Sign-In: utilizados como provedores de autenticação para login na plataforma; recebemos apenas informações básicas de perfil (nome e email) necessárias para criar sua conta',
           'Google Places API: utilizado para busca de lugares quando você adiciona experiências; dados de busca são enviados ao Google',
           'Umami Analytics: coleta dados anonimizados de uso para fins de análise',
+          'Sentry: serviço de monitoramento de erros que coleta informações técnicas (como stack traces e dados do dispositivo) para identificar e corrigir problemas na plataforma; não coleta dados pessoais identificáveis intencionalmente',
           'Requisitos legais: podemos divulgar suas informações se exigido por lei, ordem judicial ou processo legal',
         ],
       },
@@ -72,7 +74,7 @@ const content = {
       {
         title: 'Retenção de Dados',
         content:
-          'Mantemos suas informações pessoais enquanto sua conta estiver ativa. Se você solicitar a exclusão da sua conta, removeremos seus dados pessoais de nossos sistemas dentro de um prazo razoável, exceto quando a retenção for necessária para cumprir obrigações legais, resolver disputas ou fazer cumprir nossos acordos.',
+          'Mantemos suas informações pessoais enquanto sua conta estiver ativa. Se você solicitar a exclusão da sua conta, removeremos seus dados pessoais de nossos sistemas dentro de 30 (trinta) dias corridos, exceto quando a retenção for necessária para cumprir obrigações legais, resolver disputas ou fazer cumprir nossos acordos.',
       },
       {
         title: 'Seus Direitos',
@@ -107,9 +109,14 @@ const content = {
           'Respeitamos sinais de Do Not Track (DNT) enviados pelo seu navegador. Quando detectamos um sinal DNT, não coletamos dados de navegação para fins de análise. O Umami Analytics, por ser uma ferramenta focada em privacidade, já opera de forma compatível com essas preferências.',
       },
       {
-        title: 'Restrição de Idade',
+        title: 'Dados de Menores',
         content:
-          'O Serviço não é destinado a pessoas com menos de 13 anos de idade. Não coletamos intencionalmente informações pessoais de crianças menores de 13 anos. Se tomarmos conhecimento de que coletamos dados de uma criança menor de 13 anos, tomaremos medidas para excluir essas informações de nossos servidores.',
+          'O Serviço não é destinado a pessoas com menos de 13 anos de idade. Não coletamos intencionalmente informações pessoais de crianças menores de 13 anos. Se tomarmos conhecimento de que coletamos dados de uma criança menor de 13 anos, tomaremos medidas para excluir essas informações de nossos servidores dentro de 30 dias. Se você é pai, mãe ou responsável e acredita que seu filho nos forneceu dados pessoais, entre em contato pelo email hello@circlepicks.app para que possamos tomar as providências necessárias.',
+      },
+      {
+        title: 'Links para Serviços de Terceiros',
+        content:
+          'O Serviço pode conter links para sites ou serviços de terceiros, como perfis do Instagram de estabelecimentos, Google Maps e outros. Esses links são fornecidos apenas para conveniência e informação. Não somos responsáveis pelas práticas de privacidade ou pelo conteúdo desses sites ou serviços de terceiros. Recomendamos que você revise as políticas de privacidade de qualquer site de terceiros que visitar.',
       },
       {
         title: 'Alterações nesta Política',
@@ -202,7 +209,7 @@ const content = {
   },
   'en-US': {
     title: 'Privacy Policy and Terms of Use',
-    lastUpdated: 'Effective as of February 23, 2026',
+    lastUpdated: 'Effective as of February 27, 2026',
     backToHome: 'Back to home',
     privacyTitle: 'Privacy Policy',
     termsTitle: 'Terms of Use',
@@ -250,8 +257,10 @@ const content = {
           'We do not sell, rent, or trade your personal data. We may share your information in the following cases:',
         list: [
           'Supabase: database infrastructure and authentication, where your data is stored and processed',
+          'Google Sign-In and Apple Sign-In: used as authentication providers for platform login; we only receive basic profile information (name and email) necessary to create your account',
           'Google Places API: used for place search when you add experiences; search data is sent to Google',
           'Umami Analytics: collects anonymized usage data for analysis purposes',
+          'Sentry: error monitoring service that collects technical information (such as stack traces and device data) to identify and fix platform issues; it does not intentionally collect personally identifiable data',
           'Legal requirements: we may disclose your information if required by law, court order, or legal process',
         ],
       },
@@ -263,7 +272,7 @@ const content = {
       {
         title: 'Data Retention',
         content:
-          'We retain your personal information for as long as your account is active. If you request account deletion, we will remove your personal data from our systems within a reasonable timeframe, except where retention is necessary to comply with legal obligations, resolve disputes, or enforce our agreements.',
+          'We retain your personal information for as long as your account is active. If you request account deletion, we will remove your personal data from our systems within 30 (thirty) calendar days, except where retention is necessary to comply with legal obligations, resolve disputes, or enforce our agreements.',
       },
       {
         title: 'Your Rights',
@@ -298,9 +307,14 @@ const content = {
           'We respect Do Not Track (DNT) signals sent by your browser. When we detect a DNT signal, we do not collect browsing data for analytics purposes. Umami Analytics, being a privacy-focused tool, already operates in a manner compatible with these preferences.',
       },
       {
-        title: 'Age Restriction',
+        title: "Children's Data",
         content:
-          'The Service is not intended for individuals under 13 years of age. We do not knowingly collect personal information from children under 13. If we become aware that we have collected data from a child under 13, we will take steps to delete that information from our servers.',
+          'The Service is not intended for individuals under 13 years of age. We do not knowingly collect personal information from children under 13. If we become aware that we have collected data from a child under 13, we will take steps to delete that information from our servers within 30 days. If you are a parent or guardian and believe your child has provided us with personal data, please contact us at hello@circlepicks.app so we can take appropriate action.',
+      },
+      {
+        title: 'Links to Third-Party Services',
+        content:
+          'The Service may contain links to third-party websites or services, such as Instagram profiles of establishments, Google Maps, and others. These links are provided solely for convenience and information. We are not responsible for the privacy practices or content of these third-party websites or services. We encourage you to review the privacy policies of any third-party sites you visit.',
       },
       {
         title: 'Changes to This Policy',
