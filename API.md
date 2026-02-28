@@ -624,12 +624,19 @@ Search experiences and users.
   "experiences": [
     {
       "id": "uuid",
+      "experience_id": "uuid",
       "slug": "experience-slug",
       "brief_description": "Great place",
-      "tags": ["italian"],
+      "tags": [{ "slug": "italian", "display_name": "Italian" }],
       "price_range": "$$",
-      "place": { "id": "uuid", "name": "Restaurant", "city": "NYC", "country": "USA" },
-      "user": { "id": "uuid", "display_name": "John", "username": "john", "avatar_url": null }
+      "place": {
+        "id": "uuid",
+        "name": "Restaurant",
+        "city": "NYC",
+        "country": "USA",
+        "thumbnail_image_url": "https://...supabase.co/.../image.jpg"
+      },
+      "user": { "id": "uuid", "display_name": "John", "avatar_url": null }
     }
   ],
   "users": [
@@ -643,6 +650,9 @@ Search experiences and users.
   - Searches users by `display_name` or `username`
   - Max 10 results per type
   - Deduplicates experiences
+  - `experience_id` duplicates `id` for compatibility with `ExperienceFeedItem`
+  - `tags` are resolved to `TagInfo[]` objects with `display_name`
+  - `place.thumbnail_image_url` is the first image from the experience's `images` array (or `null`)
 - **Errors:** `400` (query too short), `500`
 
 ---
