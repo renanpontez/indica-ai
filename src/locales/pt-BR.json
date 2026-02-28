@@ -8,8 +8,13 @@
     "hero": {
       "title": "Descubra as experiências que seus amigos amam",
       "subtitle": "A melhor forma de encontrar restaurantes, cafés, bares e hotéis é através de quem você confia",
+      "eyebrow": "Beta Privado",
       "searchPlaceholder": "Buscar lugares...",
-      "searchButton": "Buscar"
+      "searchButton": "Buscar",
+      "appStore": {
+        "prefix": "Baixe na",
+        "aria": "Baixe na App Store"
+      }
     },
     "categories": {
       "restaurants": "Restaurantes",
