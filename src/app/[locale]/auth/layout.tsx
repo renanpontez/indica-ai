@@ -1,7 +1,9 @@
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
+import Image from 'next/image';
+import Link from 'next/link';
 import { createClient } from '@/lib/supabase/server';
-import LandingNavbar from '@/components/LandingNavbar';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import AuthShowcasePanel, { type ShowcaseItem } from '@/components/AuthShowcasePanel';
 import { routes, type Locale } from '@/lib/routes';
 
@@ -67,17 +69,33 @@ export default async function AuthLayout({ children, params }: AuthLayoutProps) 
     });
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <LandingNavbar locale={typedLocale} showActions={false} />
-      <div className="flex flex-1">
-        <main className="w-full lg:w-1/2 flex items-center justify-center px-6 py-8 overflow-y-auto">
-          <div className="w-full max-w-md">
-            {children}
-          </div>
-        </main>
-        <div className="hidden lg:block lg:w-1/2 relative">
-          <AuthShowcasePanel items={showcaseItems} />
+    <div className="min-h-screen bg-background flex relative">
+      {/* Language Switcher - absolute top right */}
+      <div className="absolute top-4 right-4 z-10">
+        <LanguageSwitcher />
+      </div>
+
+      <main className="w-full lg:w-1/2 flex items-center justify-center px-6 py-8 overflow-y-auto">
+        <div className="w-full max-w-md">
+          {/* Logo above content */}
+          <Link href={routes.home(typedLocale)} className="flex items-center gap-2 mb-8">
+            <Image
+              src="/assets/circle-picks.svg"
+              alt="Circle Picks logo"
+              width={32}
+              height={32}
+              className="size-8"
+            />
+            <span className="text-xl font-bold text-primary">
+              Circle Picks
+            </span>
+          </Link>
+
+          {children}
         </div>
+      </main>
+      <div className="hidden lg:block lg:w-1/2 relative">
+        <AuthShowcasePanel items={showcaseItems} />
       </div>
     </div>
   );
