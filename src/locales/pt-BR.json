@@ -164,11 +164,17 @@
     },
     "addPlace": "Nova indicação",
     "signUp": "Criar conta grátis",
+    "signOut": "Sair da conta",
     "becomeHost": "Anunciar espaço",
     "feed": "Feed",
     "explore": "Explorar",
     "add": "Indicar",
-    "profile": "Perfil"
+    "profile": "Perfil",
+    "menu": {
+      "viewProfile": "Ver perfil",
+      "bookmarks": "Salvos",
+      "settings": "Configurações"
+    }
   },
   "home": {
     "title": "Experiências que seus amigos amam",
@@ -436,7 +442,7 @@
     "subtitle": "Descubra experiências incríveis compartilhados pela comunidade",
     "sections": {
       "tags": "Explorar por Tag",
-      "cities": "Cidades Populares",
+      "cities": "Lugares Populares",
       "recent": "Sugestões Recentes"
     },
     "viewAll": "Ver todas",

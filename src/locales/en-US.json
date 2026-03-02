@@ -169,7 +169,12 @@
     "feed": "Feed",
     "explore": "Explore",
     "add": "Add",
-    "profile": "Profile"
+    "profile": "Profile",
+    "menu": {
+      "viewProfile": "View profile",
+      "bookmarks": "Bookmarks",
+      "settings": "Settings"
+    }
   },
   "home": {
     "title": "Places your friends love",

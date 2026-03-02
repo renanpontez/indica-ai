@@ -3,7 +3,7 @@ import { getTranslations, getLocale } from 'next-intl/server';
 import Image from 'next/image';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { SearchBar } from './SearchBar';
-import { Avatar } from './Avatar';
+import { UserMenu } from './UserMenu';
 import { NotificationBell } from '@/features/notifications/components/NotificationBell';
 import type { AuthUser } from '@/lib/auth/AuthContext';
 import { routes, type Locale } from '@/lib/routes';
@@ -54,9 +54,7 @@ export async function DesktopNav({ user }: DesktopNavProps) {
             )}
 
             {isAuthenticated ? (
-              <Link href={routes.app.profile.me(locale)}>
-                <Avatar src={user.avatar_url} alt={user.display_name} size="sm" />
-              </Link>
+              <UserMenu />
             ) : (
               <Link
                 href={routes.auth.signup(locale)}
