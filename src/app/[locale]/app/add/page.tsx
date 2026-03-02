@@ -12,22 +12,25 @@ import { TextArea } from '@/components/TextArea';
 import { PlaceSearchInput } from '@/features/add/components/PlaceSearchInput';
 import { AddressAutocomplete } from '@/features/add/components/CityAutocomplete';
 import { PriceRangeSelector } from '@/features/add/components/PriceRangeSelector';
+import { StarRatingSelector } from '@/features/add/components/StarRatingSelector';
+import { RatingAddonChips } from '@/features/add/components/RatingAddonChips';
+import { SelectedPlaceCard } from '@/features/add/components/SelectedPlaceCard';
 import { TagSelector } from '@/features/add/components/TagSelector';
+import { getRatingTier } from '@/lib/constants/rating-addons';
 import { ImagePicker } from '@/features/add/components/ImagePicker';
 import { VisibilitySelector } from '@/features/add/components/VisibilitySelector';
 import { ExistingPlaceModal } from '@/features/add/components/ExistingPlaceModal';
+import { InfoPopover } from '@/components/InfoPopover';
 import { useLocationContext } from '@/features/add/hooks/useLocationContext';
 import { useCreateExperience } from '@/features/add/hooks/useCreateExperience';
 import { api } from '@/lib/api/endpoints';
-import type { PlaceSearchResult, PriceRange, ExperienceVisibility, PlaceStats } from '@/lib/models';
-
-type InputMode = 'search' | 'manual';
+import type { PlaceSearchResult, PriceRange, ExperienceVisibility, PlaceStats, StarRating } from '@/lib/models';
 
 export default function AddPage() {
   const router = useRouter();
   const locale = useLocale() as Locale;
   const t = useTranslations();
-  const { locationState, requestGPS } = useLocationContext();
+  const { locationState } = useLocationContext();
   const { mutate: createExperience, isPending } = useCreateExperience();
 
   const breadcrumbItems = [
@@ -35,11 +38,9 @@ export default function AddPage() {
     { label: t('nav.add') },
   ];
 
-  // Input mode: search (GPS-based) or manual
-  const [inputMode, setInputMode] = useState<InputMode>('search');
-
-  // Search mode state
+  // Search state
   const [searchQuery, setSearchQuery] = useState('');
+  const [showManualEntry, setShowManualEntry] = useState(false);
 
   // Manual mode state
   const [manualName, setManualName] = useState('');
@@ -49,6 +50,8 @@ export default function AddPage() {
 
   // Shared state
   const [selectedPlace, setSelectedPlace] = useState<PlaceSearchResult | null>(null);
+  const [rating, setRating] = useState<StarRating | null>(null);
+  const [ratingAddons, setRatingAddons] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<PriceRange | null>(null);
   const [tags, setTags] = useState<string[]>([]);
   const [instagramHandle, setInstagramHandle] = useState('');
@@ -107,7 +110,7 @@ export default function AddPage() {
   const handleCreateNewPlace = () => {
     // User wants to create a new place instead - switch to manual mode
     if (pendingPlace) {
-      setInputMode('manual');
+      setShowManualEntry(true);
       setManualName(pendingPlace.name);
       setManualCity(pendingPlace.city);
       setManualCountry(pendingPlace.country);
@@ -121,6 +124,19 @@ export default function AddPage() {
   const clearPlaceSelection = () => {
     setSelectedPlace(null);
     setSearchQuery('');
+    setShowManualEntry(false);
+    setManualName('');
+    setManualAddress('');
+    setManualCity('');
+    setManualCountry('');
+  };
+
+  const handleManualFallback = () => {
+    setShowManualEntry(true);
+  };
+
+  const handleBackToSearch = () => {
+    setShowManualEntry(false);
     setManualName('');
     setManualAddress('');
     setManualCity('');
@@ -131,7 +147,7 @@ export default function AddPage() {
     // Validate required fields
     const newErrors: Record<string, string> = {};
 
-    if (inputMode === 'manual') {
+    if (showManualEntry) {
       if (!manualName.trim()) newErrors.name = t('add.errors.nameRequired');
       if (!manualCity.trim()) newErrors.city = t('add.errors.cityRequired');
       if (!manualCountry.trim()) newErrors.country = t('add.errors.countryRequired');
@@ -139,6 +155,7 @@ export default function AddPage() {
       if (!selectedPlace) newErrors.place = t('add.errors.placeRequired');
     }
 
+    if (!rating) newErrors.rating = t('add.errors.ratingRequired');
     if (!priceRange) newErrors.priceRange = t('add.errors.priceRangeRequired');
     if (tags.length === 0) newErrors.tags = t('add.errors.tagsRequired');
 
@@ -150,10 +167,10 @@ export default function AddPage() {
     let placeId = selectedPlace?.id;
 
     // If manual mode or Google Places result (no id), create place first
-    if (inputMode === 'manual' || (inputMode === 'search' && selectedPlace && !selectedPlace.id)) {
+    if (showManualEntry || (!showManualEntry && selectedPlace && !selectedPlace.id)) {
       setIsCreatingPlace(true);
       try {
-        const placeData = inputMode === 'manual'
+        const placeData = showManualEntry
           ? {
             name: manualName.trim(),
             city: manualCity.trim(),
@@ -217,6 +234,8 @@ export default function AddPage() {
     createExperience(
       {
         place_id: placeId!,
+        rating: rating!,
+        rating_addons: ratingAddons,
         price_range: priceRange!,
         tags,
         brief_description: description || null,
@@ -237,130 +256,96 @@ export default function AddPage() {
     isPending ||
     isCreatingPlace ||
     isUploadingImages ||
+    !rating ||
     !priceRange ||
     tags.length === 0 ||
-    (inputMode === 'search' && !selectedPlace) ||
-    (inputMode === 'manual' && (!manualName.trim() || !manualCity.trim() || !manualCountry.trim()));
+    (!showManualEntry && !selectedPlace) ||
+    (showManualEntry && (!manualName.trim() || !manualCity.trim() || !manualCountry.trim()));
+
+  // Progressive reveal: derive which sections are visible
+  const hasPlace = !!selectedPlace || (showManualEntry && !!manualName.trim() && !!manualCity.trim());
+  const hasRating = !!rating;
+  const hasPriceRange = !!priceRange;
+
+  const fadeIn = 'transition-all duration-300 ease-in-out';
+  const hidden = 'opacity-0 max-h-0 overflow-hidden pointer-events-none';
+  const visible = 'opacity-100 max-h-[2000px]';
 
   return (
     <div className="min-h-screen bg-white pb-24">
       <Breadcrumb items={breadcrumbItems} />
 
-      <div className="space-y-md 2xl:max-w-[1400px] max-w-[1000px] mx-auto py-4 px-4 md:px-2">
+      <div className="space-y-md 2xl:max-w-[1400px] max-w-[1000px] mx-auto py-4 px-4 lg:px-0">
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 py-2">
+          {/* Left Column: Place Selection + Tags + Optional */}
           <div className="flex gap-4 flex-col">
-            {/* Input Mode Toggle */}
-            <div className="flex gap-2 p-1 bg-surface rounded-surface">
-              <button
-                onClick={() => {
-                  setInputMode('search');
-                  clearPlaceSelection();
-                }}
-                className={`flex-1 py-2 px-4 rounded-lg text-body font-medium transition-colors ${inputMode === 'search'
-                  ? 'bg-white text-dark-grey shadow-sm'
-                  : 'text-medium-grey hover:text-dark-grey'
-                  }`}
-              >
-                {t('add.inputMode.search')}
-              </button>
-              <button
-                onClick={() => {
-                  setInputMode('manual');
-                  clearPlaceSelection();
-                }}
-                className={`flex-1 py-2 px-4 rounded-lg text-body font-medium transition-colors ${inputMode === 'manual'
-                  ? 'bg-white text-dark-grey shadow-sm'
-                  : 'text-medium-grey hover:text-dark-grey'
-                  }`}
-              >
-                {t('add.inputMode.manual')}
-              </button>
+            {/* Compact Location Indicator */}
+            <div className="flex items-center gap-2 text-sm">
+              {locationState.status === 'requesting' && (
+                <>
+                  <div className="animate-spin h-3.5 w-3.5 border-2 border-primary border-t-transparent rounded-full" />
+                  <span className="text-medium-grey">{t('add.location.detecting')}</span>
+                </>
+              )}
+              {locationState.status === 'success' && (
+                <>
+                  <svg className="w-4 h-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="text-green-700">
+                    {t('add.location.usingLocation')} {locationState.city && `(${locationState.city})`}
+                  </span>
+                </>
+              )}
+              {(locationState.status === 'gps_denied' || locationState.status === 'ip_failed') && (
+                <>
+                  <svg className="w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
+                  </svg>
+                  <span className="text-amber-700">{t('add.location.searchingGlobal')}</span>
+                </>
+              )}
             </div>
-            {/* Search Mode */}
-            {inputMode === 'search' && (
-              <>
-                {/* Location Context - Info Card */}
-                {locationState.status === 'idle' && (
-                  <div className="bg-surface p-md rounded-surface">
-                    <h3 className="text-title-m font-bold text-dark-grey mb-sm">
-                      {t('add.location.enableTitle')}
-                    </h3>
-                    <p className="text-body text-medium-grey mb-md">
-                      {t('add.location.enableDescription')}
-                    </p>
-                    <Button onClick={requestGPS} className="w-full h-[52px] bg-primary text-white">
-                      {t('add.location.enableButton')}
-                    </Button>
-                  </div>
-                )}
 
-                {locationState.status === 'requesting' && (
-                  <div className="bg-surface p-md rounded-surface">
-                    <p className="text-small text-medium-grey">{t('add.location.requesting')}</p>
-                  </div>
+            {/* Place Search or Manual Entry */}
+            {!selectedPlace && !showManualEntry && (
+              <div>
+                <label className="block text-title-m font-medium text-dark-grey mb-md">
+                  {t('add.search.label')} <span className="text-red-500">*</span>
+                </label>
+                <PlaceSearchInput
+                  value={searchQuery}
+                  onChange={setSearchQuery}
+                  onPlaceSelect={handlePlaceSelect}
+                  onManualFallback={handleManualFallback}
+                  lat={locationState.status === 'success' ? locationState.lat : undefined}
+                  lng={locationState.status === 'success' ? locationState.lng : undefined}
+                />
+                {errors.place && (
+                  <p className="mt-1.5 text-small text-red-500">{errors.place}</p>
                 )}
-
-                {locationState.status === 'success' && (
-                  <div className="bg-surface p-md rounded-surface">
-                    <p className="text-small text-primary font-medium">
-                      {t('add.location.enabled')} {locationState.city && `(${locationState.city})`}
-                    </p>
-                  </div>
-                )}
-
-                {(locationState.status === 'gps_denied' || locationState.status === 'ip_failed') && (
-                  <div className="bg-yellow-50 p-md rounded-surface border border-yellow-200">
-                    <p className="text-small text-yellow-800">
-                      {t('add.location.unavailable')}
-                    </p>
-                  </div>
-                )}
-
-                {/* Place Search */}
-                <div>
-                  <label className="block text-small font-medium text-dark-grey mb-2">
-                    {t('add.search.label')} <span className="text-red-500">*</span>
-                  </label>
-                  <PlaceSearchInput
-                    value={searchQuery}
-                    onChange={setSearchQuery}
-                    onPlaceSelect={handlePlaceSelect}
-                    lat={locationState.status === 'success' ? locationState.lat : undefined}
-                    lng={locationState.status === 'success' ? locationState.lng : undefined}
-                  />
-                  {errors.place && (
-                    <p className="mt-1.5 text-small text-red-500">{errors.place}</p>
-                  )}
-                </div>
-
-                {/* Selected Place Card */}
-                {selectedPlace && (
-                  <div className="bg-surface p-3 rounded-surface flex justify-between items-start">
-                    <div>
-                      <p className="text-title-m font-bold text-dark-grey">
-                        {selectedPlace.name}
-                      </p>
-                      <p className="text-small text-medium-grey">
-                        {selectedPlace.city}, {selectedPlace.country}
-                      </p>
-                    </div>
-                    <button
-                      onClick={clearPlaceSelection}
-                      className="text-medium-grey hover:text-dark-grey p-1"
-                    >
-                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </div>
-                )}
-              </>
+              </div>
             )}
 
-            {/* Manual Entry Mode */}
-            {inputMode === 'manual' && (
+            {/* Selected Place Card */}
+            {selectedPlace && !showManualEntry && (
+              <SelectedPlaceCard place={selectedPlace} onClear={clearPlaceSelection} />
+            )}
+
+            {/* Manual Entry */}
+            {showManualEntry && (
               <div className="space-y-md">
+                <button
+                  onClick={handleBackToSearch}
+                  className="flex items-center gap-1 text-sm text-primary hover:underline"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                  </svg>
+                  {t('add.search.backToSearch')}
+                </button>
+
                 <div>
                   <label className="block text-small font-medium text-dark-grey mb-2">
                     {t('add.manual.placeName')} <span className="text-red-500">*</span>
@@ -405,7 +390,7 @@ export default function AddPage() {
                       placeholder={t('add.manual.cityPlaceholder')}
                       value={manualCity}
                       readOnly
-                      className={manualCity ? 'border-green-300 bg-green-50 cursor-not-allowed' : ''}
+                      className={manualCity ? 'border-green-300 bg-green-50 cursor-not-allowed opacity-60' : ''}
                     />
                     {errors.city && (
                       <p className="mt-1.5 text-small text-red-500">{errors.city}</p>
@@ -420,7 +405,7 @@ export default function AddPage() {
                       placeholder={t('add.manual.countryPlaceholder')}
                       value={manualCountry}
                       readOnly
-                      className={manualCountry ? 'border-green-300 bg-green-50 cursor-not-allowed' : ''}
+                      className={manualCountry ? 'border-green-300 bg-green-50 cursor-not-allowed opacity-60' : ''}
                     />
                     {errors.country && (
                       <p className="mt-1.5 text-small text-red-500">{errors.country}</p>
@@ -436,21 +421,36 @@ export default function AddPage() {
               </div>
             )}
 
-            {/* Required: Price Range */}
+            {/* Required: Tags */}
             <div>
               <label className="block text-title-m font-medium text-dark-grey mb-md">
-                {t('add.priceRange')} <span className="text-red-500">*</span>
+                {t('add.tags')} <span className="text-red-500">*</span>
               </label>
-              <PriceRangeSelector
-                value={priceRange}
+              <TagSelector
+                value={tags}
                 onChange={(value) => {
-                  setPriceRange(value);
-                  setErrors({ ...errors, priceRange: '' });
+                  setTags(value);
+                  setErrors({ ...errors, tags: '' });
                 }}
-                error={errors.priceRange}
+                error={errors.tags}
               />
             </div>
+
+            {/* Description */}
             <div>
+              <label className="block text-title-m font-medium text-dark-grey mb-md">
+                {t('add.optional.description')}
+              </label>
+              <TextArea
+                placeholder={t('add.optional.descriptionPlaceholder')}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={3}
+                className="min-h-[88px]"
+              />
+            </div>
+
+            <div className={`${fadeIn} ${hasPriceRange ? visible : hidden}`}>
               {/* Divider */}
               <div className="border-t border-divider my-xs" />
               {/* Optional Fields - Collapsible */}
@@ -482,19 +482,6 @@ export default function AddPage() {
                       className="min-h-[44px]"
                     />
                   </div>
-
-                  <div>
-                    <label className="block text-small text-dark-grey mb-2">
-                      {t('add.optional.description')}
-                    </label>
-                    <TextArea
-                      placeholder={t('add.optional.descriptionPlaceholder')}
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                      rows={3}
-                      className="min-h-[88px]"
-                    />
-                  </div>
                   <div>
                     <label className="block text-small text-dark-grey mb-2">
                       {t('add.optional.phoneNumber')}
@@ -511,50 +498,95 @@ export default function AddPage() {
               )}
             </div>
           </div>
+
+          {/* Right Column: Rating + Price Range + Images + Visibility */}
           <div className="flex gap-4 flex-col">
-            {/* Required: Tags */}
-            <div>
+            {/* Required: Rating — visible after place is selected */}
+            <div className={`${fadeIn} ${hasPlace ? visible : hidden}`}>
               <label className="block text-title-m font-medium text-dark-grey mb-md">
-                {t('add.tags')} <span className="text-red-500">*</span>
+                {t('add.rating')} <span className="text-red-500">*</span>
               </label>
-              <TagSelector
-                value={tags}
+              <StarRatingSelector
+                value={rating}
                 onChange={(value) => {
-                  setTags(value);
-                  setErrors({ ...errors, tags: '' });
+                  const prevTier = rating ? getRatingTier(rating) : null;
+                  const newTier = getRatingTier(value);
+                  setRating(value);
+                  if (prevTier !== newTier) {
+                    setRatingAddons([]);
+                  }
+                  setErrors({ ...errors, rating: '' });
                 }}
-                error={errors.tags}
-              />
-            </div>
-            {/* Images */}
-            <div>
-              <label className="block text-title-m font-medium text-dark-grey mb-md">
-                {t('add.images.title')}
-              </label>
-              <ImagePicker
-                images={images}
-                onChange={setImages}
-                maxImages={5}
-              />
-            </div>
-
-            {/* Visibility */}
-            <div>
-              <label className="block text-title-m font-medium text-dark-grey mb-md">
-                {t('add.visibility.title')}
-              </label>
-              <VisibilitySelector
-                value={visibility}
-                onChange={setVisibility}
+                error={errors.rating}
+                addonSlot={
+                  rating ? (
+                    <RatingAddonChips
+                      rating={rating}
+                      value={ratingAddons}
+                      onChange={setRatingAddons}
+                    />
+                  ) : undefined
+                }
               />
             </div>
 
+            {/* Required: Price Range — visible after rating */}
+            <div className={`${fadeIn} ${hasRating ? visible : hidden}`}>
+              <div className="flex items-center gap-1.5 mb-md">
+                <label className="text-title-m font-medium text-dark-grey">
+                  {t('add.priceRange')} <span className="text-red-500">*</span>
+                </label>
+                <InfoPopover>
+                  <p className="text-sm font-medium text-dark-grey mb-2">{t('add.priceRangeInfo.title')}</p>
+                  <ul className="space-y-1.5 text-sm text-medium-grey">
+                    {(['$', '$$', '$$$', '$$$$'] as const).map((range) => (
+                      <li key={range} className="flex gap-2">
+                        <span className="font-medium text-dark-grey w-10 shrink-0">{range}</span>
+                        <span>{t(`add.priceRangeInfo.${range}`)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </InfoPopover>
+              </div>
+              <PriceRangeSelector
+                value={priceRange}
+                onChange={(value) => {
+                  setPriceRange(value);
+                  setErrors({ ...errors, priceRange: '' });
+                }}
+                error={errors.priceRange}
+              />
+            </div>
 
+            {/* Images + Visibility — visible after price range */}
+            <div className={`${fadeIn} ${hasPriceRange ? visible : hidden} flex gap-4 flex-col`}>
+              <div>
+                <label className="block text-title-m font-medium text-dark-grey mb-md">
+                  {t('add.images.title')}
+                </label>
+                <ImagePicker
+                  images={images}
+                  onChange={setImages}
+                  maxImages={5}
+                />
+              </div>
+
+              <div>
+                <label className="block text-title-m font-medium text-dark-grey mb-md">
+                  {t('add.visibility.title')}
+                </label>
+                <VisibilitySelector
+                  value={visibility}
+                  onChange={setVisibility}
+                />
+              </div>
+            </div>
           </div>
 
         </div>
 
         {/* Submit Button */}
+        <div className={`${fadeIn} ${hasPriceRange ? visible : hidden}`}>
         <Button
           onClick={handleSubmit}
           loading={isPending || isCreatingPlace || isUploadingImages}
@@ -568,6 +600,7 @@ export default function AddPage() {
               ? t('add.creatingPlace')
               : t('add.savePlace')}
         </Button>
+        </div>
       </div>
 
       {/* Existing Place Modal */}
