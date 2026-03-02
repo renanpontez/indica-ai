@@ -38,8 +38,8 @@ export function FloatingActionButton() {
     cn('w-6 h-6 transition-transform', active ? 'scale-110' : 'group-hover:scale-105');
 
   return (
-    <nav className="fixed bottom-0 md:bottom-6 left-0 right-0 md:left-1/2 md:-translate-x-1/2 md:right-auto z-20">
-      <div className="flex items-center justify-around gap-5 py-3 px-6 pb-[max(0.75rem,env(safe-area-inset-bottom))] bg-white border-t border-divider md:bg-white md:border md:rounded-2xl md:shadow-lg">
+    <nav className="fixed bottom-4 left-4 right-4 md:bottom-6 md:left-1/2 md:-translate-x-1/2 md:right-auto z-20 pb-[env(safe-area-inset-bottom)]">
+      <div className="flex items-center justify-around gap-5 py-3 px-6 bg-white border border-divider rounded-full shadow-lg">
         {navItems.map((item) => {
           const active = isActive(item);
           const href = `/${locale}${item.path}`;
@@ -50,7 +50,7 @@ export function FloatingActionButton() {
               <Link
                 key={item.key}
                 href={href}
-                className="relative flex items-center justify-center -mt-8 md:-mt-0 border-8 border-white rounded-full md:border-0"
+                className="relative flex items-center justify-center"
               >
                 <span
                   className={cn(
