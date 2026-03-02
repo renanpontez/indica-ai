@@ -16,33 +16,34 @@ export function useLocationContext() {
     status: 'idle',
   });
 
-  // Check if GPS permission was already granted and auto-fetch location
+  // Auto-request GPS on mount
   useEffect(() => {
-    if (!navigator.permissions || !navigator.geolocation) return;
+    if (!navigator.geolocation) {
+      // No geolocation support, fall back to IP
+      fallbackToIP();
+      return;
+    }
 
-    navigator.permissions.query({ name: 'geolocation' }).then((result) => {
-      if (result.state === 'granted') {
-        // Permission already granted, fetch location automatically
-        setLocationState({ status: 'requesting' });
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            setLocationState({
-              status: 'success',
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            });
-          },
-          () => {
-            // Even with permission granted, getting position can fail
-            setLocationState({ status: 'gps_denied' });
-          },
-          {
-            timeout: 10000,
-            maximumAge: 300000,
-          }
-        );
+    setLocationState({ status: 'requesting' });
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLocationState({
+          status: 'success',
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        });
+      },
+      () => {
+        // GPS denied or failed, try IP fallback
+        setLocationState({ status: 'gps_denied' });
+      },
+      {
+        timeout: 10000,
+        maximumAge: 300000,
       }
-    });
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const requestGPS = useCallback(async () => {

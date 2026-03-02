@@ -54,6 +54,8 @@ export const mockApi = {
       id: String(experienceIdCounter++),
       user_id: 'me',
       place_id: data.place_id || '',
+      rating: data.rating || null,
+      rating_addons: data.rating_addons || [],
       price_range: data.price_range || '$$',
       tags: data.tags || [],
       brief_description: data.brief_description || null,
@@ -91,6 +93,8 @@ export const mockApi = {
           thumbnail_image_url: null,
         },
         price_range: newExperience.price_range,
+        rating: newExperience.rating,
+        rating_addons: newExperience.rating_addons,
         tags: newExperience.tags,
         time_ago: 'just now',
       };

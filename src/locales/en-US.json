@@ -261,22 +261,18 @@
     }
   },
   "add": {
-    "inputMode": {
-      "search": "Search with GPS",
-      "manual": "Manual Entry"
-    },
     "location": {
-      "enableTitle": "Enable Location",
-      "enableDescription": "Enable GPS to find nearby places faster.",
-      "enableButton": "Enable GPS",
-      "requesting": "Getting your location...",
-      "enabled": "Location enabled",
-      "unavailable": "Location unavailable. You can still search or use manual entry."
+      "detecting": "Detecting location...",
+      "usingLocation": "Using your location",
+      "searchingGlobal": "Searching all locations"
     },
     "search": {
       "label": "Search for a place",
       "placeholder": "Search for a place...",
-      "noResults": "No places found. Use manual entry to add a new place."
+      "noResults": "No places found.",
+      "addManually": "Can't find it? Add manually",
+      "backToSearch": "Back to search",
+      "recCountTooltip": "People who recommended this place on Circle Picks"
     },
     "manual": {
       "placeName": "Place Name",
@@ -290,6 +286,27 @@
       "addressSearchPlaceholder": "Start typing an address...",
       "noAddressFound": "No address found. Try a different search.",
       "locationAutoFilled": "City and country auto-filled from address"
+    },
+    "rating": "Your Rating",
+    "ratingTier": {
+      "neutral": "It's okay",
+      "good": "Recommended",
+      "excellent": "Must visit!"
+    },
+    "ratingAddons": {
+      "label": "Tell us more",
+      "decent": "Decent",
+      "nothing-special": "Nothing special",
+      "ok-for-price": "OK for the price",
+      "average": "Average",
+      "mixed-experience": "Mixed experience",
+      "must-visit": "Must visit",
+      "amazing-food": "Amazing food",
+      "great-atmosphere": "Great atmosphere",
+      "hidden-gem": "Hidden gem",
+      "excellent-service": "Excellent service",
+      "good-value": "Good value",
+      "instagram-worthy": "Instagram worthy"
     },
     "priceRange": "Price Range",
     "tags": "Tags",
@@ -316,6 +333,7 @@
       "nameRequired": "Name is required",
       "cityRequired": "City is required",
       "countryRequired": "Country is required",
+      "ratingRequired": "Please rate this place",
       "placeRequired": "Please select a place",
       "priceRangeRequired": "Please select a price range",
       "tagsRequired": "Please select at least one tag",
@@ -337,6 +355,18 @@
       "publicDescription": "Everyone can see",
       "friendsOnly": "Friends Only",
       "friendsOnlyDescription": "Only your followers"
+    },
+    "selectedPlace": {
+      "change": "Change",
+      "viewOnMaps": "View on Maps",
+      "recommendations": "{count} recommendations"
+    },
+    "priceRangeInfo": {
+      "title": "What do price ranges mean?",
+      "$": "Budget-friendly, casual spots",
+      "$$": "Mid-range, good value",
+      "$$$": "Upscale dining & experiences",
+      "$$$$": "Premium, special occasion"
     },
     "creatingPlace": "Creating place...",
     "savePlace": "Save Place",

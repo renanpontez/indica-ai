@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Avatar } from '@/components/Avatar';
 import { PlaceholderImage } from '@/components/PlaceholderImage';
 import { VisibilityBadge } from '@/components/VisibilityBadge';
+import { StarRatingDisplay } from '@/components/StarRatingDisplay';
 import { useTranslations } from 'next-intl';
 import type { ExperienceFeedItem } from '@/lib/models';
 
@@ -266,6 +267,9 @@ export function ExperienceCard({
             <div className="backdrop-blur-sm py-1">
               <span className="text-xs font-semibold text-dark-grey">{price_range}</span>
             </div>
+            {experience.rating && (
+              <StarRatingDisplay rating={experience.rating} size="sm" />
+            )}
           </div>
 
           {/* Description */}

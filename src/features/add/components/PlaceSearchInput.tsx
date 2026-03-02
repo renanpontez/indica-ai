@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { Input } from '@/components/Input';
+import { InfoPopover } from '@/components/InfoPopover';
 import { api } from '@/lib/api/endpoints';
 import type { PlaceSearchResult } from '@/lib/models';
 
@@ -10,6 +11,7 @@ interface PlaceSearchInputProps {
   value: string;
   onChange: (value: string) => void;
   onPlaceSelect: (place: PlaceSearchResult) => void;
+  onManualFallback?: () => void;
   lat?: number;
   lng?: number;
   disabled?: boolean;
@@ -19,6 +21,7 @@ export function PlaceSearchInput({
   value,
   onChange,
   onPlaceSelect,
+  onManualFallback,
   lat,
   lng,
   disabled,
@@ -93,11 +96,17 @@ export function PlaceSearchInput({
                 <p className="text-body font-medium text-dark-grey flex-1">
                   {place.name}
                 </p>
-                {/* Recommendation count badge */}
+                {/* Recommendation count with popover */}
                 {place.recommendation_count && place.recommendation_count > 0 && (
-                  <span className="text-xs px-1.5 py-0.5 bg-primary/10 text-primary rounded-full flex items-center gap-1">
+                  <span
+                    className="text-xs px-1.5 py-0.5 bg-primary/10 text-primary rounded-full flex items-center gap-1"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <InfoPopover>
+                      <p className="text-sm text-medium-grey">{t('add.search.recCountTooltip')}</p>
+                    </InfoPopover>
                     <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3" />
                     </svg>
                     {place.recommendation_count}
                   </span>
@@ -113,14 +122,36 @@ export function PlaceSearchInput({
               </p>
             </button>
           ))}
+          {onManualFallback && (
+            <button
+              onClick={() => {
+                onManualFallback();
+                setShowSuggestions(false);
+              }}
+              className="w-full text-left px-3 py-2 border-t border-divider text-sm text-primary hover:bg-surface transition-colors"
+            >
+              {t('add.search.addManually')}
+            </button>
+          )}
         </div>
       )}
 
       {showSuggestions && value.length >= 2 && suggestions.length === 0 && !isSearching && (
         <div className="absolute z-10 w-full mt-1 bg-background border border-divider rounded-surface shadow-lg p-3">
-          <p className="text-small text-medium-grey">
+          <p className="text-small text-medium-grey mb-2">
             {t('add.search.noResults')}
           </p>
+          {onManualFallback && (
+            <button
+              onClick={() => {
+                onManualFallback();
+                setShowSuggestions(false);
+              }}
+              className="text-sm text-primary font-medium hover:underline"
+            >
+              {t('add.search.addManually')}
+            </button>
+          )}
         </div>
       )}
     </div>

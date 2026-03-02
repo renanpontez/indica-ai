@@ -85,6 +85,8 @@ export const api = {
   updateExperience: async (
     id: string,
     data: {
+      rating?: number;
+      rating_addons?: string[];
       price_range?: Experience['price_range'];
       tags?: string[];
       brief_description?: string | null;

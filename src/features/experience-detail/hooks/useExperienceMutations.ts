@@ -3,6 +3,8 @@ import { api } from '@/lib/api/endpoints';
 import type { Experience, ExperienceDetail } from '@/lib/models';
 
 interface UpdateExperienceData {
+  rating?: number;
+  rating_addons?: string[];
   price_range?: Experience['price_range'];
   tags?: string[];
   brief_description?: string | null;
