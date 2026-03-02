@@ -261,22 +261,18 @@
     }
   },
   "add": {
-    "inputMode": {
-      "search": "Buscar com GPS",
-      "manual": "Inserir Manualmente"
-    },
     "location": {
-      "enableTitle": "Ativar Localização",
-      "enableDescription": "Ative o GPS para encontrar lugares próximos mais rápido.",
-      "enableButton": "Ativar GPS",
-      "requesting": "Obtendo sua localização...",
-      "enabled": "Localização ativada",
-      "unavailable": "Localização indisponível. Você ainda pode buscar ou usar entrada manual."
+      "detecting": "Detectando localização...",
+      "usingLocation": "Usando sua localização",
+      "searchingGlobal": "Buscando em todas as localizações"
     },
     "search": {
       "label": "Buscar um lugar",
       "placeholder": "Buscar um lugar...",
-      "noResults": "Nenhum lugar encontrado. Use a entrada manual para adicionar um novo lugar."
+      "noResults": "Nenhum lugar encontrado.",
+      "addManually": "Não encontrou? Adicione manualmente",
+      "backToSearch": "Voltar para busca",
+      "recCountTooltip": "Pessoas que recomendaram este lugar no Circle Picks"
     },
     "manual": {
       "placeName": "Nome do Lugar",
@@ -291,8 +287,29 @@
       "noAddressFound": "Nenhum endereço encontrado. Tente outra busca.",
       "locationAutoFilled": "Cidade e país preenchidos automaticamente"
     },
+    "rating": "Sua Avaliação",
+    "ratingTier": {
+      "neutral": "Na média",
+      "good": "Recomendo",
+      "excellent": "Imperdível!"
+    },
+    "ratingAddons": {
+      "label": "Conte mais",
+      "decent": "Decente",
+      "nothing-special": "Nada especial",
+      "ok-for-price": "OK pelo preço",
+      "average": "Na média",
+      "mixed-experience": "Experiência mista",
+      "must-visit": "Imperdível",
+      "amazing-food": "Comida incrível",
+      "great-atmosphere": "Ótimo ambiente",
+      "hidden-gem": "Joia escondida",
+      "excellent-service": "Serviço excelente",
+      "good-value": "Bom custo-benefício",
+      "instagram-worthy": "Instagramável"
+    },
     "priceRange": "Faixa de Preço",
-    "tags": "Tags",
+    "tags": "Categorias",
     "tagsInput": {
       "addCustom": "Adicionar tag",
       "customPlaceholder": "ex: rooftop",
@@ -316,6 +333,7 @@
       "nameRequired": "Nome é obrigatório",
       "cityRequired": "Cidade é obrigatória",
       "countryRequired": "País é obrigatório",
+      "ratingRequired": "Avalie este lugar",
       "placeRequired": "Por favor, selecione um lugar",
       "priceRangeRequired": "Por favor, selecione uma faixa de preço",
       "tagsRequired": "Por favor, selecione pelo menos uma tag",
@@ -337,6 +355,18 @@
       "publicDescription": "Todos podem ver",
       "friendsOnly": "Apenas Amigos",
       "friendsOnlyDescription": "Só seus seguidores"
+    },
+    "selectedPlace": {
+      "change": "Alterar",
+      "viewOnMaps": "Ver no Maps",
+      "recommendations": "{count} recomendações"
+    },
+    "priceRangeInfo": {
+      "title": "O que significam as faixas de preço?",
+      "$": "Lugares econômicos e casuais",
+      "$$": "Preço médio, bom custo-benefício",
+      "$$$": "Experiências sofisticadas",
+      "$$$$": "Premium, ocasiões especiais"
     },
     "creatingPlace": "Criando indicação...",
     "savePlace": "Salvar Indicação",

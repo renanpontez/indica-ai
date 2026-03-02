@@ -10,6 +10,7 @@ import { MoreFromUser } from './MoreFromUser';
 import { OtherRecommenders } from './OtherRecommenders';
 import { ExperienceActions } from './ExperienceActions';
 import { VisibilityBadge } from '@/components/VisibilityBadge';
+import { StarRatingDisplay } from '@/components/StarRatingDisplay';
 import type { ExperienceDetail, ExperienceFeedItem } from '@/lib/models';
 import { formatTimeAgo } from '@/lib/utils/format';
 
@@ -100,6 +101,18 @@ export function ExperienceDetailLayout({
             </svg>
             <span>@{place.instagram_handle.replace('@', '')}</span>
           </a>
+        )}
+
+        {/* Rating */}
+        {experience.rating && (
+          <div className="mb-3">
+            <StarRatingDisplay
+              rating={experience.rating}
+              size="md"
+              showAddons
+              addons={experience.rating_addons}
+            />
+          </div>
         )}
 
         {/* Tags */}

@@ -41,6 +41,8 @@ function transformExperience(exp: any, tagDisplayNames: Map<string, string>) {
       instagram: exp.places?.instagram_handle || null,
     },
     price_range: exp.price_range || '$$',
+    rating: exp.rating || null,
+    rating_addons: exp.rating_addons || [],
     tags,
     time_ago: formatTimeAgo(exp.created_at),
     description: exp.brief_description,
@@ -97,15 +99,7 @@ export async function GET(request: NextRequest) {
   let query = supabase
     .from('experiences')
     .select(`
-      id,
-      price_range,
-      tags,
-      brief_description,
-      images,
-      created_at,
-      user_id,
-      place_id,
-      visibility,
+      *,
       users:user_id (
         id,
         display_name,

@@ -11,17 +11,7 @@ function formatSlugToDisplayName(slug: string): string {
 }
 
 const experienceSelect = `
-  id,
-  price_range,
-  tags,
-  brief_description,
-  phone_number,
-  images,
-  visit_date,
-  visibility,
-  created_at,
-  user_id,
-  place_id,
+  *,
   users:user_id (
     id,
     display_name,
@@ -130,6 +120,8 @@ export async function getExperience(id: string): Promise<ExperienceDetail | null
       google_maps_url: (experience.places as any)?.google_maps_url || null,
     },
     price_range: (experience.price_range || '$$') as PriceRange,
+    rating: (experience as any).rating || null,
+    rating_addons: (experience as any).rating_addons || [],
     tags,
     brief_description: experience.brief_description,
     phone_number: experience.phone_number,

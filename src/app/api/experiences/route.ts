@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
-  const { place_id, place, price_range, tags, brief_description, phone_number, images, visit_date, visibility } = body;
+  const { place_id, place, rating, rating_addons, price_range, tags, brief_description, phone_number, images, visit_date, visibility } = body;
 
   // Resolve place_id: use provided place_id or create place from place object
   let resolvedPlaceId = place_id;
@@ -77,6 +77,9 @@ export async function POST(request: NextRequest) {
   if (!resolvedPlaceId) {
     return NextResponse.json({ error: 'place_id is required' }, { status: 400 });
   }
+  if (rating !== undefined && rating !== null && (rating < 3 || rating > 5)) {
+    return NextResponse.json({ error: 'rating must be between 3 and 5' }, { status: 400 });
+  }
   if (!price_range) {
     return NextResponse.json({ error: 'price_range is required' }, { status: 400 });
   }
@@ -90,6 +93,8 @@ export async function POST(request: NextRequest) {
     .insert({
       user_id: user.id,
       place_id: resolvedPlaceId,
+      rating: rating || null,
+      rating_addons: rating_addons || [],
       price_range,
       tags,
       brief_description: brief_description || null,
@@ -97,7 +102,7 @@ export async function POST(request: NextRequest) {
       images: images || null,
       visit_date: visit_date || null,
       visibility: visibility || 'public',
-    })
+    } as any)
     .select()
     .single();
 
@@ -106,17 +111,20 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to create experience', details: error.message }, { status: 500 });
   }
 
+  const exp = experience as any;
   return NextResponse.json({
-    id: experience.id,
-    user_id: experience.user_id,
-    place_id: experience.place_id,
-    price_range: experience.price_range,
-    tags: experience.tags,
-    brief_description: experience.brief_description,
-    phone_number: experience.phone_number,
-    images: experience.images,
-    visit_date: experience.visit_date,
-    visibility: experience.visibility,
-    created_at: experience.created_at,
+    id: exp.id,
+    user_id: exp.user_id,
+    place_id: exp.place_id,
+    rating: exp.rating ?? null,
+    rating_addons: exp.rating_addons ?? [],
+    price_range: exp.price_range,
+    tags: exp.tags,
+    brief_description: exp.brief_description,
+    phone_number: exp.phone_number,
+    images: exp.images,
+    visit_date: exp.visit_date,
+    visibility: exp.visibility,
+    created_at: exp.created_at,
   });
 }

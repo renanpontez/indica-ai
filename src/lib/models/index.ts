@@ -76,6 +76,8 @@ export interface Experience {
   phone_number: string | null;
   images: string[] | null;
   visit_date: string | null;
+  rating: number | null;
+  rating_addons: string[];
   visibility: ExperienceVisibility;
   created_at: string;
   status: ExperienceStatus;
@@ -117,6 +119,8 @@ export interface ExperienceDetail {
     recommendation_count?: number;
   };
   price_range: PriceRange;
+  rating: number | null;
+  rating_addons: string[];
   tags: TagInfo[];
   brief_description: string | null;
   phone_number: string | null;
@@ -147,6 +151,8 @@ export interface ExperienceFeedItem {
     recommendation_count?: number;
   };
   price_range: '$' | '$$' | '$$$' | '$$$$';
+  rating: number | null;
+  rating_addons: string[];
   tags: TagInfo[];
   time_ago: string;
   description?: string | null;
@@ -234,6 +240,10 @@ export interface ApiError {
 }
 
 export type PriceRange = '$' | '$$' | '$$$' | '$$$$';
+
+export type StarRating = 3 | 4 | 5;
+
+export type RatingTier = 'neutral' | 'good';
 
 // Auth Models
 

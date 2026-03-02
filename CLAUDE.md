@@ -66,6 +66,7 @@ Always use `Link` from `@/i18n/routing`, NOT `next/link`. Exception: the landing
 - Server components: `getTranslations('namespace')`
 - Translation keys organized by feature namespace in `src/locales/*.json`
 - Both locale files must stay in sync
+- Portuguese (pt-BR) translations MUST use proper diacritics: ã, õ, é, ê, á, à, í, ó, ú, ç. Never use ASCII approximations.
 
 ### API Layer
 
