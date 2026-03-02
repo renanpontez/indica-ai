@@ -10,13 +10,16 @@ import { useTranslations } from 'next-intl';
 import { TextArea } from '@/components/TextArea';
 import { Input } from '@/components/Input';
 import { PriceRangeSelector } from '@/features/add/components/PriceRangeSelector';
+import { StarRatingSelector } from '@/features/add/components/StarRatingSelector';
+import { RatingAddonChips } from '@/features/add/components/RatingAddonChips';
+import { getRatingTier } from '@/lib/constants/rating-addons';
 import { TagSelector } from '@/features/add/components/TagSelector';
 import { ImagePicker } from '@/features/add/components/ImagePicker';
 import { VisibilitySelector } from '@/features/add/components/VisibilitySelector';
 import { useUpdateExperience } from '@/features/experience-detail/hooks/useExperienceMutations';
 import { useAuthContext } from '@/lib/auth/AuthContext';
 import { api } from '@/lib/api/endpoints';
-import type { PriceRange, ExperienceVisibility } from '@/lib/models';
+import type { PriceRange, ExperienceVisibility, StarRating } from '@/lib/models';
 import { routes, type Locale } from '@/lib/routes';
 
 export default function EditExperiencePage() {
@@ -40,6 +43,8 @@ export default function EditExperiencePage() {
   });
 
   // Form state
+  const [rating, setRating] = useState<StarRating | null>(null);
+  const [ratingAddons, setRatingAddons] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<PriceRange | null>(null);
   const [tags, setTags] = useState<string[]>([]);
   const [description, setDescription] = useState('');
@@ -55,6 +60,8 @@ export default function EditExperiencePage() {
   // Initialize form with experience data
   useEffect(() => {
     if (experience && !initialized) {
+      setRating((experience.rating as StarRating) || null);
+      setRatingAddons(experience.rating_addons || []);
       setPriceRange(experience.price_range);
       // Extract slugs from TagInfo objects
       setTags((experience.tags || []).map(tag => tag.slug));
@@ -111,6 +118,7 @@ export default function EditExperiencePage() {
   const handleSubmit = async () => {
     // Validate
     const newErrors: Record<string, string> = {};
+    if (!rating) newErrors.rating = t('add.errors.ratingRequired');
     if (!priceRange) newErrors.priceRange = t('add.errors.priceRangeRequired');
     if (tags.length === 0) newErrors.tags = t('add.errors.tagsRequired');
 
@@ -152,6 +160,8 @@ export default function EditExperiencePage() {
       {
         id: experienceId,
         data: {
+          rating: rating!,
+          rating_addons: ratingAddons,
           price_range: priceRange!,
           tags,
           brief_description: description || null,
@@ -171,7 +181,7 @@ export default function EditExperiencePage() {
   };
 
   const isSubmitDisabled =
-    isPending || isUploadingImages || !priceRange || tags.length === 0;
+    isPending || isUploadingImages || !rating || !priceRange || tags.length === 0;
 
   return (
     <div className="min-h-screen bg-white pb-24">
@@ -189,6 +199,35 @@ export default function EditExperiencePage() {
           <p className="text-xs text-medium-grey mt-2 italic">
             {t('experience.edit.placeNotEditable')}
           </p>
+        </div>
+
+        {/* Rating */}
+        <div>
+          <label className="block text-title-m font-medium text-dark-grey mb-md">
+            {t('add.rating')} <span className="text-red-500">*</span>
+          </label>
+          <StarRatingSelector
+            value={rating}
+            onChange={(value) => {
+              const prevTier = rating ? getRatingTier(rating) : null;
+              const newTier = getRatingTier(value);
+              setRating(value);
+              if (prevTier !== newTier) {
+                setRatingAddons([]);
+              }
+              setErrors({ ...errors, rating: '' });
+            }}
+            error={errors.rating}
+          />
+          {rating && (
+            <div className="mt-3">
+              <RatingAddonChips
+                rating={rating}
+                value={ratingAddons}
+                onChange={setRatingAddons}
+              />
+            </div>
+          )}
         </div>
 
         {/* Price Range */}

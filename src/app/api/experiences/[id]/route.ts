@@ -61,6 +61,8 @@ function formatAndReturnExperience(
       recommendation_count: recommendationCount,
     },
     price_range: experience.price_range || '$$',
+    rating: experience.rating || null,
+    rating_addons: experience.rating_addons || [],
     tags,
     brief_description: experience.brief_description,
     phone_number: experience.phone_number,
@@ -76,17 +78,7 @@ function formatAndReturnExperience(
 }
 
 const experienceSelect = `
-  id,
-  price_range,
-  tags,
-  brief_description,
-  phone_number,
-  images,
-  visit_date,
-  visibility,
-  created_at,
-  user_id,
-  place_id,
+  *,
   users:user_id (
     id,
     display_name,
@@ -145,6 +137,8 @@ export async function PATCH(
   try {
     const body = await request.json();
     const {
+      rating,
+      rating_addons,
       price_range,
       tags,
       brief_description,
@@ -155,6 +149,8 @@ export async function PATCH(
 
     // Build update object with only provided fields
     const updateData: Record<string, unknown> = {};
+    if (rating !== undefined) updateData.rating = rating;
+    if (rating_addons !== undefined) updateData.rating_addons = rating_addons;
     if (price_range !== undefined) updateData.price_range = price_range;
     if (tags !== undefined) updateData.tags = tags;
     if (brief_description !== undefined)
