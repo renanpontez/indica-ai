@@ -2,6 +2,37 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getAuthUser } from '@/lib/supabase/getAuthUser';
 
+// GET /api/blocks - List blocked users
+export async function GET() {
+  const supabase = await createClient();
+  const authUser = await getAuthUser(supabase);
+
+  if (!authUser) {
+    return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+  }
+
+  const { data: blocks, error } = await supabase
+    .from('blocks')
+    .select('blocked_id, created_at, users!blocks_blocked_id_fkey(id, display_name, username, avatar_url)')
+    .eq('blocker_id', authUser.id)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('List blocks error:', error);
+    return NextResponse.json({ error: 'Failed to fetch blocked users' }, { status: 500 });
+  }
+
+  const users = (blocks || []).map((b: any) => ({
+    id: b.users.id,
+    display_name: b.users.display_name,
+    username: b.users.username,
+    avatar_url: b.users.avatar_url,
+    blocked_at: b.created_at,
+  }));
+
+  return NextResponse.json({ users });
+}
+
 // POST /api/blocks - Block a user
 export async function POST(request: Request) {
   const supabase = await createClient();
