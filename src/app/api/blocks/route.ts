@@ -51,5 +51,21 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Failed to block user' }, { status: 500 });
   }
 
+  // Remove follow relationships in both directions
+  await Promise.all([
+    // Stop following the blocked user
+    supabase
+      .from('follows')
+      .delete()
+      .eq('follower_id', authUser.id)
+      .eq('following_id', blocked_id),
+    // Remove the blocked user as a follower
+    supabase
+      .from('follows')
+      .delete()
+      .eq('follower_id', blocked_id)
+      .eq('following_id', authUser.id),
+  ]);
+
   return NextResponse.json({ success: true });
 }
