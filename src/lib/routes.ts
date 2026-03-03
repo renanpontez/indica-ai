@@ -78,6 +78,9 @@ export const ROUTE_PATHS = {
       view: (userId: string) => `/app/profile/${userId}`,
       me: '/app/profile/me',
     },
+    settings: {
+      blockedUsers: '/app/settings/blocked',
+    },
     admin: {
       dashboard: '/app/admin',
       experiences: '/app/admin/experiences',
@@ -214,6 +217,11 @@ export const routes = {
         buildUrl(locale, ROUTE_PATHS.app.profile.me, params),
     },
 
+    settings: {
+      blockedUsers: (locale: Locale) =>
+        buildUrl(locale, ROUTE_PATHS.app.settings.blockedUsers),
+    },
+
     admin: {
       dashboard: (locale: Locale) =>
         buildUrl(locale, ROUTE_PATHS.app.admin.dashboard),
@@ -300,6 +308,10 @@ export const routePaths = {
 
       me: (params?: { tab?: 'experiences' | 'bookmarks' }) =>
         ROUTE_PATHS.app.profile.me + buildQueryString(params),
+    },
+
+    settings: {
+      blockedUsers: () => ROUTE_PATHS.app.settings.blockedUsers,
     },
 
     admin: {

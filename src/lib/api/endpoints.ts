@@ -271,6 +271,12 @@ export const api = {
     }
   },
 
+  getBlockedUsers: async (): Promise<{ users: { id: string; display_name: string; username: string; avatar_url: string | null; blocked_at: string }[] }> => {
+    const response = await fetch('/api/blocks');
+    if (!response.ok) throw new Error('Failed to fetch blocked users');
+    return response.json();
+  },
+
   unblockUser: async (userId: string): Promise<void> => {
     const response = await fetch(`/api/blocks/${userId}`, {
       method: 'DELETE',
