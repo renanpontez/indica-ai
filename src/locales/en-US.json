@@ -173,8 +173,15 @@
     "menu": {
       "viewProfile": "View profile",
       "bookmarks": "Bookmarks",
+      "blockedUsers": "Blocked users",
       "settings": "Settings"
     }
+  },
+  "settings": {
+    "blockedUsers": "Blocked users",
+    "noBlockedUsers": "You haven't blocked anyone",
+    "unblock": "Unblock",
+    "unblocked": "User unblocked"
   },
   "home": {
     "title": "Places your friends love",

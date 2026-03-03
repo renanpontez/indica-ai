@@ -173,8 +173,15 @@
     "menu": {
       "viewProfile": "Ver perfil",
       "bookmarks": "Salvos",
+      "blockedUsers": "Usuários bloqueados",
       "settings": "Configurações"
     }
+  },
+  "settings": {
+    "blockedUsers": "Usuários bloqueados",
+    "noBlockedUsers": "Você não bloqueou ninguém",
+    "unblock": "Desbloquear",
+    "unblocked": "Usuário desbloqueado"
   },
   "home": {
     "title": "Experiências que seus amigos amam",
