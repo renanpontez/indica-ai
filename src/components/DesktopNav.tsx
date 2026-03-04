@@ -47,9 +47,12 @@ export async function DesktopNav({ user }: DesktopNavProps) {
             {isAuthenticated && user.role === 'admin' && (
               <Link
                 href={routes.app.admin.dashboard(locale)}
-                className="px-3 py-1.5 text-sm font-medium text-medium-grey hover:text-dark-grey border border-divider rounded-lg transition-colors"
+                className="p-2 text-medium-grey hover:text-dark-grey transition-colors"
+                aria-label="Admin"
               >
-                {t('admin.nav.experiences')}
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                </svg>
               </Link>
             )}
 

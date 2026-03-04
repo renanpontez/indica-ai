@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { routes, type Locale } from '@/lib/routes';
 
 const tabs = [
+  { key: 'dashboard', getHref: (locale: Locale) => routes.app.admin.dashboard(locale), exact: true },
   { key: 'experiences', getHref: (locale: Locale) => routes.app.admin.experiences(locale) },
   { key: 'reports', getHref: (locale: Locale) => routes.app.admin.reports(locale) },
   { key: 'flaggedUsers', getHref: (locale: Locale) => routes.app.admin.flaggedUsers(locale) },
@@ -18,9 +19,10 @@ export function AdminNav() {
 
   return (
     <div className="flex gap-1 bg-surface rounded-lg p-1 w-fit">
-      {tabs.map(({ key, getHref }) => {
+      {tabs.map(({ key, getHref, ...rest }) => {
         const href = getHref(locale);
-        const isActive = pathname === href || pathname.startsWith(href + '/');
+        const exact = 'exact' in rest && rest.exact;
+        const isActive = exact ? pathname === href : (pathname === href || pathname.startsWith(href + '/'));
 
         return (
           <Link

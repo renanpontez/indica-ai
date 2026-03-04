@@ -627,9 +627,14 @@
   },
   "admin": {
     "nav": {
+      "dashboard": "Painel",
       "experiences": "Experiências",
       "reports": "Denúncias",
       "flaggedUsers": "Usuários Sinalizados"
+    },
+    "dashboard": {
+      "title": "Painel Administrativo",
+      "description": "Visão geral e ferramentas de gerenciamento em breve."
     },
     "experiences": {
       "title": "Moderação de Experiências",

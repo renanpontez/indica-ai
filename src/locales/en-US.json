@@ -627,9 +627,14 @@
   },
   "admin": {
     "nav": {
+      "dashboard": "Dashboard",
       "experiences": "Experiences",
       "reports": "Reports",
       "flaggedUsers": "Flagged Users"
+    },
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "description": "Overview and management tools coming soon."
     },
     "experiences": {
       "title": "Experience Moderation",
