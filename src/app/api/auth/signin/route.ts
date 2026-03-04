@@ -20,6 +20,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (error) {
+      console.error('Sign-in error:', error.message, error.status, error.code);
       return NextResponse.json(
         { error: 'Invalid email or password' },
         { status: 401 }
