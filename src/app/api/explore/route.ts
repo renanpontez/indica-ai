@@ -61,6 +61,13 @@ export async function GET(request: NextRequest) {
   const supabase = await createClient();
   const searchParams = request.nextUrl.searchParams;
 
+  // Get suspended/banned user IDs
+  const { data: restrictedUsers } = await supabase
+    .from('users')
+    .select('id')
+    .in('status', ['suspended', 'banned']);
+  const restrictedUserIds = (restrictedUsers || []).map(u => u.id);
+
   // Optional auth for block filtering
   const authUser = await getAuthUser(supabase);
   let blockedUserIds: string[] = [];
@@ -137,10 +144,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to fetch experiences' }, { status: 500 });
   }
 
-  // Filter out experiences where place is null (due to inner join behavior) and blocked users
+  // Filter out experiences where place is null, blocked users, and suspended/banned users
   const validExperiences = (experiences || []).filter((exp: any) => {
     if (exp.places === null) return false;
     if (blockedUserIds.includes(exp.user_id)) return false;
+    if (restrictedUserIds.includes(exp.user_id)) return false;
     return true;
   });
 

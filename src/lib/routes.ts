@@ -84,6 +84,8 @@ export const ROUTE_PATHS = {
     admin: {
       dashboard: '/app/admin',
       experiences: '/app/admin/experiences',
+      reports: '/app/admin/reports',
+      flaggedUsers: '/app/admin/flagged-users',
     },
   },
 } as const;
@@ -228,6 +230,12 @@ export const routes = {
 
       experiences: (locale: Locale) =>
         buildUrl(locale, ROUTE_PATHS.app.admin.experiences),
+
+      reports: (locale: Locale) =>
+        buildUrl(locale, ROUTE_PATHS.app.admin.reports),
+
+      flaggedUsers: (locale: Locale) =>
+        buildUrl(locale, ROUTE_PATHS.app.admin.flaggedUsers),
     },
   },
 } as const;
@@ -318,6 +326,10 @@ export const routePaths = {
       dashboard: () => ROUTE_PATHS.app.admin.dashboard,
 
       experiences: () => ROUTE_PATHS.app.admin.experiences,
+
+      reports: () => ROUTE_PATHS.app.admin.reports,
+
+      flaggedUsers: () => ROUTE_PATHS.app.admin.flaggedUsers,
     },
   },
 } as const;

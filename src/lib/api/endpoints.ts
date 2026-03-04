@@ -35,6 +35,56 @@ export interface AdminExperience {
   };
 }
 
+// Admin report group type
+export interface AdminReportGroup {
+  experience_id: string;
+  experience: {
+    id: string;
+    status: string;
+    images: string[];
+    user: {
+      id: string;
+      display_name: string;
+      username: string | null;
+      avatar_url: string | null;
+    };
+    place: {
+      id: string;
+      name: string;
+      city: string;
+      country: string;
+    };
+  } | null;
+  reports: {
+    id: string;
+    reason: string;
+    description: string | null;
+    created_at: string;
+    status: string;
+    reporter: {
+      id: string;
+      display_name: string;
+      username: string | null;
+      avatar_url: string | null;
+    };
+  }[];
+  report_count: number;
+  latest_report_at: string;
+}
+
+// Admin flagged user type
+export interface AdminFlaggedUser {
+  id: string;
+  display_name: string;
+  username: string;
+  avatar_url: string | null;
+  status: string;
+  created_at: string;
+  block_count: number;
+  experience_count: number;
+  report_count: number;
+}
+
 // Explore response type
 export interface ExploreResponse {
   experiences: ExperienceFeedItem[];
@@ -376,6 +426,57 @@ export const api = {
       if (!response.ok) {
         const error = await response.json().catch(() => ({}));
         throw new Error(error.error || 'Failed to moderate experience');
+      }
+      return response.json();
+    },
+
+    getReports: async (params?: {
+      status?: string;
+    }): Promise<{ groups: AdminReportGroup[] }> => {
+      const searchParams = new URLSearchParams();
+      if (params?.status) searchParams.append('status', params.status);
+      searchParams.append('_t', Date.now().toString());
+      const url = `/api/admin/reports?${searchParams.toString()}`;
+      const response = await fetch(url, { cache: 'no-store' });
+      if (!response.ok) throw new Error('Failed to fetch reports');
+      return response.json();
+    },
+
+    dismissReport: async (
+      id: string,
+      scope: 'single' | 'all' = 'single'
+    ): Promise<{ success: boolean }> => {
+      const response = await fetch(`/api/admin/reports/${id}/dismiss`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ scope }),
+      });
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.error || 'Failed to dismiss report');
+      }
+      return response.json();
+    },
+
+    getFlaggedUsers: async (): Promise<{ users: AdminFlaggedUser[] }> => {
+      const response = await fetch(`/api/admin/flagged-users?_t=${Date.now()}`, { cache: 'no-store' });
+      if (!response.ok) throw new Error('Failed to fetch flagged users');
+      return response.json();
+    },
+
+    moderateUser: async (
+      userId: string,
+      action: 'suspend' | 'unsuspend' | 'ban',
+      reason?: string
+    ): Promise<{ success: boolean; status: string }> => {
+      const response = await fetch(`/api/admin/users/${userId}/moderate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, reason }),
+      });
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.error || 'Failed to moderate user');
       }
       return response.json();
     },

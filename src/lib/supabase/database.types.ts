@@ -310,6 +310,9 @@ export type Database = {
           reason: string
           description: string | null
           created_at: string | null
+          status: string
+          reviewed_at: string | null
+          reviewed_by: string | null
         }
         Insert: {
           id?: string
@@ -318,6 +321,9 @@ export type Database = {
           reason: string
           description?: string | null
           created_at?: string | null
+          status?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
         }
         Update: {
           id?: string
@@ -326,6 +332,9 @@ export type Database = {
           reason?: string
           description?: string | null
           created_at?: string | null
+          status?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
         }
         Relationships: [
           {
@@ -387,6 +396,10 @@ export type Database = {
           id: string
           username: string
           role: string
+          status: string
+          suspended_at: string | null
+          suspended_by: string | null
+          suspension_reason: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -395,6 +408,10 @@ export type Database = {
           id: string
           username: string
           role?: string
+          status?: string
+          suspended_at?: string | null
+          suspended_by?: string | null
+          suspension_reason?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -403,6 +420,10 @@ export type Database = {
           id?: string
           username?: string
           role?: string
+          status?: string
+          suspended_at?: string | null
+          suspended_by?: string | null
+          suspension_reason?: string | null
         }
         Relationships: []
       }

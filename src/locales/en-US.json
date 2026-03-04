@@ -627,7 +627,9 @@
   },
   "admin": {
     "nav": {
-      "experiences": "Admin"
+      "experiences": "Experiences",
+      "reports": "Reports",
+      "flaggedUsers": "Flagged Users"
     },
     "experiences": {
       "title": "Experience Moderation",
@@ -664,6 +666,83 @@
       "deactivating": "Deactivating...",
       "reactivate": "Reactivate",
       "reactivateConfirm": "Are you sure you want to reactivate this experience?"
+    },
+    "reports": {
+      "title": "Reports Queue",
+      "filters": {
+        "pending": "Pending",
+        "dismissed": "Dismissed",
+        "actioned": "Actioned",
+        "all": "All"
+      },
+      "empty": "No reports found",
+      "table": {
+        "experience": "Experience",
+        "reports": "Reports",
+        "reason": "Reason",
+        "latestReport": "Latest Report",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "reportCount": "{count} {count, plural, one {report} other {reports}}",
+      "reasons": {
+        "spam": "Spam",
+        "inappropriate": "Inappropriate",
+        "misleading": "Misleading",
+        "other": "Other"
+      },
+      "by": "by {name}",
+      "dismissAll": "Dismiss All",
+      "dismiss": "Dismiss",
+      "deactivate": "Deactivate",
+      "viewDetails": "View Details",
+      "dismissed": "Dismissed",
+      "actioned": "Actioned",
+      "experienceInactive": "Content already inactive"
+    },
+    "flaggedUsers": {
+      "title": "Flagged Users",
+      "empty": "No flagged users found",
+      "description": "Users blocked by 10 or more people",
+      "table": {
+        "user": "User",
+        "blocks": "Blocks",
+        "reports": "Reports",
+        "experiences": "Experiences",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "statusBadge": {
+        "active": "Active",
+        "suspended": "Suspended",
+        "banned": "Banned"
+      },
+      "suspend": "Suspend",
+      "unsuspend": "Unsuspend",
+      "ban": "Ban"
+    },
+    "suspendModal": {
+      "title": "Suspend User",
+      "message": "This will hide all their content and prevent activity:",
+      "reasonLabel": "Reason for suspension",
+      "reasonPlaceholder": "Describe why this user is being suspended...",
+      "reasonRequired": "A reason is required",
+      "cancel": "Cancel",
+      "confirm": "Suspend User",
+      "suspending": "Suspending..."
+    },
+    "banModal": {
+      "title": "Ban User",
+      "message": "This will permanently delete the user's account and remove all their content. This action cannot be undone.",
+      "reasonLabel": "Reason for ban",
+      "reasonPlaceholder": "Describe why this user is being banned...",
+      "reasonRequired": "A reason is required",
+      "confirmLabel": "Type the username to confirm:",
+      "confirmPlaceholder": "Enter username",
+      "confirmMismatch": "Username does not match",
+      "cancel": "Cancel",
+      "confirm": "Ban User Permanently",
+      "banning": "Banning..."
     }
   },
   "report": {

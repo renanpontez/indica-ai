@@ -627,7 +627,9 @@
   },
   "admin": {
     "nav": {
-      "experiences": "Admin"
+      "experiences": "Experiências",
+      "reports": "Denúncias",
+      "flaggedUsers": "Usuários Sinalizados"
     },
     "experiences": {
       "title": "Moderação de Experiências",
@@ -664,6 +666,83 @@
       "deactivating": "Desativando...",
       "reactivate": "Reativar",
       "reactivateConfirm": "Tem certeza que deseja reativar esta experiência?"
+    },
+    "reports": {
+      "title": "Fila de Denúncias",
+      "filters": {
+        "pending": "Pendentes",
+        "dismissed": "Descartadas",
+        "actioned": "Resolvidas",
+        "all": "Todas"
+      },
+      "empty": "Nenhuma denúncia encontrada",
+      "table": {
+        "experience": "Experiência",
+        "reports": "Denúncias",
+        "reason": "Motivo",
+        "latestReport": "Última Denúncia",
+        "status": "Status",
+        "actions": "Ações"
+      },
+      "reportCount": "{count} {count, plural, one {denúncia} other {denúncias}}",
+      "reasons": {
+        "spam": "Spam",
+        "inappropriate": "Inapropriado",
+        "misleading": "Enganoso",
+        "other": "Outro"
+      },
+      "by": "por {name}",
+      "dismissAll": "Descartar Todas",
+      "dismiss": "Descartar",
+      "deactivate": "Desativar",
+      "viewDetails": "Ver Detalhes",
+      "dismissed": "Descartada",
+      "actioned": "Resolvida",
+      "experienceInactive": "Conteúdo já inativo"
+    },
+    "flaggedUsers": {
+      "title": "Usuários Sinalizados",
+      "empty": "Nenhum usuário sinalizado encontrado",
+      "description": "Usuários bloqueados por 10 ou mais pessoas",
+      "table": {
+        "user": "Usuário",
+        "blocks": "Bloqueios",
+        "reports": "Denúncias",
+        "experiences": "Experiências",
+        "status": "Status",
+        "actions": "Ações"
+      },
+      "statusBadge": {
+        "active": "Ativo",
+        "suspended": "Suspenso",
+        "banned": "Banido"
+      },
+      "suspend": "Suspender",
+      "unsuspend": "Reativar",
+      "ban": "Banir"
+    },
+    "suspendModal": {
+      "title": "Suspender Usuário",
+      "message": "Isso ocultará todo o conteúdo e impedirá atividade:",
+      "reasonLabel": "Motivo da suspensão",
+      "reasonPlaceholder": "Descreva por que este usuário está sendo suspenso...",
+      "reasonRequired": "Um motivo é obrigatório",
+      "cancel": "Cancelar",
+      "confirm": "Suspender Usuário",
+      "suspending": "Suspendendo..."
+    },
+    "banModal": {
+      "title": "Banir Usuário",
+      "message": "Isso excluirá permanentemente a conta do usuário e removerá todo o conteúdo. Esta ação não pode ser desfeita.",
+      "reasonLabel": "Motivo do banimento",
+      "reasonPlaceholder": "Descreva por que este usuário está sendo banido...",
+      "reasonRequired": "Um motivo é obrigatório",
+      "confirmLabel": "Digite o nome de usuário para confirmar:",
+      "confirmPlaceholder": "Digite o nome de usuário",
+      "confirmMismatch": "Nome de usuário não corresponde",
+      "cancel": "Cancelar",
+      "confirm": "Banir Usuário Permanentemente",
+      "banning": "Banindo..."
     }
   },
   "report": {
