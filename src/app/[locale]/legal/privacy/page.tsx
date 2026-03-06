@@ -166,9 +166,21 @@ const content = {
           'Enviar spam, mensagens não solicitadas ou publicidade',
           'Realizar scraping, crawling ou coleta automatizada de dados da plataforma',
           'Assediar, intimidar ou ameaçar outros usuários',
+          'Publicar conteúdo objetável, de ódio, violento, sexualmente explícito ou discriminatório',
+          'Comportamento abusivo, intimidador ou discriminatório contra outros usuários',
           'Tentar acessar contas de outros usuários ou sistemas internos do Circle Picks',
           'Introduzir vírus, malware ou código malicioso no Serviço',
         ],
+      },
+      {
+        title: 'Política de Conteúdo Gerado por Usuários',
+        content:
+          'O Circle Picks tem tolerância zero para conteúdo objetável ou usuários abusivos. Todo conteúdo gerado por usuários, incluindo recomendações, fotos, descrições e comentários, deve estar em conformidade com estes Termos e com as leis aplicáveis. Conteúdo que seja de ódio, violento, sexualmente explícito, discriminatório, assediador, ameaçador ou de qualquer forma objetável é estritamente proibido e resultará na remoção imediata do conteúdo e potencial encerramento da conta.',
+      },
+      {
+        title: 'Moderação de Conteúdo e Denúncias',
+        content:
+          'O Circle Picks reserva-se o direito de revisar, moderar e remover qualquer conteúdo gerado por usuários a qualquer momento e sem aviso prévio. Os usuários podem denunciar conteúdo objetável ou comportamento abusivo diretamente pela plataforma. Denúncias serão analisadas em até 24 horas. Usuários que violarem repetidamente estas diretrizes terão suas contas suspensas ou encerradas permanentemente. O Circle Picks pode agir por conta própria para remover conteúdo ou bloquear usuários sem necessidade de denúncia prévia.',
       },
       {
         title: 'Propriedade Intelectual',
@@ -364,9 +376,21 @@ const content = {
           'Send spam, unsolicited messages, or advertising',
           'Scrape, crawl, or perform automated data collection from the platform',
           'Harass, intimidate, or threaten other users',
+          'Post objectionable, hateful, violent, sexually explicit, or discriminatory content',
+          'Engage in abusive, bullying, or discriminatory behavior toward other users',
           'Attempt to access other users\' accounts or Circle Picks internal systems',
           'Introduce viruses, malware, or malicious code into the Service',
         ],
+      },
+      {
+        title: 'User-Generated Content Policy',
+        content:
+          'Circle Picks has zero tolerance for objectionable content or abusive users. All user-generated content, including recommendations, photos, descriptions, and comments, must comply with these Terms and applicable laws. Content that is hateful, violent, sexually explicit, discriminatory, harassing, threatening, or otherwise objectionable is strictly prohibited and will result in immediate content removal and potential account termination.',
+      },
+      {
+        title: 'Content Moderation and Reporting',
+        content:
+          'Circle Picks reserves the right to review, moderate, and remove any user-generated content at any time and without prior notice. Users may report objectionable content or abusive behavior directly through the platform. Reports will be reviewed within 24 hours. Users who repeatedly violate these guidelines will have their accounts suspended or permanently terminated. Circle Picks may act on its own to remove content or block users without requiring a prior report.',
       },
       {
         title: 'Intellectual Property',

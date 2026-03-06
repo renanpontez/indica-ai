@@ -466,7 +466,9 @@
       "createAccountButton": "Criar conta",
       "orContinueWith": "ou continue com e-mail",
       "googleButton": "Continuar com Google",
+      "termsCheckbox": "Eu concordo com os <terms>Termos de Uso</terms> e a <privacy>Política de Privacidade</privacy>",
       "errors": {
+        "termsRequired": "Você deve concordar com os Termos de Uso e Política de Privacidade",
         "passwordMismatch": "As senhas não coincidem",
         "passwordTooShort": "A senha deve ter pelo menos 6 caracteres",
         "displayNameTooShort": "O nome deve ter pelo menos 2 caracteres",

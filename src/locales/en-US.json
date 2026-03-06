@@ -466,7 +466,9 @@
       "createAccountButton": "Create account",
       "orContinueWith": "Or continue with",
       "googleButton": "Continue with Google",
+      "termsCheckbox": "I agree to the <terms>Terms of Use</terms> and <privacy>Privacy Policy</privacy>",
       "errors": {
+        "termsRequired": "You must agree to the Terms of Use and Privacy Policy",
         "passwordMismatch": "Passwords do not match",
         "passwordTooShort": "Password must be at least 6 characters",
         "displayNameTooShort": "Display name must be at least 2 characters",
