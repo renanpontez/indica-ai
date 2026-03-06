@@ -5,7 +5,8 @@ import { useLocale, useTranslations } from 'next-intl';
 
 import { Button } from '@/components/Button';
 import { Input } from '@/components/Input';
-import { routes, type Locale } from '@/lib/routes';
+import { Link } from '@/i18n/routing';
+import { routePaths, routes, type Locale } from '@/lib/routes';
 
 export default function SignUpForm() {
   const searchParams = useSearchParams();
@@ -19,6 +20,7 @@ export default function SignUpForm() {
     confirmPassword: '',
     display_name: '',
   });
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
@@ -31,6 +33,11 @@ export default function SignUpForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    if (!acceptedTerms) {
+      setError(t('errors.termsRequired'));
+      return;
+    }
 
     // Client-side validation
     if (formData.password !== formData.confirmPassword) {
@@ -58,6 +65,7 @@ export default function SignUpForm() {
           email: formData.email,
           password: formData.password,
           display_name: formData.display_name,
+          terms_accepted: acceptedTerms,
         }),
       });
 
@@ -93,6 +101,12 @@ export default function SignUpForm() {
 
   const handleGoogleSignUp = () => {
     setError('');
+
+    if (!acceptedTerms) {
+      setError(t('errors.termsRequired'));
+      return;
+    }
+
     setIsLoading(true);
 
     const redirectTo = callbackUrl
@@ -253,6 +267,29 @@ export default function SignUpForm() {
             </div>
           )}
         </div>
+
+        <label className="flex items-start gap-2.5 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={acceptedTerms}
+            onChange={(e) => setAcceptedTerms(e.target.checked)}
+            className="mt-0.5 h-4 w-4 rounded border-divider text-primary accent-primary cursor-pointer"
+          />
+          <span className="text-[0.8rem] text-medium-grey leading-tight">
+            {t.rich('termsCheckbox', {
+              terms: (chunks) => (
+                <Link href={routePaths.legal.privacy()} className="text-primary underline hover:text-primary/80" target="_blank">
+                  {chunks}
+                </Link>
+              ),
+              privacy: (chunks) => (
+                <Link href={routePaths.legal.privacy()} className="text-primary underline hover:text-primary/80" target="_blank">
+                  {chunks}
+                </Link>
+              ),
+            })}
+          </span>
+        </label>
 
         <Button
           type="submit"

@@ -400,6 +400,7 @@ export type Database = {
           suspended_at: string | null
           suspended_by: string | null
           suspension_reason: string | null
+          terms_accepted_at: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -412,6 +413,7 @@ export type Database = {
           suspended_at?: string | null
           suspended_by?: string | null
           suspension_reason?: string | null
+          terms_accepted_at?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -424,6 +426,7 @@ export type Database = {
           suspended_at?: string | null
           suspended_by?: string | null
           suspension_reason?: string | null
+          terms_accepted_at?: string | null
         }
         Relationships: []
       }

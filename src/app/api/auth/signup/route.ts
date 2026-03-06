@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createAuthClient } from '@/lib/supabase/server';
+import { createAdminClient, createAuthClient } from '@/lib/supabase/server';
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password, display_name } = await request.json();
+    const { email, password, display_name, terms_accepted } = await request.json();
 
     // Validation
+    if (!terms_accepted) {
+      return NextResponse.json(
+        { error: 'You must agree to the Terms of Use and Privacy Policy' },
+        { status: 400 }
+      );
+    }
+
     if (!email || !password || !display_name) {
       return NextResponse.json(
         { error: 'Email, password, and display name are required' },
@@ -47,6 +54,15 @@ export async function POST(request: NextRequest) {
         );
       }
       return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+
+    // Record terms acceptance
+    if (data.user) {
+      const admin = createAdminClient();
+      await admin
+        .from('users')
+        .update({ terms_accepted_at: new Date().toISOString() })
+        .eq('id', data.user.id);
     }
 
     // Check if email confirmation is required (user exists but no session)
