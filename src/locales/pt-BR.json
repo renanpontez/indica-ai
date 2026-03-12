@@ -8,13 +8,12 @@
     "hero": {
       "title": "Descubra as experiências que seus amigos amam",
       "subtitle": "A melhor forma de encontrar restaurantes, cafés, bares e hotéis é através de quem você confia",
-      "eyebrow": "Beta Privado",
+      "eyebrow": "Disponível na App Store",
       "searchPlaceholder": "Buscar lugares...",
       "searchButton": "Buscar",
       "appStore": {
         "prefix": "Baixe na",
-        "aria": "Baixe na App Store",
-        "soon": "Em breve"
+        "aria": "Baixe na App Store"
       }
     },
     "categories": {
@@ -50,7 +49,7 @@
     "trustBar": {
       "placesShared": "+{count} experiências compartilhadas",
       "inCities": "+{count} cidades",
-      "privateBeta": "Beta Privado"
+      "privateBeta": "Disponível na App Store"
     },
     "problems": {
       "title": "O que queremos acabar",
@@ -138,7 +137,7 @@
     },
     "finalCta": {
       "title": "Pronto para descobrir lugares melhores?",
-      "description": "Entre no beta privado e comece a receber indicações de pessoas em quem você confia.",
+      "description": "Entre no Circle Picks e comece a receber indicações de pessoas em quem você confia.",
       "button": "Criar conta grátis",
       "secondaryButton": "Explorar indicações públicas",
       "noCreditCard": "Sem cartão de crédito",

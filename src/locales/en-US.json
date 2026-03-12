@@ -8,13 +8,12 @@
     "hero": {
       "title": "Discover amazing places through your friends",
       "subtitle": "The best way to find restaurants, cafes, bars, and hotels is through people you trust",
-      "eyebrow": "Private Beta",
+      "eyebrow": "Now on the App Store",
       "searchPlaceholder": "Search places...",
       "searchButton": "Search",
       "appStore": {
         "prefix": "Download on the",
-        "aria": "Download on the App Store",
-        "soon": "Soon"
+        "aria": "Download on the App Store"
       }
     },
     "categories": {
@@ -50,7 +49,7 @@
     "trustBar": {
       "placesShared": "{count} places shared",
       "inCities": "In {count} cities",
-      "privateBeta": "Private Beta"
+      "privateBeta": "Available on the App Store"
     },
     "problems": {
       "title": "Sound familiar?",
@@ -138,7 +137,7 @@
     },
     "finalCta": {
       "title": "Ready to discover better places?",
-      "description": "Join the private beta and start getting recommendations from people you trust.",
+      "description": "Join Circle Picks and start getting recommendations from people you trust.",
       "button": "Create free account",
       "secondaryButton": "Browse public recommendations",
       "noCreditCard": "No credit card required",

@@ -158,7 +158,9 @@ export default async function LandingPage({ params }: LandingPageProps) {
               {/* App Store badge */}
               <div className="flex flex-row gap-3 justify-center lg:justify-start flex-wrap">
                 <a
-                  href="#"
+                  href="https://apps.apple.com/br/app/circlepicks/id6759492312?l=en-GB"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={t('hero.appStore.aria')}
                   className="inline-flex items-center gap-2.5 px-4 py-2.5 bg-dark-grey text-white rounded-xl hover:bg-dark-grey/90 transition-all hover:scale-105 hover:shadow-md"
                 >
@@ -169,7 +171,6 @@ export default async function LandingPage({ params }: LandingPageProps) {
                     <span className="text-[9px] font-normal opacity-80 uppercase tracking-wide">{t('hero.appStore.prefix')}</span>
                     <span className="text-sm font-semibold">App Store</span>
                   </div>
-                  <span className="ml-1 px-1.5 py-0.5 bg-white/20 rounded text-[9px] font-semibold uppercase tracking-wide">{t('hero.appStore.soon')}</span>
                 </a>
               </div>
             </div>
